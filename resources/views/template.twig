@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.3/css/bulma.min.css" integrity="sha512-IgmDkwzs96t4SrChW29No3NXBIBv8baW490zk5aXvhCD8vuZM3yUSkbyTBcXohkySecyzIrUwiF/qV0cuPcL3Q==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="https://unpkg.com/@coreui/icons/css/brand.min.css" crossorigin="anonymous">
+  </head>
+  <body>
+    <section class="hero {% block hero_type %}{% endblock %}">
+      <div class="hero-head">
+        <header class="navbar">
+          <div class="container">
+            <div class="navbar-brand">
+              <a class="navbar-item is-dark has-text-weight-bold is-uppercase" href="https://php.package.health">php.package.health</a>
+            </div>
+          </div>
+        </header>
+      </div>
+      <div class="hero-body">
+        <div class="container">
+          <h1 class="title is-1">{% block hero_title %}{% endblock %}</h1>
+          <h2 class="subtitle">{% block hero_subtitle %}{% endblock %}</h2>
+        </div>
+      </div>
+      {% if show.hero.footer %}
+      <div class="hero-footer">
+        <div class="container">
+          <pre class="is-size-7">{% block hero_footer %}{% endblock %}</pre>
+        </div>
+      </div>
+      {% endif %}
+    </section>
+    <section class="section">
+      <div class="container">
+        {% block content %}{% endblock %}
+      </div>
+    </section>
+    <section class="footer">
+      <div class="container">
+        <div class="content has-text-centered">
+          <p><strong>Package.Health</strong> is <em>heavily</em> inspired in <a href="https://deps.rs">Deps.rs</a>.</p>
+          <p>Source code available on <a href="https://github.com/package-health/php">GitHub</a>.</p>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>

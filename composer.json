@@ -1,0 +1,91 @@
+{
+  "name": "package-health/php",
+  "description": "Keep your dependencies up-to-date",
+  "type": "project",
+  "license": "agpl",
+  "authors": [
+    {
+      "name": "Flavio Heleno",
+      "email": "flaviohbatista@gmail.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "App\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "App\\Test\\": "tests"
+    }
+  },
+  "config": {
+    "optimize-autoloader": true,
+    "sort-packages": true,
+    "preferred-install": "dist",
+    "allow-plugins": {
+      "infection/extension-installer": true
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "require": {
+    "php": ">=8.0",
+    "badges/poser": "^2.3",
+    "composer/metadata-minifier": "^1.0",
+    "composer/semver": "^3.2",
+    "evenement/evenement": "^3.0",
+    "kriswallsmith/buzz": "^1.2",
+    "monolog/monolog": "^2.3",
+    "nyholm/psr7": "^1.5",
+    "nyholm/psr7-server": "^1.0",
+    "php-di/php-di": "^6.3",
+    "robmorgan/phinx": "^0.12.10",
+    "slim/http-cache": "^1.1",
+    "slim/slim": "^4.9",
+    "slim/twig-view": "^3.3",
+    "symfony/console": "^6.0",
+    "vlucas/phpdotenv": "^5.4"
+  },
+  "require-dev": {
+    "infection/infection": "^0.26",
+    "php-parallel-lint/php-parallel-lint": "^1.2",
+    "phpstan/phpstan": "^1.4",
+    "phpunit/phpunit": "^9.5",
+    "psy/psysh": "^0.11",
+    "roave/security-advisories": "dev-latest",
+    "squizlabs/php_codesniffer": "^3.5",
+    "vimeo/psalm": "^4.3"
+  },
+  "scripts": {
+    "console": "vendor/bin/psysh",
+    "infection": "vendor/bin/infection",
+    "lint": "vendor/bin/parallel-lint --exclude vendor .",
+    "phpcs": "vendor/bin/phpcs --standard=ruleset.xml src/ tests/",
+    "phpstan": "vendor/bin/phpstan analyse --level=max --autoload-file=vendor/autoload.php bin/ public/ src/",
+    "phpunit": "vendor/bin/phpunit ./tests/ --coverage-html=./report/coverage/ --whitelist=./src/ --testdox-html=./report/testdox.html --disallow-test-output --process-isolation",
+    "psalm": "vendor/bin/psalm --taint-analysis",
+    "test-ci": "vendor/bin/phpunit ./tests/ --disallow-test-output --process-isolation",
+    "test-coverage": "vendor/bin/phpunit ./tests/ --whitelist=./src/ --coverage-clover=clover.xml",
+    "test": [
+      "@infection",
+      "@lint",
+      "@phpunit",
+      "@phpstan",
+      "@psalm",
+      "@phpcs"
+    ]
+  },
+  "scripts-descriptions": {
+    "console": "Runs PsySH Console",
+    "infection": "Runs mutation test framework",
+    "lint": "Runs complete codebase lint testing",
+    "phpcs": "Runs coding style checking",
+    "phpstan": "Runs complete codebase static analysis",
+    "phpunit": "Runs unit and integration testing",
+    "psalm": "Runs complete codebase taint analysis",
+    "test-ci": "Runs library test suite (for continuous integration)",
+    "test-coverage": "Runs test-coverage analysis",
+    "test": "Runs all tests"
+  }
+}

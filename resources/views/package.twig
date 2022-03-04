@@ -1,0 +1,91 @@
+{% extends "template.twig" %}
+
+{% block title %}{{ package.name }} - PHP.Package.Health{% endblock %}
+
+{% block hero_type %}{{ status.type }}{% endblock %}
+
+{% block hero_title %}<a href="{{ package.url }}"><span class="icon-text"><span class="icon"><i class="cib-github" alt="GitHub"></i></span>&nbsp;<span>{{ package.name }} {{ version.number }}</span></span></a>{% endblock %}
+
+{% block hero_subtitle %}<img src="{{ url_for('viewPackageBadge', {vendor: package.vendor, project: package.project, version: version.number}) }}">{% endblock %}
+
+{% block hero_footer %}[![dependency status]({{ full_url_for('viewPackageBadge', {vendor: package.vendor, project: package.project, version: version.number}) }})]({{ full_url_for('viewPackage', {vendor: package.vendor, project: package.project, version: version.number}) }}){% endblock %}
+
+{% block content %}
+  {% if notification %}
+    <div class="notification {{ notification.type }}">
+      <p>{{ notification.message }}</p>
+    </div>
+  {% endif %}
+  {% if requiredDeps|length == 0 %}
+    <h3 class="title is-4">Requires</h3>
+    <p class="subtitle is-5">No required dependencies.</p>
+    <table class="table is-fullwidth is-striped is-hoverable">
+    </table>
+  {% endif %}
+  {% if requiredDeps|length > 0 %}
+    <h3 class="title is-4">Requires</h3>
+    <p class="subtitle is-5">{{ requiredDeps|length }} total, {{ requiredDepsSubtitle }}</p>
+    <table class="table is-fullwidth is-striped is-hoverable">
+      <thead>
+        <tr>
+          <th>Package</th>
+          <td></td>
+          <th class="has-text-right">Required</th>
+          <th class="has-text-right">Latest</th>
+          <th class="has-text-right">Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for dep in requiredDeps %}
+          <tr>
+            {% if dep.unregistered %}
+              <td>{{ dep.package.name }}</td>
+            {% else %}
+              <td><a href="{{ url_for('redirectPackage', {vendor: dep.package.vendor, project: dep.package.project}) }}">{{ dep.package.name }}</a></td>
+            {% endif %}
+            <td class="has-text-grey">{{ dep.package.description }}</td>
+            <td class="has-text-right"><code>{{ dep.requiredVersion }}</code></td>
+            <td class="has-text-right"><code>{{ dep.package.latestVersion }}</code></td>
+            <td class="has-text-right"><span class="tag {{ dep.status.type }}">{{ dep.status.text }}</span></td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% endif %}
+  {% if requiredDevDeps|length == 0 %}
+    <h3 class="title is-4">Requires (dev)</h3>
+    <p class="subtitle is-5">No required development dependencies.</p>
+    <table class="table is-fullwidth is-striped is-hoverable">
+    </table>
+  {% endif %}
+  {% if requiredDevDeps|length > 0 %}
+    <h3 class="title is-4">Requires (dev)</h3>
+    <p class="subtitle is-5">{{ requiredDevDeps|length }} total, {{ requiredDevDepsSubtitle }}</p>
+    <table class="table is-fullwidth is-striped is-hoverable">
+      <thead>
+        <tr>
+          <th>Package</th>
+          <td></td>
+          <th class="has-text-right">Required</th>
+          <th class="has-text-right">Latest</th>
+          <th class="has-text-right">Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for dep in requiredDevDeps %}
+          <tr>
+            {% if dep.unregistered %}
+              <td>{{ dep.package.name }}</td>
+            {% else %}
+              <td><a href="{{ url_for('redirectPackage', {vendor: dep.package.vendor, project: dep.package.project}) }}">{{ dep.package.name }}</a></td>
+            {% endif %}
+            <td class="has-text-grey">{{ dep.package.description }}</td>
+            <td class="has-text-right"><code>{{ dep.requiredVersion }}</code></td>
+            <td class="has-text-right"><code>{{ dep.package.latestVersion }}</code></td>
+            <td class="has-text-right"><span class="tag {{ dep.status.type }}">{{ dep.status.text }}</span></td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% endif %}
+{% endblock %}
