@@ -87,22 +87,26 @@ final class MassImportCommand extends Command {
         return Command::SUCCESS;
       }
 
-      $io->text(
-        sprintf(
-          '[%s] Found <options=bold;fg=cyan>%d</> packages',
-          date('H:i:s'),
-          count($packages)
-        )
-      );
-
-      foreach ($packages as $package) {
+      if ($output->isVerbose()) {
         $io->text(
           sprintf(
-            '[%s] Processing package <options=bold;fg=cyan>%s</>',
+            '[%s] Found <options=bold;fg=cyan>%d</> packages',
             date('H:i:s'),
-            $package->getName()
+            count($packages)
           )
         );
+      }
+
+      foreach ($packages as $package) {
+        if ($output->isVerbose()) {
+          $io->text(
+            sprintf(
+              '[%s] Processing package <options=bold;fg=cyan>%s</>',
+              date('H:i:s'),
+              $package->getName()
+            )
+          );
+        }
 
         $returnCode = $command->run(
           new ArrayInput(
@@ -114,6 +118,13 @@ final class MassImportCommand extends Command {
           $output
         );
       }
+
+      $io->text(
+        sprintf(
+          '[%s] Done',
+          date('H:i:s')
+        )
+      );
     } catch (Exception $exception) {
       if (isset($io) === true) {
         $io->error(

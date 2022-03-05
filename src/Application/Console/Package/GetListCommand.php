@@ -79,8 +79,16 @@ final class GetListCommand extends Command {
 
       if ($modTime === false || (time() - $modTime) > self::FILE_TIMEOUT) {
         $url = "${mirror}/packages/list.json";
-        $response = $this->browser->get($url, ['User-Agent' => 'php.package.health (twitter.com/flavioheleno)']);
+        if ($output->isVerbose()) {
+          $io->text(
+            sprintf(
+              "[%s] Downloading a fresh copy of <options=bold;fg=cyan>${url}</>",
+              date('H:i:s'),
+            )
+          );
+        }
 
+        $response = $this->browser->get($url, ['User-Agent' => 'php.package.health (twitter.com/flavioheleno)']);
         if ($response->getStatusCode() >= 400) {
           throw new RuntimeException(
             sprintf(

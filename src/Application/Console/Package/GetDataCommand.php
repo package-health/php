@@ -101,8 +101,16 @@ final class GetDataCommand extends Command {
 
       if ($modTime === false || (time() - $modTime) > self::FILE_TIMEOUT) {
         $url = "${mirror}/packages/${packageName}.json";
-        $response = $this->browser->get($url, ['User-Agent' => 'php.package.health (twitter.com/flavioheleno)']);
+        if ($output->isVerbose()) {
+          $io->text(
+            sprintf(
+              "[%s] Downloading a fresh copy of <options=bold;fg=cyan>${url}</>",
+              date('H:i:s'),
+            )
+          );
+        }
 
+        $response = $this->browser->get($url, ['User-Agent' => 'php.package.health (twitter.com/flavioheleno)']);
         if ($response->getStatusCode() >= 400) {
           throw new RuntimeException(
             sprintf(
@@ -165,13 +173,15 @@ final class GetDataCommand extends Command {
         $this->eventEmitter->emit('stats.created', [$stats]);
       }
 
-      $io->text(
-        sprintf(
-          '[%s] Found <options=bold;fg=cyan>%d</> releases',
-          date('H:i:s'),
-          count($json['package']['versions'])
-        )
-      );
+      if ($output->isVerbose()) {
+        $io->text(
+          sprintf(
+            '[%s] Found <options=bold;fg=cyan>%d</> releases',
+            date('H:i:s'),
+            count($json['package']['versions'])
+          )
+        );
+      }
 
       if (count($json['package']['versions']) === 0) {
         return Command::SUCCESS;
@@ -192,13 +202,16 @@ final class GetDataCommand extends Command {
 
         $version = $versionCol[0] ?? null;
         if ($version === null) {
-          $io->text(
-            sprintf(
-              '[%s] New version <options=bold;fg=cyan>%s</> found',
-              date('H:i:s'),
-              $release['version']
-            )
-          );
+          if ($output->isVeryVerbose()) {
+            $io->text(
+              sprintf(
+                '[%s] New %s <options=bold;fg=cyan>%s</> found',
+                date('H:i:s'),
+                $isBranch ? 'branch' : 'version',
+                $release['version']
+              )
+            );
+          }
 
           $version = $this->versionRepository->create(
             $release['version'],
@@ -228,6 +241,17 @@ final class GetDataCommand extends Command {
 
         // flag packages without require dependencies with VersionStatusEnum::NoDeps
         if (empty($filteredRequire)) {
+          if ($output->isDebug()) {
+            $io->text(
+              sprintf(
+                '[%s] %s <options=bold;fg=cyan>%s</> has no required dependencies',
+                date('H:i:s'),
+                $isBranch ? 'Branch' : 'Version',
+                $version->getNumber()
+              )
+            );
+          }
+
           $version = $version->withStatus(VersionStatusEnum::NoDeps);
           $version = $this->versionRepository->update($version);
           $this->eventEmitter->emit('version.updated', [$version]);
@@ -296,6 +320,17 @@ final class GetDataCommand extends Command {
           ARRAY_FILTER_USE_KEY
         );
 
+        if (empty($filteredRequireDev) && $output->isDebug()) {
+          $io->text(
+            sprintf(
+              '[%s] %s <options=bold;fg=cyan>%s</> has no required development dependencies',
+              date('H:i:s'),
+              $isBranch ? 'Branch' : 'Version',
+              $version->getNumber()
+            )
+          );
+        }
+
         foreach ($filteredRequireDev as $dependencyName => $constraint) {
           if (isset($packageList[$dependencyName]) === false) {            $packageList[$dependencyName] = '';
             if ($this->packageRepository->exists($dependencyName)) {
@@ -352,17 +387,26 @@ final class GetDataCommand extends Command {
       // update package latest tagged version if it was changed
       $package = $package->withLatestVersion($latestVersion);
       if ($package->isDirty()) {
-        $io->text(
-          sprintf(
-            '[%s] Updating latest package release to version <options=bold;fg=green>%s</>',
-            date('H:i:s'),
-            $latestVersion
-          )
-        );
+        if ($output->isVerbose()) {
+          $io->text(
+            sprintf(
+              '[%s] Updating latest package release to version <options=bold;fg=green>%s</>',
+              date('H:i:s'),
+              $latestVersion
+            )
+          );
+        }
 
         $package = $this->packageRepository->update($package);
         $this->eventEmitter->emit('package.updated', [$package]);
       }
+
+      $io->text(
+        sprintf(
+          '[%s] Done',
+          date('H:i:s')
+        )
+      );
     } catch (Exception $exception) {
       if (isset($io) === true) {
         $io->error(
