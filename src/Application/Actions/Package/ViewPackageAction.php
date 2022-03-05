@@ -17,6 +17,7 @@ use Slim\Views\Twig;
 final class ViewPackageAction extends AbstractPackageAction {
   private DependencyRepositoryInterface $dependencyRepository;
   private VersionRepositoryInterface $versionRepository;
+
   public function __construct(
     LoggerInterface $logger,
     CacheProvider $cacheProvider,
