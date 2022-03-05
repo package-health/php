@@ -11,10 +11,6 @@ use Slim\Factory\ServerRequestCreatorFactory;
 
 require __DIR__ . '/../vendor/autoload.php';
 
-if (php_sapi_name() == 'cli-server' && preg_match('/\.(?:txt|png|jpg|jpeg|gif)$/', $_SERVER["REQUEST_URI"])) {
-  return false;
-}
-
 if (is_file(__DIR__ . '/../.env')) {
   $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
   $dotenv->safeLoad();
