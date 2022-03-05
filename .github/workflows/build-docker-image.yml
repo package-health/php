@@ -1,0 +1,105 @@
+name: Build Docker Image
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - 'main'
+      - 'develop'
+    paths-ignore:
+      - '.github/**'
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1.6.0
+
+      # https://github.com/docker/build-push-action/blob/master/docs/advanced/cache.md#local-cache
+      - name: Cache Docker layers
+        uses: actions/cache@v2.1.7
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+
+      - name: Prepare Build
+        id: prepare-build
+        run: |
+            echo "::set-output name=short::$(git rev-parse --short HEAD)"
+            if [[ "${{ github.ref_name }}" == "main" ]]; then
+              echo "::set-output name=environment::prod";
+            else
+              echo "::set-output name=environment::dev";
+            fi
+
+      - name: Build NGINX Docker Image
+        uses: docker/build-push-action@v2.9.0
+        with:
+          push: false
+          load: true
+          tags: package-health/nginx:${{ steps.prepare-build.outputs.environment }}-${{ steps.prepare-build.outputs.short }}
+          file: ./docker/nginx.Dockerfile
+          context: .
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
+
+      - name: Build PHP-FPM Docker Image
+        uses: docker/build-push-action@v2.9.0
+        with:
+          push: false
+          load: true
+          tags: package-health/php-fpm:${{ steps.prepare-build.outputs.environment }}-${{ steps.prepare-build.outputs.short }}
+          file: ./docker/php.Dockerfile
+          target: fpm
+          context: .
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
+
+      - name: Build PHP-CLI Docker Image
+        uses: docker/build-push-action@v2.9.0
+        with:
+          push: false
+          load: true
+          tags: package-health/php-cli:${{ steps.prepare-build.outputs.environment }}-${{ steps.prepare-build.outputs.short }}
+          file: ./docker/php.Dockerfile
+          target: cli
+          context: .
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
+
+      - name: Generate Image Hashsum
+        run: |
+          docker save "package-health/nginx:${{ steps.prepare-build.outputs.environment }}-${{ steps.prepare-build.outputs.short }}" | gzip > "nginx-${{ steps.prepare-build.outputs.environment }}-${{ steps.prepare-build.outputs.short }}.tar.gz"
+          sha1sum "nginx-${{ steps.prepare-build.outputs.environment }}-${{ steps.prepare-build.outputs.short }}.tar.gz" > "nginx-${{ steps.prepare-build.outputs.environment }}-${{ steps.prepare-build.outputs.short }}.tar.gz.sha1"
+          docker save "package-health/php-fpm:${{ steps.prepare-build.outputs.environment }}-${{ steps.prepare-build.outputs.short }}" | gzip > "php-fpm-${{ steps.prepare-build.outputs.environment }}-${{ steps.prepare-build.outputs.short }}.tar.gz"
+          sha1sum "php-fpm-${{ steps.prepare-build.outputs.environment }}-${{ steps.prepare-build.outputs.short }}.tar.gz" > "php-fpm-${{ steps.prepare-build.outputs.environment }}-${{ steps.prepare-build.outputs.short }}.tar.gz.sha1"
+          docker save "package-health/php-cli:${{ steps.prepare-build.outputs.environment }}-${{ steps.prepare-build.outputs.short }}" | gzip > "php-cli-${{ steps.prepare-build.outputs.environment }}-${{ steps.prepare-build.outputs.short }}.tar.gz"
+          sha1sum "php-cli-${{ steps.prepare-build.outputs.environment }}-${{ steps.prepare-build.outputs.short }}.tar.gz" > "php-cli-${{ steps.prepare-build.outputs.environment }}-${{ steps.prepare-build.outputs.short }}.tar.gz.sha1"
+
+      - name: Create Release
+        uses: softprops/action-gh-release@1e07f4398721186383de40550babbdf2b84acfc5
+        with:
+          name: "php.package.health ${{ steps.prepare-build.outputs.environment }}-${{ steps.prepare-build.outputs.short }}"
+          tag_name: "${{ steps.prepare-build.outputs.environment }}@${{ steps.prepare-build.outputs.short }}"
+          target_commitish: ${{ github.sha }}
+          files: |
+            nginx-${{ steps.prepare-build.outputs.environment }}-${{ steps.prepare-build.outputs.short }}.tar.gz
+            nginx-${{ steps.prepare-build.outputs.environment }}-${{ steps.prepare-build.outputs.short }}.tar.gz.sha1
+            php-fpm-${{ steps.prepare-build.outputs.environment }}-${{ steps.prepare-build.outputs.short }}.tar.gz
+            php-fpm-${{ steps.prepare-build.outputs.environment }}-${{ steps.prepare-build.outputs.short }}.tar.gz.sha1
+            php-cli-${{ steps.prepare-build.outputs.environment }}-${{ steps.prepare-build.outputs.short }}.tar.gz
+            php-cli-${{ steps.prepare-build.outputs.environment }}-${{ steps.prepare-build.outputs.short }}.tar.gz.sha1
+
+      # Temp fix
+      # https://github.com/docker/build-push-action/issues/252
+      # https://github.com/moby/buildkit/issues/1896
+      - name: Move cache
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
