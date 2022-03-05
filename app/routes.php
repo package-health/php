@@ -7,6 +7,7 @@ use App\Application\Actions\Package\RedirectPackageAction;
 use App\Application\Actions\Package\RedirectPackageBadgeAction;
 use App\Application\Actions\Package\ViewPackageAction;
 use App\Application\Actions\Package\ViewPackageBadgeAction;
+use App\Application\Actions\Maintenance\HealthAction;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Slim\App;
@@ -20,6 +21,8 @@ return function (App $app): void {
 
   $app->get('/', ListPackagesAction::class)
     ->setName('listPackages');
+
+  $app->get('/health', HealthAction::class);
 
   $app->group('/packages', function (Group $group) {
     $group
