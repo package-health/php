@@ -29,7 +29,10 @@ if (is_file(__DIR__ . '/../.env')) {
 $containerBuilder = new ContainerBuilder();
 
 if (isset($_ENV['PHP_ENV']) && $_ENV['PHP_ENV'] === 'production') {
-  $containerBuilder->enableCompilation(__DIR__ . '/../var/cache');
+  // workaround for https://github.com/PHP-DI/PHP-DI/issues/791
+  if (version_compare(PHP_VERSION, '8.1.0', '<')) {
+    $containerBuilder->enableCompilation(__DIR__ . '/../var/cache');
+  }
 }
 
 // Set up settings
