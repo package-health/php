@@ -22,7 +22,7 @@
         <tr>
           <td><a href="{{ url_for('redirectPackage', {vendor: package.vendor, project: package.project}) }}">{{ package.name }}</a></td>
           <td class="has-text-grey">{{ package.description }}</td>
-          <td class="has-text-right"><img src="{{ url_for('redirectPackageBadge', {vendor: package.vendor, project: package.project}) }}"></td>
+          <td class="has-text-right"><img src="{{ url_for('redirectPackageBadge', {vendor: package.vendor, project: package.project}) }}" alt="Dependency Badge"></td>
         </tr>
       {% endfor %}
     </tbody>

@@ -124,7 +124,7 @@ final class GetDataCommand extends Command {
         file_put_contents($dataPath, (string)$response->getBody());
       }
 
-      $json = json_decode(file_get_contents($dataPath), true);
+      $json = json_decode(file_get_contents($dataPath), true, 512, JSON_THROW_ON_ERROR);
 
       $package = $this->packageRepository->get($packageName);
       $package = $package
@@ -232,7 +232,7 @@ final class GetDataCommand extends Command {
         // track "require" dependencies
         $filteredRequire = array_filter(
           $release['require'] ?? [],
-          function (string $key): bool {
+          static function (string $key): bool {
             return preg_match('/^(php|hhvm|ext-.*|lib-.*|pear-.*)$/', $key) !== 1 &&
               preg_match('/^[^\/]+\/[^\/]+$/', $key) === 1;
           },
@@ -313,7 +313,7 @@ final class GetDataCommand extends Command {
         // track "require-dev" dependencies
         $filteredRequireDev = array_filter(
           $release['require-dev'] ?? [],
-          function (string $key): bool {
+          static function (string $key): bool {
             return preg_match('/^(php|hhvm|ext-.*|lib-.*|pear-.*)$/', $key) !== 1 &&
               preg_match('/^[^\/]+\/[^\/]+$/', $key) === 1;
           },

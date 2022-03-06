@@ -10,7 +10,7 @@ use DateTimeImmutable;
 use DateTimeInterface;
 use PDO;
 
-final class SqlStatsRepository implements StatsRepositoryInterface {
+final class PdoStatsRepository implements StatsRepositoryInterface {
   private PDO $pdo;
 
   private function hydrate(array $data): Stats {
@@ -69,11 +69,13 @@ final class SqlStatsRepository implements StatsRepositoryInterface {
   public function all(): array {
     static $stmt = null;
     if ($stmt === null) {
-      $stmt = $this->pdo->query(<<<SQL
-        SELECT *
-        FROM "stats"
-        ORDER BY "created_at"
-      SQL);
+      $stmt = $this->pdo->query(
+        <<<SQL
+          SELECT *
+          FROM "stats"
+          ORDER BY "created_at"
+        SQL
+      );
     }
 
     $arr = [];
@@ -90,12 +92,14 @@ final class SqlStatsRepository implements StatsRepositoryInterface {
   public function exists(string $packageName): bool {
     static $stmt = null;
     if ($stmt === null) {
-      $stmt = $this->pdo->prepare(<<<SQL
-        SELECT *
-        FROM "stats"
-        WHERE "package_name" = :package_name
-        LIMIT 1
-      SQL);
+      $stmt = $this->pdo->prepare(
+        <<<SQL
+          SELECT *
+          FROM "stats"
+          WHERE "package_name" = :package_name
+          LIMIT 1
+        SQL
+      );
     }
 
     $stmt->execute(['package_name' => $packageName]);
@@ -109,11 +113,13 @@ final class SqlStatsRepository implements StatsRepositoryInterface {
   public function get(string $packageName): Stats {
     static $stmt = null;
     if ($stmt === null) {
-      $stmt = $this->pdo->prepare(<<<SQL
-        SELECT *
-        FROM "stats"
-        WHERE "package_name" = :package_name
-      SQL);
+      $stmt = $this->pdo->prepare(
+        <<<SQL
+          SELECT *
+          FROM "stats"
+          WHERE "package_name" = :package_name
+        SQL
+      );
     }
 
     $stmt->execute(['package_name' => $packageName]);
@@ -140,11 +146,13 @@ final class SqlStatsRepository implements StatsRepositoryInterface {
 
     $where = implode(' AND ', $where);
 
-    $stmt = $this->pdo->prepare(<<<SQL
-      SELECT *
-      FROM "stats"
-      WHERE ${where}
-    SQL);
+    $stmt = $this->pdo->prepare(
+      <<<SQL
+        SELECT *
+        FROM "stats"
+        WHERE ${where}
+      SQL
+    );
 
     $stmt->execute($query);
 
@@ -159,14 +167,16 @@ final class SqlStatsRepository implements StatsRepositoryInterface {
   public function save(Stats $stats): Stats {
     static $stmt = null;
     if ($stmt === null) {
-      $stmt = $this->pdo->prepare(<<<SQL
-        INSERT INTO "stats"
-        ("package_name", "github_stars", "github_watchers", "github_forks", "dependents", "suggesters", "favers",
-          "total_downloads", "monthly_downloads", "daily_downloads", "created_at")
-        VALUES
-        (:package_name, :github_stars, :github_watchers, :github_forks, :dependents, :suggesters, :favers,
-          :total_downloads, :monthly_downloads, :daily_downloads, :created_at)
-      SQL);
+      $stmt = $this->pdo->prepare(
+        <<<SQL
+          INSERT INTO "stats"
+          ("package_name", "github_stars", "github_watchers", "github_forks", "dependents", "suggesters", "favers",
+            "total_downloads", "monthly_downloads", "daily_downloads", "created_at")
+          VALUES
+          (:package_name, :github_stars, :github_watchers, :github_forks, :dependents, :suggesters, :favers,
+            :total_downloads, :monthly_downloads, :daily_downloads, :created_at)
+        SQL
+      );
     }
 
     $stmt->execute(
@@ -181,7 +191,7 @@ final class SqlStatsRepository implements StatsRepositoryInterface {
         'total_downloads'   => $stats->getTotalDownloads(),
         'monthly_downloads' => $stats->getMonthlyDownloads(),
         'daily_downloads'   => $stats->getDailyDownloads(),
-        'created_at'        => $stats->getCreatedAt()->format(DateTimeInterface::ISO8601)
+        'created_at'        => $stats->getCreatedAt()->format(DateTimeInterface::ATOM)
       ]
     );
 
@@ -191,21 +201,23 @@ final class SqlStatsRepository implements StatsRepositoryInterface {
   public function update(Stats $stats): Stats {
     static $stmt = null;
     if ($stmt === null) {
-      $stmt = $this->pdo->prepare(<<<SQL
-        UPDATE "stats"
-        SET
-          "github_stars" = :github_stars,
-          "github_watchers" = :github_watchers,
-          "github_forks" = :github_forks,
-          "dependents" = :dependents,
-          "suggesters" = :suggesters,
-          "favers" = :favers,
-          "total_downloads" = :total_downloads,
-          "monthly_downloads" = :monthly_downloads,
-          "daily_downloads" = :daily_downloads,
-          "updated_at" = :updated_at
-        WHERE "package_name" = :package_name
-      SQL);
+      $stmt = $this->pdo->prepare(
+        <<<SQL
+          UPDATE "stats"
+          SET
+            "github_stars" = :github_stars,
+            "github_watchers" = :github_watchers,
+            "github_forks" = :github_forks,
+            "dependents" = :dependents,
+            "suggesters" = :suggesters,
+            "favers" = :favers,
+            "total_downloads" = :total_downloads,
+            "monthly_downloads" = :monthly_downloads,
+            "daily_downloads" = :daily_downloads,
+            "updated_at" = :updated_at
+          WHERE "package_name" = :package_name
+        SQL
+      );
     }
 
     if ($stats->isDirty()) {
@@ -221,7 +233,7 @@ final class SqlStatsRepository implements StatsRepositoryInterface {
           'total_downloads'   => $stats->getTotalDownloads(),
           'monthly_downloads' => $stats->getMonthlyDownloads(),
           'daily_downloads'   => $stats->getDailyDownloads(),
-          'updated_at'        => $stats->getUpdatedAt()->format(DateTimeInterface::ISO8601)
+          'updated_at'        => $stats->getUpdatedAt()?->format(DateTimeInterface::ATOM)
         ]
       );
 

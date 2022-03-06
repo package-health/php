@@ -16,11 +16,11 @@ enum DependencyStatusEnum: string {
 
   public function getColor(): string {
     return match ($this) {
-      DependencyStatusEnum::Unknown       => '',
-      DependencyStatusEnum::Outdated      => 'is-warning',
-      DependencyStatusEnum::Insecure      => 'is-danger',
-      DependencyStatusEnum::MaybeInsecure => 'is-success',
-      DependencyStatusEnum::UpToDate      => 'is-success'
+      self::Unknown       => '',
+      self::Outdated      => 'is-warning',
+      self::Insecure      => 'is-danger',
+      self::MaybeInsecure => 'is-success',
+      self::UpToDate      => 'is-success'
     };
   }
 }

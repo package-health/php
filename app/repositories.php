@@ -5,17 +5,18 @@ use App\Domain\Dependency\DependencyRepositoryInterface;
 use App\Domain\Package\PackageRepositoryInterface;
 use App\Domain\Stats\StatsRepositoryInterface;
 use App\Domain\Version\VersionRepositoryInterface;
-use App\Infrastructure\Persistence\Dependency\SqlDependencyRepository;
-use App\Infrastructure\Persistence\Package\SqlPackageRepository;
-use App\Infrastructure\Persistence\Stats\SqlStatsRepository;
-use App\Infrastructure\Persistence\Version\SqlVersionRepository;
+use App\Infrastructure\Persistence\Dependency\PdoDependencyRepository;
+use App\Infrastructure\Persistence\Package\PdoPackageRepository;
+use App\Infrastructure\Persistence\Stats\PdoStatsRepository;
+use App\Infrastructure\Persistence\Version\PdoVersionRepository;
 use DI\ContainerBuilder;
+use function DI\autowire;
 
-return function (ContainerBuilder $containerBuilder): void {
+return static function (ContainerBuilder $containerBuilder): void {
   $containerBuilder->addDefinitions([
-    DependencyRepositoryInterface::class => \DI\autowire(SqlDependencyRepository::class),
-    PackageRepositoryInterface::class    => \DI\autowire(SqlPackageRepository::class),
-    StatsRepositoryInterface::class      => \DI\autowire(SqlStatsRepository::class),
-    VersionRepositoryInterface::class    => \DI\autowire(SqlVersionRepository::class)
+    DependencyRepositoryInterface::class => autowire(PdoDependencyRepository::class),
+    PackageRepositoryInterface::class    => autowire(PdoPackageRepository::class),
+    StatsRepositoryInterface::class      => autowire(PdoStatsRepository::class),
+    VersionRepositoryInterface::class    => autowire(PdoVersionRepository::class)
   ]);
 };

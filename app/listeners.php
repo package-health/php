@@ -6,12 +6,13 @@ use App\Application\Listeners\PackageListener;
 use App\Application\Listeners\StatsListener;
 use App\Application\Listeners\VersionListener;
 use DI\ContainerBuilder;
+use function DI\autowire;
 
-return function (ContainerBuilder $containerBuilder): void {
+return static function (ContainerBuilder $containerBuilder): void {
   $containerBuilder->addDefinitions([
-    DependencyListener::class => \DI\autowire(DependencyListener::class),
-    PackageListener::class    => \DI\autowire(PackageListener::class),
-    StatsListener::class      => \DI\autowire(StatsListener::class),
-    VersionListener::class    => \DI\autowire(VersionListener::class)
+    DependencyListener::class => autowire(DependencyListener::class),
+    PackageListener::class    => autowire(PackageListener::class),
+    StatsListener::class      => autowire(StatsListener::class),
+    VersionListener::class    => autowire(VersionListener::class)
   ]);
 };

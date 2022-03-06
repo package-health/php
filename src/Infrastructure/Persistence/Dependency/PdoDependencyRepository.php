@@ -11,7 +11,7 @@ use DateTimeImmutable;
 use DateTimeInterface;
 use PDO;
 
-final class SqlDependencyRepository implements DependencyRepositoryInterface {
+final class PdoDependencyRepository implements DependencyRepositoryInterface {
   private PDO $pdo;
 
   private function hydrate(array $data): Dependency {
@@ -64,11 +64,13 @@ final class SqlDependencyRepository implements DependencyRepositoryInterface {
   public function get(int $id): Dependency {
     static $stmt = null;
     if ($stmt === null) {
-      $stmt = $this->pdo->prepare(<<<SQL
-        SELECT *
-        FROM "dependencies"
-        WHERE "id" = :id
-      SQL);
+      $stmt = $this->pdo->prepare(
+        <<<SQL
+          SELECT *
+          FROM "dependencies"
+          WHERE "id" = :id
+        SQL
+      );
     }
 
     $stmt->execute(['id' => $id]);
@@ -95,8 +97,7 @@ final class SqlDependencyRepository implements DependencyRepositoryInterface {
         '"development" IS %s',
         $query['development'] ? 'TRUE' : 'FALSE'
       );
-      unset($cols[$devPos]);
-      unset($query['development']);
+      unset($cols[$devPos], $query['development']);
     }
 
     foreach ($cols as $col) {
@@ -108,12 +109,14 @@ final class SqlDependencyRepository implements DependencyRepositoryInterface {
 
     $where = implode(' AND ', $where);
 
-    $stmt = $this->pdo->prepare(<<<SQL
-      SELECT *
-      FROM "dependencies"
-      WHERE ${where}
-      ORDER BY "name" ASC
-    SQL);
+    $stmt = $this->pdo->prepare(
+      <<<SQL
+        SELECT *
+        FROM "dependencies"
+        WHERE ${where}
+        ORDER BY "name" ASC
+      SQL
+    );
 
     $stmt->execute($query);
 
@@ -128,12 +131,14 @@ final class SqlDependencyRepository implements DependencyRepositoryInterface {
   public function save(Dependency $dependency): Dependency {
     static $stmt = null;
     if ($stmt === null) {
-      $stmt = $this->pdo->prepare(<<<SQL
-        INSERT INTO "dependencies"
-        ("version_id", "name", "constraint", "development", "status", "created_at")
-        VALUES
-        (:version_id, :name, :constraint, :development, :status, :created_at)
-      SQL);
+      $stmt = $this->pdo->prepare(
+        <<<SQL
+          INSERT INTO "dependencies"
+          ("version_id", "name", "constraint", "development", "status", "created_at")
+          VALUES
+          (:version_id, :name, :constraint, :development, :status, :created_at)
+        SQL
+      );
     }
 
     $stmt->execute(
@@ -143,7 +148,7 @@ final class SqlDependencyRepository implements DependencyRepositoryInterface {
         'constraint'  => $dependency->getConstraint(),
         'development' => $dependency->isDevelopment() ? 1 : 0,
         'status'      => $dependency->getStatus()->getLabel(),
-        'created_at'  => $dependency->getCreatedAt()->format(DateTimeInterface::ISO8601)
+        'created_at'  => $dependency->getCreatedAt()->format(DateTimeInterface::ATOM)
       ]
     );
 
@@ -161,15 +166,17 @@ final class SqlDependencyRepository implements DependencyRepositoryInterface {
   public function update(Dependency $dependency): Dependency {
     static $stmt = null;
     if ($stmt === null) {
-      $stmt = $this->pdo->prepare(<<<SQL
-        UPDATE "dependencies"
-        SET
-          "constraint" = :constraint,
-          "development" = :development,
-          "status" = :status,
-          "updated_at" = :updated_at
-        WHERE "id" = :id
-      SQL);
+      $stmt = $this->pdo->prepare(
+        <<<SQL
+          UPDATE "dependencies"
+          SET
+            "constraint" = :constraint,
+            "development" = :development,
+            "status" = :status,
+            "updated_at" = :updated_at
+          WHERE "id" = :id
+        SQL
+      );
     }
 
     if ($dependency->isDirty()) {
@@ -179,7 +186,7 @@ final class SqlDependencyRepository implements DependencyRepositoryInterface {
           'constraint'  => $dependency->getConstraint(),
           'development' => $dependency->isDevelopment() ? 1 : 0,
           'status'      => $dependency->getStatus()->getLabel(),
-          'updated_at'  => $dependency->getUpdatedAt()->format(DateTimeInterface::ISO8601)
+          'updated_at'  => $dependency->getUpdatedAt()?->format(DateTimeInterface::ATOM)
         ]
       );
 

@@ -7,7 +7,6 @@ use App\Domain\Dependency\Dependency;
 use App\Domain\Dependency\DependencyRepositoryInterface;
 use App\Domain\Dependency\DependencyStatusEnum;
 use App\Domain\Package\PackageRepositoryInterface;
-use App\Domain\Version\VersionNotFoundException;
 use App\Domain\Version\VersionRepositoryInterface;
 use App\Domain\Version\VersionStatusEnum;
 use Psr\Http\Message\ResponseInterface;
@@ -92,7 +91,7 @@ final class ViewPackageBadgeAction extends AbstractPackageAction {
         $outdated = count(
           array_filter(
             $reqDependencies,
-            function (Dependency $dependency): bool {
+            static function (Dependency $dependency): bool {
               return $dependency->getStatus() === DependencyStatusEnum::Outdated;
             }
           )

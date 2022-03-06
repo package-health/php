@@ -7,7 +7,7 @@ use Slim\Middleware\ContentLengthMiddleware;
 use Slim\Views\Twig;
 use Slim\Views\TwigMiddleware;
 
-return function (App $app): void {
+return static function (App $app): void {
   $container = $app->getContainer();
 
   $app->add(new ContentLengthMiddleware());

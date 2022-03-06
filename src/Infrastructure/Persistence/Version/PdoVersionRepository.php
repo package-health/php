@@ -11,7 +11,7 @@ use DateTimeImmutable;
 use DateTimeInterface;
 use PDO;
 
-final class SqlVersionRepository implements VersionRepositoryInterface {
+final class PdoVersionRepository implements VersionRepositoryInterface {
   private PDO $pdo;
 
   private function hydrate(array $data): Version {
@@ -64,11 +64,13 @@ final class SqlVersionRepository implements VersionRepositoryInterface {
   public function get(int $id): Version {
     static $stmt = null;
     if ($stmt === null) {
-      $stmt = $this->pdo->prepare(<<<SQL
-        SELECT *
-        FROM "versions"
-        WHERE "id" = :id
-      SQL);
+      $stmt = $this->pdo->prepare(
+        <<<SQL
+          SELECT *
+          FROM "versions"
+          WHERE "id" = :id
+        SQL
+      );
     }
 
     $stmt->execute(['id' => $id]);
@@ -95,8 +97,7 @@ final class SqlVersionRepository implements VersionRepositoryInterface {
         '"release" IS %s',
         $query['release'] ? 'TRUE' : 'FALSE'
       );
-      unset($cols[$devPos]);
-      unset($query['release']);
+      unset($cols[$devPos], $query['release']);
     }
 
     foreach ($cols as $col) {
@@ -108,11 +109,13 @@ final class SqlVersionRepository implements VersionRepositoryInterface {
 
     $where = implode(' AND ', $where);
 
-    $stmt = $this->pdo->prepare(<<<SQL
-      SELECT *
-      FROM "versions"
-      WHERE ${where}
-    SQL);
+    $stmt = $this->pdo->prepare(
+      <<<SQL
+        SELECT *
+        FROM "versions"
+        WHERE ${where}
+      SQL
+    );
 
     $stmt->execute($query);
 
@@ -127,12 +130,14 @@ final class SqlVersionRepository implements VersionRepositoryInterface {
   public function save(Version $version): Version {
     static $stmt = null;
     if ($stmt === null) {
-      $stmt = $this->pdo->prepare(<<<SQL
-        INSERT INTO "versions"
-        ("number", "normalized", "package_name", "release", "status", "created_at")
-        VALUES
-        (:number, :normalized, :package_name, :release, :status, :created_at)
-      SQL);
+      $stmt = $this->pdo->prepare(
+        <<<SQL
+          INSERT INTO "versions"
+          ("number", "normalized", "package_name", "release", "status", "created_at")
+          VALUES
+          (:number, :normalized, :package_name, :release, :status, :created_at)
+        SQL
+      );
     }
 
     $stmt->execute(
@@ -142,7 +147,7 @@ final class SqlVersionRepository implements VersionRepositoryInterface {
         'package_name' => $version->getPackageName(),
         'release'      => $version->isRelease() ? 1 : 0,
         'status'       => $version->getStatus()->getLabel(),
-        'created_at'   => $version->getCreatedAt()->format(DateTimeInterface::ISO8601)
+        'created_at'   => $version->getCreatedAt()->format(DateTimeInterface::ATOM)
       ]
     );
 
@@ -160,17 +165,19 @@ final class SqlVersionRepository implements VersionRepositoryInterface {
   public function update(Version $version): Version {
     static $stmt = null;
     if ($stmt === null) {
-      $stmt = $this->pdo->prepare(<<<SQL
-        UPDATE "versions"
-        SET
-          "number" = :number,
-          "normalized" = :normalized,
-          "package_name" = :package_name,
-          "release" = :release,
-          "status" = :status,
-          "updated_at" = :updated_at
-        WHERE "id" = :id
-      SQL);
+      $stmt = $this->pdo->prepare(
+        <<<SQL
+          UPDATE "versions"
+          SET
+            "number" = :number,
+            "normalized" = :normalized,
+            "package_name" = :package_name,
+            "release" = :release,
+            "status" = :status,
+            "updated_at" = :updated_at
+          WHERE "id" = :id
+        SQL
+      );
     }
 
     if ($version->isDirty()) {
@@ -182,7 +189,7 @@ final class SqlVersionRepository implements VersionRepositoryInterface {
           'package_name' => $version->getPackageName(),
           'release'      => $version->isRelease() ? 1 : 0,
           'status'       => $version->getStatus()->getLabel(),
-          'updated_at'   => $version->getUpdatedAt()->format(DateTimeInterface::ISO8601)
+          'updated_at'   => $version->getUpdatedAt()?->format(DateTimeInterface::ATOM)
         ]
       );
 

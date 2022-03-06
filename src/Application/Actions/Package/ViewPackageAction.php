@@ -145,7 +145,7 @@ final class ViewPackageAction extends AbstractPackageAction {
         ', ',
         array_filter(
           array_map(
-            function (string $key, int $value): string {
+            static function (string $key, int $value): string {
               return match (DependencyStatusEnum::tryFrom($key)) {
                 DependencyStatusEnum::Unknown => "${value} unknown",
                 DependencyStatusEnum::Outdated => "${value} outdated",
@@ -198,7 +198,7 @@ final class ViewPackageAction extends AbstractPackageAction {
         ', ',
         array_filter(
           array_map(
-            function (string $key, int $value): string {
+            static function (string $key, int $value): string {
               return match (DependencyStatusEnum::tryFrom($key)) {
                 DependencyStatusEnum::Unknown => "${value} unknown",
                 DependencyStatusEnum::Outdated => "${value} outdated",

@@ -16,15 +16,15 @@ enum VcsBrandEnum: string {
     return $this->value;
   }
 
-  public static function fromUrl(string $url): static {
+  public static function fromUrl(string $url): self {
     return match (true) {
-      preg_match('/^https:\/\/bitbucket\.com\//', $url) => static::Bitbucket,
-      preg_match('/^https:\/\/gitea\.com\//', $url) => static::Gitea,
-      preg_match('/^https:\/\/github\.com\//', $url) => static::Github,
-      preg_match('/^https:\/\/gitlab\.com\//', $url) => static::Gitlab,
-      preg_match('/^https:\/\/gitpod\.io\//', $url) => static::Gitpod,
-      preg_match('/^https:\/\/sourceforge\.com\//', $url) => static::SourceForge,
-      default => static::Unknown
+      preg_match('/^https:\/\/bitbucket\.com\//', $url) => self::Bitbucket,
+      preg_match('/^https:\/\/gitea\.com\//', $url) => self::Gitea,
+      preg_match('/^https:\/\/github\.com\//', $url) => self::Github,
+      preg_match('/^https:\/\/gitlab\.com\//', $url) => self::Gitlab,
+      preg_match('/^https:\/\/gitpod\.io\//', $url) => self::Gitpod,
+      preg_match('/^https:\/\/sourceforge\.com\//', $url) => self::SourceForge,
+      default => self::Unknown
     };
   }
 }

@@ -17,12 +17,12 @@ enum VersionStatusEnum: string {
 
   public function getColor(): string {
     return match ($this) {
-      VersionStatusEnum::Unknown       => '',
-      VersionStatusEnum::Outdated      => 'is-warning',
-      VersionStatusEnum::Insecure      => 'is-danger',
-      VersionStatusEnum::MaybeInsecure => 'is-success',
-      VersionStatusEnum::UpToDate      => 'is-success',
-      VersionStatusEnum::NoDeps        => 'is-info'
+      self::Unknown       => '',
+      self::Outdated      => 'is-warning',
+      self::Insecure      => 'is-danger',
+      self::MaybeInsecure => 'is-success',
+      self::UpToDate      => 'is-success',
+      self::NoDeps        => 'is-info'
     };
   }
 }

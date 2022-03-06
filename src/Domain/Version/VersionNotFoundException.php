@@ -6,5 +6,8 @@ namespace App\Domain\Version;
 use App\Domain\Exception\DomainRecordNotFoundException;
 
 class VersionNotFoundException extends DomainRecordNotFoundException {
+  /**
+   * @var string
+   */
   protected $message = 'Version not found';
 }

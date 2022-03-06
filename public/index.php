@@ -21,7 +21,7 @@ $containerBuilder = new ContainerBuilder();
 
 if (isset($_ENV['PHP_ENV']) && $_ENV['PHP_ENV'] === 'production') {
   // workaround for https://github.com/PHP-DI/PHP-DI/issues/791
-  if (version_compare(PHP_VERSION, '8.1.0', '<')) {
+  if (PHP_VERSION_ID < 80100) {
     $containerBuilder->enableCompilation(__DIR__ . '/../var/cache');
   }
 }

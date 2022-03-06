@@ -3,7 +3,7 @@ declare(strict_types = 1);
 
 namespace App\Application\Actions;
 
-use App\Domain\DomainException\DomainRecordNotFoundException;
+use App\Domain\Exception\DomainRecordNotFoundException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
@@ -31,7 +31,11 @@ abstract class AbstractAction {
    * @throws \Slim\Exception\HttpNotFoundException
    * @throws \Slim\Exception\HttpBadRequestException
    */
-  public function __invoke(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface {
+  public function __invoke(
+    ServerRequestInterface $request,
+    ResponseInterface $response,
+    array $args
+  ): ResponseInterface {
     $this->request  = $request;
     $this->response = $response;
     $this->args     = $args;
@@ -63,7 +67,7 @@ abstract class AbstractAction {
    */
   protected function resolveArg(string $name) {
     if (!isset($this->args[$name])) {
-      throw new HttpBadRequestException($this->request, "Could not resolve argument '{$name}'.");
+      throw new HttpBadRequestException($this->request, "Could not resolve argument '${name}'.");
     }
 
     return $this->args[$name];
@@ -82,7 +86,7 @@ abstract class AbstractAction {
   }
 
   protected function respondWithJson(array $content, int $statusCode = 200): ResponseInterface {
-    return $this->respondWith('application/json', json_encode($content), $statusCode);
+    return $this->respondWith('application/json', json_encode($content, JSON_THROW_ON_ERROR), $statusCode);
   }
 
   protected function respondWithRedirect(string $url, int $statusCode = 302): ResponseInterface {
@@ -94,14 +98,14 @@ abstract class AbstractAction {
   /**
    * @param array|object|null $data
    */
-  protected function respondWithData($data = null, int $statusCode = 200): ResponseInterface {
+  protected function respondWithData(mixed $data = null, int $statusCode = 200): ResponseInterface {
     $payload = new ActionPayload($statusCode, $data);
 
     return $this->respond($payload);
   }
 
   protected function respond(ActionPayload $payload): ResponseInterface {
-    $json = json_encode($payload, JSON_PRETTY_PRINT);
+    $json = json_encode($payload, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT);
     $this->response->getBody()->write($json);
 
     return $this->response

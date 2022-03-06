@@ -6,7 +6,7 @@ use App\Application\Settings\SettingsInterface;
 use DI\ContainerBuilder;
 use Monolog\Logger;
 
-return function (ContainerBuilder $containerBuilder): void {
+return static function (ContainerBuilder $containerBuilder): void {
   // Global Settings Object
   $containerBuilder->addDefinitions([
     SettingsInterface::class => function () {

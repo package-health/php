@@ -3,7 +3,6 @@ declare(strict_types = 1);
 
 namespace App\Application\Actions\Package;
 
-use App\Domain\Package\Package;
 use Psr\Http\Message\ResponseInterface;
 use Slim\Routing\RouteContext;
 

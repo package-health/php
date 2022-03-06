@@ -14,7 +14,6 @@ use App\Application\Console\Package\GetDataCommand;
 use App\Application\Console\Package\GetListCommand;
 use App\Application\Console\Package\GetUpdatesCommand;
 use App\Application\Console\Package\MassImportCommand;
-use App\Application\Settings\SettingsInterface;
 use DI\ContainerBuilder;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\CommandLoader\FactoryCommandLoader;
@@ -30,7 +29,7 @@ $containerBuilder = new ContainerBuilder();
 
 if (isset($_ENV['PHP_ENV']) && $_ENV['PHP_ENV'] === 'production') {
   // workaround for https://github.com/PHP-DI/PHP-DI/issues/791
-  if (version_compare(PHP_VERSION, '8.1.0', '<')) {
+  if (PHP_VERSION_ID < 80100) {
     $containerBuilder->enableCompilation(__DIR__ . '/../var/cache');
   }
 }
@@ -47,9 +46,9 @@ $dependencies($containerBuilder);
 $repositories = require __DIR__ . '/../app/repositories.php';
 $repositories($containerBuilder);
 
-// Set up commands
-$commands = require __DIR__ . '/../app/commands.php';
-$commands($containerBuilder);
+// Set up console commands
+$console = require __DIR__ . '/../app/console.php';
+$console($containerBuilder);
 
 // Set up listeners
 $listeners = require __DIR__ . '/../app/listeners.php';
@@ -66,16 +65,16 @@ $app = new Application('php.package.health console');
 
 $commandLoader = new FactoryCommandLoader(
   [
-    GetDataCommand::getDefaultName() => function () use ($container): GetDataCommand {
+    GetDataCommand::getDefaultName() => static function () use ($container): GetDataCommand {
       return $container->get(GetDataCommand::class);
     },
-    GetListCommand::getDefaultName() => function () use ($container): GetListCommand {
+    GetListCommand::getDefaultName() => static function () use ($container): GetListCommand {
       return $container->get(GetListCommand::class);
     },
-    GetUpdatesCommand::getDefaultName() => function () use ($container): GetUpdatesCommand {
+    GetUpdatesCommand::getDefaultName() => static function () use ($container): GetUpdatesCommand {
       return $container->get(GetUpdatesCommand::class);
     },
-    MassImportCommand::getDefaultName() => function () use ($container): MassImportCommand {
+    MassImportCommand::getDefaultName() => static function () use ($container): MassImportCommand {
       return $container->get(MassImportCommand::class);
     }
   ]

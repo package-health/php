@@ -12,7 +12,7 @@ use App\Domain\Version\Version;
 use Evenement\EventEmitter;
 use Psr\Container\ContainerInterface;
 
-return function (ContainerInterface $container): void {
+return static function (ContainerInterface $container): void {
   $eventEmitter = $container->get(EventEmitter::class);
 
   /* DEPENDENCY EVENTS */

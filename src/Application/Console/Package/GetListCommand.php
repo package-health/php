@@ -11,7 +11,6 @@ use Exception;
 use InvalidArgumentException;
 use RuntimeException;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -102,7 +101,7 @@ final class GetListCommand extends Command {
         file_put_contents($dataPath, (string)$response->getBody());
       }
 
-      $json = json_decode(file_get_contents($dataPath), true);
+      $json = json_decode(file_get_contents($dataPath), true, 512, JSON_THROW_ON_ERROR);
 
       $listCount = count($json['packageNames']);
 
@@ -115,7 +114,7 @@ final class GetListCommand extends Command {
       );
 
       $packages = array_map(
-        function (Package $package): string {
+        static function (Package $package): string {
           return $package->getName();
         },
         $this->packageRepository->all()

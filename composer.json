@@ -30,7 +30,9 @@
   "minimum-stability": "dev",
   "prefer-stable": true,
   "require": {
-    "php": ">=8.0",
+    "php": ">=8.1",
+    "ext-pdo": "*",
+    "ext-posix": "*",
     "badges/poser": "^2.3",
     "composer/metadata-minifier": "^1.0",
     "composer/semver": "^3.2",

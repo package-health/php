@@ -19,8 +19,9 @@ use PUGX\Poser\Render\SvgFlatSquareRender;
 use PUGX\Poser\Render\SvgPlasticRender;
 use Slim\HttpCache\CacheProvider;
 use Slim\Views\Twig;
+use function DI\autowire;
 
-return function (ContainerBuilder $containerBuilder): void {
+return static function (ContainerBuilder $containerBuilder): void {
   $containerBuilder->addDefinitions(
     [
       Browser::class => function (ContainerInterface $container): Browser {
@@ -29,8 +30,8 @@ return function (ContainerBuilder $containerBuilder): void {
           new Psr17Factory()
         );
       },
-      CacheProvider::class => \DI\autowire(CacheProvider::class),
-      EventEmitter::class => \DI\autowire(EventEmitter::class),
+      CacheProvider::class => autowire(CacheProvider::class),
+      EventEmitter::class => autowire(EventEmitter::class),
       LoggerInterface::class => function (ContainerInterface $container): LoggerInterface {
         $settings = $container->get(SettingsInterface::class);
 
@@ -74,10 +75,10 @@ return function (ContainerBuilder $containerBuilder): void {
           ]
         );
       },
-      SvgFlatRender::class => \DI\autowire(SvgFlatRender::class),
-      SvgFlatSquareRender::class => \DI\autowire(SvgFlatSquareRender::class),
-      SvgPlasticRender::class => \DI\autowire(SvgPlasticRender::class),
-      VersionParser::class => \DI\autowire(VersionParser::class),
+      SvgFlatRender::class => autowire(SvgFlatRender::class),
+      SvgFlatSquareRender::class => autowire(SvgFlatSquareRender::class),
+      SvgPlasticRender::class => autowire(SvgPlasticRender::class),
+      VersionParser::class => autowire(VersionParser::class),
       Twig::class => function (ContainerInterface $container): Twig {
         $settings = $container->get(SettingsInterface::class);
         $cache = false;

@@ -1,8 +1,8 @@
 # Docker
 
-This project relies in the following 3 application images:
+This project relies on the following 3 application images:
 
-* [php.package.health/nginx](docker/nginx.Dockerfile): Serves static assets (css, fonts etc) and routes dynamic traffic to php-fpm;
+* [php.package.health/nginx](docker/nginx.Dockerfile): Serves static assets (css, fonts etc.) and routes dynamic traffic to php-fpm;
 * [php.package.health/php-fpm](docker/php.Dockerfile): Serves dynamic traffic based in the application code;
 * [php.package.health/php-cli](docker/php.Dockerfile): Used to perform maintenance tasks, such as database migration.
 
@@ -18,7 +18,7 @@ docker build --file docker/php.Dockerfile --target cli --tag php.package.health/
 
 ## Creating a network
 
-The network will be shared by the containers so they can communicate without exposing ports to the host machine.
+The network will be shared by the containers, so they can communicate without exposing ports to the host machine.
 
 ```bash
 docker network create php-package-health-network

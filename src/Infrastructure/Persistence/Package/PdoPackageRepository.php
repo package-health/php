@@ -10,7 +10,7 @@ use DateTimeImmutable;
 use DateTimeInterface;
 use PDO;
 
-final class SqlPackageRepository implements PackageRepositoryInterface {
+final class PdoPackageRepository implements PackageRepositoryInterface {
   private PDO $pdo;
 
   private function hydrate(array $data): Package {
@@ -46,11 +46,13 @@ final class SqlPackageRepository implements PackageRepositoryInterface {
   public function all(): array {
     static $stmt = null;
     if ($stmt === null) {
-      $stmt = $this->pdo->query(<<<SQL
-        SELECT *
-        FROM "packages"
-        ORDER BY "created_at"
-      SQL);
+      $stmt = $this->pdo->query(
+        <<<SQL
+          SELECT *
+          FROM "packages"
+          ORDER BY "created_at"
+        SQL
+      );
     }
 
     $arr = [];
@@ -67,13 +69,15 @@ final class SqlPackageRepository implements PackageRepositoryInterface {
   public function findPopular(): array {
     static $stmt = null;
     if ($stmt === null) {
-      $stmt = $this->pdo->query(<<<SQL
-        SELECT "packages".*
-        FROM "packages"
-        LEFT JOIN "stats" ON ("stats"."package_name" = "packages"."name")
-        ORDER BY "stats"."daily_downloads" DESC, "packages"."created_at" ASC
-        LIMIT 10
-      SQL);
+      $stmt = $this->pdo->query(
+        <<<SQL
+          SELECT "packages".*
+          FROM "packages"
+          LEFT JOIN "stats" ON ("stats"."package_name" = "packages"."name")
+          ORDER BY "stats"."daily_downloads" DESC, "packages"."created_at" ASC
+          LIMIT 10
+        SQL
+      );
     }
 
     $arr = [];
@@ -90,11 +94,13 @@ final class SqlPackageRepository implements PackageRepositoryInterface {
   public function exists(string $name): bool {
     static $stmt = null;
     if ($stmt === null) {
-      $stmt = $this->pdo->prepare(<<<SQL
-        SELECT *
-        FROM "packages"
-        WHERE "name" = :name
-      SQL);
+      $stmt = $this->pdo->prepare(
+        <<<SQL
+          SELECT *
+          FROM "packages"
+          WHERE "name" = :name
+        SQL
+      );
     }
 
     $stmt->execute(['name' => $name]);
@@ -108,11 +114,13 @@ final class SqlPackageRepository implements PackageRepositoryInterface {
   public function get(string $name): Package {
     static $stmt = null;
     if ($stmt === null) {
-      $stmt = $this->pdo->prepare(<<<SQL
-        SELECT *
-        FROM "packages"
-        WHERE "name" = :name
-      SQL);
+      $stmt = $this->pdo->prepare(
+        <<<SQL
+          SELECT *
+          FROM "packages"
+          WHERE "name" = :name
+        SQL
+      );
     }
 
     $stmt->execute(['name' => $name]);
@@ -139,12 +147,14 @@ final class SqlPackageRepository implements PackageRepositoryInterface {
 
     $where = implode(' AND ', $where);
 
-    $stmt = $this->pdo->prepare(<<<SQL
-      SELECT *
-      FROM "packages"
-      WHERE ${where}
-      ORDER BY "name" ASC
-    SQL);
+    $stmt = $this->pdo->prepare(
+      <<<SQL
+        SELECT *
+        FROM "packages"
+        WHERE ${where}
+        ORDER BY "name" ASC
+      SQL
+    );
 
     $stmt->execute($query);
 
@@ -167,12 +177,14 @@ final class SqlPackageRepository implements PackageRepositoryInterface {
 
     $where = implode(' AND ', $where);
 
-    $stmt = $this->pdo->prepare(<<<SQL
-      SELECT *
-      FROM "packages"
-      WHERE ${where}
-      ORDER BY "name" ASC
-    SQL);
+    $stmt = $this->pdo->prepare(
+      <<<SQL
+        SELECT *
+        FROM "packages"
+        WHERE ${where}
+        ORDER BY "name" ASC
+      SQL
+    );
 
     $stmt->execute($query);
 
@@ -187,12 +199,14 @@ final class SqlPackageRepository implements PackageRepositoryInterface {
   public function save(Package $package): Package {
     static $stmt = null;
     if ($stmt === null) {
-      $stmt = $this->pdo->prepare(<<<SQL
-        INSERT INTO "packages"
-        ("name", "description", "latest_version", "url", "created_at")
-        VALUES
-        (:name, :description, :latest_version, :url, :created_at)
-      SQL);
+      $stmt = $this->pdo->prepare(
+        <<<SQL
+          INSERT INTO "packages"
+          ("name", "description", "latest_version", "url", "created_at")
+          VALUES
+          (:name, :description, :latest_version, :url, :created_at)
+        SQL
+      );
     }
 
     $stmt->execute(
@@ -201,7 +215,7 @@ final class SqlPackageRepository implements PackageRepositoryInterface {
         'description'    => $package->getDescription(),
         'latest_version' => $package->getLatestVersion(),
         'url'            => $package->getUrl(),
-        'created_at'     => $package->getCreatedAt()->format(DateTimeInterface::ISO8601)
+        'created_at'     => $package->getCreatedAt()->format(DateTimeInterface::ATOM)
       ]
     );
 
@@ -211,15 +225,17 @@ final class SqlPackageRepository implements PackageRepositoryInterface {
   public function update(Package $package): Package {
     static $stmt = null;
     if ($stmt === null) {
-      $stmt = $this->pdo->prepare(<<<SQL
-        UPDATE "packages"
-        SET
-          "description" = :description,
-          "latest_version" = :latest_version,
-          "url" = :url,
-          "updated_at" = :updated_at
-        WHERE "name" = :name
-      SQL);
+      $stmt = $this->pdo->prepare(
+        <<<SQL
+          UPDATE "packages"
+          SET
+            "description" = :description,
+            "latest_version" = :latest_version,
+            "url" = :url,
+            "updated_at" = :updated_at
+          WHERE "name" = :name
+        SQL
+      );
     }
 
     if ($package->isDirty()) {
@@ -229,7 +245,7 @@ final class SqlPackageRepository implements PackageRepositoryInterface {
           'description'    => $package->getDescription(),
           'latest_version' => $package->getLatestVersion(),
           'url'            => $package->getUrl(),
-          'updated_at'     => $package->getUpdatedAt()->format(DateTimeInterface::ISO8601)
+          'updated_at'     => $package->getUpdatedAt()?->format(DateTimeInterface::ATOM)
         ]
       );
 

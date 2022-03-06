@@ -1,19 +1,19 @@
 <?php
 declare(strict_types = 1);
 
+use App\Application\Actions\Maintenance\HealthAction;
 use App\Application\Actions\Package\ListPackagesAction;
 use App\Application\Actions\Package\RedirectListPackagesAction;
 use App\Application\Actions\Package\RedirectPackageAction;
 use App\Application\Actions\Package\RedirectPackageBadgeAction;
 use App\Application\Actions\Package\ViewPackageAction;
 use App\Application\Actions\Package\ViewPackageBadgeAction;
-use App\Application\Actions\Maintenance\HealthAction;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Slim\App;
 use Slim\Interfaces\RouteCollectorProxyInterface as Group;
 
-return function (App $app): void {
+return static function (App $app): void {
   $app->options('/{routes:.*}', function (ServerRequestInterface $request, ResponseInterface $response) {
     // CORS Pre-Flight OPTIONS Request Handler
     return $response;
