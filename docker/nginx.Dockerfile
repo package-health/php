@@ -6,6 +6,7 @@ ENV TZ=:/etc/localtime
 # nginx settings
 COPY docker/nginx/nginx.conf /etc/nginx/nginx.conf
 COPY docker/nginx/default.conf /etc/nginx/conf.d/default.conf
+COPY docker/nginx/upstream.conf.template /etc/nginx/templates/upstream.conf.template
 
 # static assets
 COPY public/css/ /usr/share/nginx/html/css/

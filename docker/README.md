@@ -6,17 +6,73 @@ This project relies on the following 3 application images:
 * [php.package.health/php-fpm](docker/php.Dockerfile): Serves dynamic traffic based in the application code;
 * [php.package.health/php-cli](docker/php.Dockerfile): Used to perform maintenance tasks, such as database migration.
 
-## Building the base images
+## Requirements
+
+Before running, the application images must be available in the docker daemon.
+
+### Download the base images
+
+Get the latest release links from [https://github.com/package-health/php/releases](https://github.com/package-health/php/releases).
+
+**NGINX**
+```bash
+wget https://github.com/package-health/php/releases/download/prod%40f0d3f68/nginx-prod-f0d3f68.tar.gz && \
+wget https://github.com/package-health/php/releases/download/prod%40f0d3f68/nginx-prod-f0d3f68.tar.gz.sha1 && \
+shasum -c nginx-prod-f0d3f68.tar.gz.sha1 && \
+docker load < nginx-prod-f0d3f68.tar.gz
+```
+
+**PHP-FPM**
+```bash
+wget https://github.com/package-health/php/releases/download/prod%40f0d3f68/php-fpm-prod-f0d3f68.tar.gz  && \
+wget https://github.com/package-health/php/releases/download/prod%40f0d3f68/php-fpm-prod-f0d3f68.tar.gz.sha1 && \
+shasum -c php-fpm-prod-f0d3f68.tar.gz.sha1 && \
+docker load < php-fpm-prod-f0d3f68.tar.gz
+```
+
+**PHP-CLI**
+```bash
+wget https://github.com/package-health/php/releases/download/prod%40f0d3f68/php-cli-prod-f0d3f68.tar.gz && \
+wget https://github.com/package-health/php/releases/download/prod%40f0d3f68/php-cli-prod-f0d3f68.tar.gz.sha1 && \
+shasum -c php-cli-prod-f0d3f68.tar.gz.sha1 && \
+docker load < php-cli-prod-f0d3f68.tar.gz
+```
+
+### Build the base images
 
 From the root directory of this repository:
 
+**NGINX**
 ```bash
 docker build --file docker/nginx.Dockerfile --tag php.package.health/nginx:latest .
+```
+
+**PHP-FPM**
+```bash
 docker build --file docker/php.Dockerfile --target fpm --tag php.package.health/php-fpm:latest .
+```
+
+**PHP-CLI**
+```bash
 docker build --file docker/php.Dockerfile --target cli --tag php.package.health/php-cli:latest .
 ```
 
-## Creating a network
+## Running
+
+### Configuration
+
+Copy `.env-dist` to `.env` and setup accordingly:
+
+```
+POSTGRES_USER=<database username>
+POSTGRES_PASSWORD=<database password>
+POSTGRES_DB=<database name>
+POSTGRES_HOST=pph-postgres
+PHP_ENV=development
+DOCKER=true
+```
+
+### Creating a network
 
 The network will be shared by the containers, so they can communicate without exposing ports to the host machine.
 
@@ -24,7 +80,7 @@ The network will be shared by the containers, so they can communicate without ex
 docker network create php-package-health-network
 ```
 
-## Starting the containers
+### Starting the containers
 
 Start the database container:
 
@@ -56,13 +112,14 @@ Start the NGINX container:
 docker run \
   --rm \
   --detach \
+  --env PHP_FPM=pph-php-fpm \
   --network php-package-health-network \
   --publish 8080:80/tcp \
   --name pph-nginx \
   php.package.health/nginx:latest
 ```
 
-## Database Migration
+### Database Migration
 
 Start the PHP-CLI container:
 
@@ -90,7 +147,7 @@ Run migrations:
 ../vendor/bin/phinx migrate --configuration ../phinx.php --environment "${PHP_ENV}"
 ```
 
-## Accessing the application
+### Accessing the application
 
 Open your browser and head to [http://localhost:8080/](http://localhost:8080/).
 

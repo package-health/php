@@ -17,7 +17,7 @@ Project Idea:
 
 ## Docker
 
-Documentation about running the project using Docker is available in [DOCKER.md](DOCKER.md).
+Documentation about running the project using Docker is available in [docker/README.md](docker/README.md).
 
 ## License
 

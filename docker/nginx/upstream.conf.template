@@ -1,0 +1,3 @@
+upstream php-fpm-upstream {
+  server ${PHP_FPM:-php-fpm}:9000;
+}
