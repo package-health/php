@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e3f365de16e617757dfe8df0d5c934a3",
+    "content-hash": "83f3ed10db6e38d22e7b9d5eb85b5024",
     "packages": [
         {
             "name": "badges/poser",
@@ -2391,25 +2391,25 @@
         },
         {
             "name": "symfony/deprecation-contracts",
-            "version": "v3.0.0",
+            "version": "v2.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/deprecation-contracts.git",
-                "reference": "c726b64c1ccfe2896cb7df2e1331c357ad1c8ced"
+                "reference": "6f981ee24cf69ee7ce9736146d1c57c2780598a8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/deprecation-contracts/zipball/c726b64c1ccfe2896cb7df2e1331c357ad1c8ced",
-                "reference": "c726b64c1ccfe2896cb7df2e1331c357ad1c8ced",
+                "url": "https://api.github.com/repos/symfony/deprecation-contracts/zipball/6f981ee24cf69ee7ce9736146d1c57c2780598a8",
+                "reference": "6f981ee24cf69ee7ce9736146d1c57c2780598a8",
                 "shasum": ""
             },
             "require": {
-                "php": ">=8.0.2"
+                "php": ">=7.1"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-main": "3.0-dev"
+                    "dev-main": "2.5-dev"
                 },
                 "thanks": {
                     "name": "symfony/contracts",
@@ -2438,7 +2438,7 @@
             "description": "A generic function and convention to trigger deprecation notices",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/deprecation-contracts/tree/v3.0.0"
+                "source": "https://github.com/symfony/deprecation-contracts/tree/v2.5.0"
             },
             "funding": [
                 {
@@ -2454,20 +2454,20 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-11-01T23:48:49+00:00"
+            "time": "2021-07-12T14:48:14+00:00"
         },
         {
             "name": "symfony/filesystem",
-            "version": "v6.0.5",
+            "version": "v6.0.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/filesystem.git",
-                "reference": "6646c13f787057d64701a3a0235cf9567c6ccbbd"
+                "reference": "52b888523545b0b4049ab9ce48766802484d7046"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/filesystem/zipball/6646c13f787057d64701a3a0235cf9567c6ccbbd",
-                "reference": "6646c13f787057d64701a3a0235cf9567c6ccbbd",
+                "url": "https://api.github.com/repos/symfony/filesystem/zipball/52b888523545b0b4049ab9ce48766802484d7046",
+                "reference": "52b888523545b0b4049ab9ce48766802484d7046",
                 "shasum": ""
             },
             "require": {
@@ -2501,7 +2501,7 @@
             "description": "Provides basic utilities for the filesystem",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/filesystem/tree/v6.0.5"
+                "source": "https://github.com/symfony/filesystem/tree/v6.0.6"
             },
             "funding": [
                 {
@@ -2517,7 +2517,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-02-28T07:42:30+00:00"
+            "time": "2022-03-02T12:58:14+00:00"
         },
         {
             "name": "symfony/options-resolver",
@@ -3161,21 +3161,22 @@
         },
         {
             "name": "symfony/service-contracts",
-            "version": "v2.4.1",
+            "version": "v2.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/service-contracts.git",
-                "reference": "d664541b99d6fb0247ec5ff32e87238582236204"
+                "reference": "1ab11b933cd6bc5464b08e81e2c5b07dec58b0fc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/service-contracts/zipball/d664541b99d6fb0247ec5ff32e87238582236204",
-                "reference": "d664541b99d6fb0247ec5ff32e87238582236204",
+                "url": "https://api.github.com/repos/symfony/service-contracts/zipball/1ab11b933cd6bc5464b08e81e2c5b07dec58b0fc",
+                "reference": "1ab11b933cd6bc5464b08e81e2c5b07dec58b0fc",
                 "shasum": ""
             },
             "require": {
                 "php": ">=7.2.5",
-                "psr/container": "^1.1"
+                "psr/container": "^1.1",
+                "symfony/deprecation-contracts": "^2.1"
             },
             "conflict": {
                 "ext-psr": "<1.1|>=2"
@@ -3186,7 +3187,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-main": "2.4-dev"
+                    "dev-main": "2.5-dev"
                 },
                 "thanks": {
                     "name": "symfony/contracts",
@@ -3223,7 +3224,7 @@
                 "standards"
             ],
             "support": {
-                "source": "https://github.com/symfony/service-contracts/tree/v2.4.1"
+                "source": "https://github.com/symfony/service-contracts/tree/v2.5.0"
             },
             "funding": [
                 {
@@ -3239,7 +3240,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-11-04T16:37:19+00:00"
+            "time": "2021-11-04T16:48:04+00:00"
         },
         {
             "name": "symfony/string",
@@ -4247,16 +4248,16 @@
         },
         {
             "name": "infection/infection",
-            "version": "0.26.5",
+            "version": "0.26.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/infection/infection.git",
-                "reference": "d6f07358cb40e0ccb0ea99247ae6b22120540f7f"
+                "reference": "de9b6b92f00ff1cb39decddf95797a4ebec3a1ee"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/infection/infection/zipball/d6f07358cb40e0ccb0ea99247ae6b22120540f7f",
-                "reference": "d6f07358cb40e0ccb0ea99247ae6b22120540f7f",
+                "url": "https://api.github.com/repos/infection/infection/zipball/de9b6b92f00ff1cb39decddf95797a4ebec3a1ee",
+                "reference": "de9b6b92f00ff1cb39decddf95797a4ebec3a1ee",
                 "shasum": ""
             },
             "require": {
@@ -4357,7 +4358,7 @@
             ],
             "support": {
                 "issues": "https://github.com/infection/infection/issues",
-                "source": "https://github.com/infection/infection/tree/0.26.5"
+                "source": "https://github.com/infection/infection/tree/0.26.6"
             },
             "funding": [
                 {
@@ -4369,7 +4370,7 @@
                     "type": "open_collective"
                 }
             ],
-            "time": "2022-02-15T05:20:07+00:00"
+            "time": "2022-03-07T11:40:30+00:00"
         },
         {
             "name": "justinrainbow/json-schema",
@@ -7982,7 +7983,9 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=8.0"
+        "php": ">=8.1",
+        "ext-pdo": "*",
+        "ext-posix": "*"
     },
     "platform-dev": [],
     "plugin-api-version": "2.2.0"
