@@ -3,6 +3,7 @@ composer.phar
 .idea/
 .vscode/
 /coverage/
+/run/
 /vendor/
 /logs/*
 !/logs/.gitkeep

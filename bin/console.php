@@ -10,14 +10,14 @@ chdir(dirname($argv[0]));
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use App\Application\Console\Package\GetDataCommand;
-use App\Application\Console\Package\GetListCommand;
-use App\Application\Console\Package\GetUpdatesCommand;
-use App\Application\Console\Package\MassImportCommand;
+use App\Application\Console\Packagist\GetDataCommand;
+use App\Application\Console\Packagist\GetListCommand;
+use App\Application\Console\Packagist\GetUpdatesCommand;
+use App\Application\Console\Packagist\MassImportCommand;
+use App\Application\Console\Queue\QueueConsumerCommand;
 use DI\ContainerBuilder;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\CommandLoader\FactoryCommandLoader;
-
 
 if (is_file(__DIR__ . '/../.env')) {
   $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
@@ -50,35 +50,38 @@ $repositories($containerBuilder);
 $console = require __DIR__ . '/../app/console.php';
 $console($containerBuilder);
 
-// Set up listeners
-$listeners = require __DIR__ . '/../app/listeners.php';
-$listeners($containerBuilder);
+// Set up processors (handlers and listeners)
+$processors = require __DIR__ . '/../app/processors.php';
+$processors($containerBuilder);
 
 // Build PHP-DI Container instance
 $container = $containerBuilder->build();
 
-// Register events
-$events = require __DIR__ . '/../app/events.php';
-$events($container);
+// Register messages (commands and events)
+$messages = require __DIR__ . '/../app/messages.php';
+$messages($container);
 
 $app = new Application('php.package.health console');
-
-$commandLoader = new FactoryCommandLoader(
-  [
-    GetDataCommand::getDefaultName() => static function () use ($container): GetDataCommand {
-      return $container->get(GetDataCommand::class);
-    },
-    GetListCommand::getDefaultName() => static function () use ($container): GetListCommand {
-      return $container->get(GetListCommand::class);
-    },
-    GetUpdatesCommand::getDefaultName() => static function () use ($container): GetUpdatesCommand {
-      return $container->get(GetUpdatesCommand::class);
-    },
-    MassImportCommand::getDefaultName() => static function () use ($container): MassImportCommand {
-      return $container->get(MassImportCommand::class);
-    }
-  ]
+$app->setCommandLoader(
+  new FactoryCommandLoader(
+    [
+      GetDataCommand::getDefaultName() => static function () use ($container): GetDataCommand {
+        return $container->get(GetDataCommand::class);
+      },
+      GetListCommand::getDefaultName() => static function () use ($container): GetListCommand {
+        return $container->get(GetListCommand::class);
+      },
+      GetUpdatesCommand::getDefaultName() => static function () use ($container): GetUpdatesCommand {
+        return $container->get(GetUpdatesCommand::class);
+      },
+      MassImportCommand::getDefaultName() => static function () use ($container): MassImportCommand {
+        return $container->get(MassImportCommand::class);
+      },
+      QueueConsumerCommand::getDefaultName() => static function () use ($container): QueueConsumerCommand {
+        return $container->get(QueueConsumerCommand::class);
+      }
+    ]
+  )
 );
 
-$app->setCommandLoader($commandLoader);
 $app->run();

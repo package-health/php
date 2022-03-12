@@ -13,10 +13,12 @@ use DI\ContainerBuilder;
 use function DI\autowire;
 
 return static function (ContainerBuilder $containerBuilder): void {
-  $containerBuilder->addDefinitions([
-    DependencyRepositoryInterface::class => autowire(PdoDependencyRepository::class),
-    PackageRepositoryInterface::class    => autowire(PdoPackageRepository::class),
-    StatsRepositoryInterface::class      => autowire(PdoStatsRepository::class),
-    VersionRepositoryInterface::class    => autowire(PdoVersionRepository::class)
-  ]);
+  $containerBuilder->addDefinitions(
+    [
+      DependencyRepositoryInterface::class => autowire(PdoDependencyRepository::class),
+      PackageRepositoryInterface::class    => autowire(PdoPackageRepository::class),
+      StatsRepositoryInterface::class      => autowire(PdoStatsRepository::class),
+      VersionRepositoryInterface::class    => autowire(PdoVersionRepository::class)
+    ]
+  );
 };

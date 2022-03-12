@@ -11,21 +11,16 @@ WORKDIR /usr/src
 #============================================
 # Dist dependencies
 #============================================
-RUN apk add --no-cache libstdc++ && \
-    apk add --no-cache $PHPIZE_DEPS curl-dev freetype-dev libjpeg-turbo-dev libpng-dev libpq-dev libwebp-dev libxml2-dev libxpm-dev libzip-dev openssl-dev pcre-dev pcre2-dev postgresql-dev zlib-dev && \
+RUN apk add --no-cache $PHPIZE_DEPS curl-dev freetype-dev libjpeg-turbo-dev libpng-dev libpq-dev libwebp-dev libxml2-dev libxpm-dev libzip-dev openssl-dev pcre-dev pcre2-dev postgresql-dev rabbitmq-c-dev zlib-dev && \
     apk add --no-cache wget ca-certificates git unzip
 
 #============================================
-# Extensions
+# Built-in Extensions
 #============================================
 RUN docker-php-ext-install -j$(nproc) zip && \
-    docker-php-ext-enable zip && \
     docker-php-ext-install -j$(nproc) pcntl && \
-    docker-php-ext-enable pcntl && \
     docker-php-ext-install -j$(nproc) sockets && \
-    docker-php-ext-enable sockets && \
     docker-php-ext-install -j$(nproc) pdo_pgsql && \
-    docker-php-ext-enable pdo_pgsql && \
     docker-php-ext-configure gd \
       --enable-gd \
       --with-freetype \
@@ -33,13 +28,19 @@ RUN docker-php-ext-install -j$(nproc) zip && \
       --with-webp \
       --with-xpm && \
     docker-php-ext-install -j$(nproc) gd && \
-    docker-php-ext-enable gd && \
     docker-php-ext-install -j$(nproc) opcache && \
-    docker-php-ext-enable opcache && \
     docker-php-ext-install -j$(nproc) simplexml && \
-    docker-php-ext-enable simplexml && \
-    docker-php-ext-install -j$(nproc) dom && \
-    docker-php-ext-enable dom
+    docker-php-ext-install -j$(nproc) dom
+
+#============================================
+# Third party Extensions
+#============================================
+RUN docker-php-source extract && \
+    wget -O amqp.tar.gz https://github.com/php-amqp/php-amqp/archive/refs/tags/v1.11.0.tar.gz && \
+    mkdir /usr/src/php/ext/amqp && \
+    tar --extract --file amqp.tar.gz --directory /usr/src/php/ext/amqp --strip 1 && \
+    docker-php-ext-install -j$(nproc) amqp && \
+    docker-php-source delete
 
 #============================================
 # Opcache
@@ -99,9 +100,18 @@ COPY --from=builder /usr/local/etc/php/conf.d/*.ini /usr/local/etc/php/conf.d/
 #============================================
 # Library dependencies
 #============================================
-RUN apk add --no-cache libstdc++ && \
-    apk add --no-cache libpq --repository=https://dl-cdn.alpinelinux.org/alpine/edge/main/ && \
-    apk add --no-cache freetype libjpeg-turbo libpng libwebp libxml2 libxpm libzip
+RUN apk add --no-cache libpq --repository=https://dl-cdn.alpinelinux.org/alpine/edge/main/ && \
+    apk add --no-cache freetype libjpeg-turbo libpng libwebp libxml2 libxpm libzip rabbitmq-c
+
+#============================================
+# CLI Extensions
+#============================================
+RUN docker-php-ext-enable zip && \
+    docker-php-ext-enable pcntl && \
+    docker-php-ext-enable sockets && \
+    docker-php-ext-enable pdo_pgsql && \
+    docker-php-ext-enable opcache && \
+    docker-php-ext-enable amqp
 
 #============================================
 # Other dependencies
@@ -158,9 +168,8 @@ COPY --from=builder /usr/local/etc/php/conf.d/*.ini /usr/local/etc/php/conf.d/
 #============================================
 # Library dependencies
 #============================================
-RUN apk add --no-cache libstdc++ && \
-    apk add --no-cache libpq --repository=https://dl-cdn.alpinelinux.org/alpine/edge/main/ && \
-    apk add --no-cache freetype libjpeg-turbo libpng libwebp libxml2 libxpm libzip
+RUN apk add --no-cache libpq --repository=https://dl-cdn.alpinelinux.org/alpine/edge/main/ && \
+    apk add --no-cache freetype libjpeg-turbo libpng libwebp libxml2 libxpm libzip rabbitmq-c
 
 #============================================
 # Other dependencies
@@ -168,6 +177,16 @@ RUN apk add --no-cache libstdc++ && \
 RUN apk add --no-cache dumb-init fcgi
 RUN wget -O /usr/local/bin/php-fpm-healthcheck https://raw.githubusercontent.com/renatomefi/php-fpm-healthcheck/master/php-fpm-healthcheck && \
     chmod +x /usr/local/bin/php-fpm-healthcheck
+
+#============================================
+# FPM Extensions
+#============================================
+RUN docker-php-ext-enable zip && \
+    docker-php-ext-enable pdo_pgsql && \
+    docker-php-ext-enable gd && \
+    docker-php-ext-enable opcache && \
+    docker-php-ext-enable simplexml && \
+    docker-php-ext-enable dom
 
 #============================================
 # User
