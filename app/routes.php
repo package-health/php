@@ -1,13 +1,13 @@
 <?php
 declare(strict_types = 1);
 
-use App\Application\Actions\Maintenance\HealthAction;
-use App\Application\Actions\Package\ListPackagesAction;
-use App\Application\Actions\Package\RedirectListPackagesAction;
-use App\Application\Actions\Package\RedirectPackageAction;
-use App\Application\Actions\Package\RedirectPackageBadgeAction;
-use App\Application\Actions\Package\ViewPackageAction;
-use App\Application\Actions\Package\ViewPackageBadgeAction;
+use App\Application\Action\Package\ListPackagesAction;
+use App\Application\Action\Package\RedirectListPackagesAction;
+use App\Application\Action\Package\RedirectPackageAction;
+use App\Application\Action\Package\RedirectPackageBadgeAction;
+use App\Application\Action\Package\ViewPackageAction;
+use App\Application\Action\Package\ViewPackageBadgeAction;
+use App\Application\Action\System\HealthAction;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Slim\App;

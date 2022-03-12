@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "bf1f3c1d7d60abb1663f22a721343d5c",
+    "content-hash": "b2331f4914d321fd0994b1f1953871f7",
     "packages": [
         {
             "name": "badges/poser",
@@ -325,75 +325,6 @@
             "time": "2022-01-28T18:02:00+00:00"
         },
         {
-            "name": "composer/metadata-minifier",
-            "version": "1.0.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/composer/metadata-minifier.git",
-                "reference": "c549d23829536f0d0e984aaabbf02af91f443207"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/composer/metadata-minifier/zipball/c549d23829536f0d0e984aaabbf02af91f443207",
-                "reference": "c549d23829536f0d0e984aaabbf02af91f443207",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^5.3.2 || ^7.0 || ^8.0"
-            },
-            "require-dev": {
-                "composer/composer": "^2",
-                "phpstan/phpstan": "^0.12.55",
-                "symfony/phpunit-bridge": "^4.2 || ^5"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-main": "1.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Composer\\MetadataMinifier\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Jordi Boggiano",
-                    "email": "j.boggiano@seld.be",
-                    "homepage": "http://seld.be"
-                }
-            ],
-            "description": "Small utility library that handles metadata minification and expansion.",
-            "keywords": [
-                "composer",
-                "compression"
-            ],
-            "support": {
-                "issues": "https://github.com/composer/metadata-minifier/issues",
-                "source": "https://github.com/composer/metadata-minifier/tree/1.0.0"
-            },
-            "funding": [
-                {
-                    "url": "https://packagist.com",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/composer",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/composer/composer",
-                    "type": "tidelift"
-                }
-            ],
-            "time": "2021-04-07T13:37:33+00:00"
-        },
-        {
             "name": "composer/semver",
             "version": "3.3.0",
             "source": {
@@ -475,51 +406,174 @@
             "time": "2022-03-15T08:35:57+00:00"
         },
         {
-            "name": "evenement/evenement",
-            "version": "v3.0.1",
+            "name": "courier/courier",
+            "version": "dev-main",
             "source": {
                 "type": "git",
-                "url": "https://github.com/igorw/evenement.git",
-                "reference": "531bfb9d15f8aa57454f5f0285b18bec903b8fb7"
+                "url": "https://github.com/courier-php/courier.git",
+                "reference": "1daaf3ccf6f95f2ef71d2c7aa47063cb2e53827f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/igorw/evenement/zipball/531bfb9d15f8aa57454f5f0285b18bec903b8fb7",
-                "reference": "531bfb9d15f8aa57454f5f0285b18bec903b8fb7",
+                "url": "https://api.github.com/repos/courier-php/courier/zipball/1daaf3ccf6f95f2ef71d2c7aa47063cb2e53827f",
+                "reference": "1daaf3ccf6f95f2ef71d2c7aa47063cb2e53827f",
                 "shasum": ""
             },
             "require": {
-                "php": ">=7.0"
+                "php": ">=8.1",
+                "ramsey/collection": "^1.2"
             },
             "require-dev": {
-                "phpunit/phpunit": "^6.0"
+                "infection/infection": "^0.25",
+                "php-parallel-lint/php-parallel-lint": "^1.2",
+                "phpstan/phpstan": "^0.12.58",
+                "phpunit/phpunit": "^9.5",
+                "psy/psysh": "^0.10.5",
+                "roave/security-advisories": "dev-latest",
+                "squizlabs/php_codesniffer": "^3.5",
+                "vimeo/psalm": "^4.3"
             },
+            "default-branch": true,
             "type": "library",
             "autoload": {
-                "psr-0": {
-                    "Evenement": "src"
+                "psr-4": {
+                    "Courier\\": "src/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
-                "MIT"
+                "mit"
             ],
             "authors": [
                 {
-                    "name": "Igor Wiedler",
-                    "email": "igor@wiedler.ch"
+                    "name": "Flavio Heleno",
+                    "email": "flaviohbatista@gmail.com"
                 }
             ],
-            "description": "Événement is a very simple event dispatching library for PHP",
+            "description": "A transport-agnostic message bus library for events and commands.",
             "keywords": [
-                "event-dispatcher",
-                "event-emitter"
+                "messaging",
+                "queue"
             ],
             "support": {
-                "issues": "https://github.com/igorw/evenement/issues",
-                "source": "https://github.com/igorw/evenement/tree/master"
+                "issues": "https://github.com/courier-php/courier/issues",
+                "source": "https://github.com/courier-php/courier/tree/main"
             },
-            "time": "2017-07-23T21:35:13+00:00"
+            "time": "2022-03-15T18:36:31+00:00"
+        },
+        {
+            "name": "courier/locator-container",
+            "version": "dev-main",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/courier-php/locator-container.git",
+                "reference": "c6d6fb5738a64494a489946971ee72e68574b2a9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/courier-php/locator-container/zipball/c6d6fb5738a64494a489946971ee72e68574b2a9",
+                "reference": "c6d6fb5738a64494a489946971ee72e68574b2a9",
+                "shasum": ""
+            },
+            "require": {
+                "courier/courier": "*",
+                "php": ">=8.1",
+                "psr/container": "^1.0"
+            },
+            "require-dev": {
+                "infection/infection": "^0.25",
+                "php-parallel-lint/php-parallel-lint": "^1.2",
+                "phpstan/phpstan": "^0.12.58",
+                "phpunit/phpunit": "^9.5",
+                "psy/psysh": "^0.10.5",
+                "roave/security-advisories": "dev-latest",
+                "squizlabs/php_codesniffer": "^3.5",
+                "vimeo/psalm": "^4.3"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Courier\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "mit"
+            ],
+            "authors": [
+                {
+                    "name": "Flavio Heleno",
+                    "email": "flaviohbatista@gmail.com"
+                }
+            ],
+            "description": "Container-based processor instance locator.",
+            "keywords": [
+                "PSR-11",
+                "container"
+            ],
+            "support": {
+                "issues": "https://github.com/courier-php/locator-container/issues",
+                "source": "https://github.com/courier-php/locator-container/tree/main"
+            },
+            "time": "2022-03-15T14:00:58+00:00"
+        },
+        {
+            "name": "courier/transport-amqp",
+            "version": "dev-main",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/courier-php/transport-amqp.git",
+                "reference": "6952a6af195255d13431aa2bad64011b919fe606"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/courier-php/transport-amqp/zipball/6952a6af195255d13431aa2bad64011b919fe606",
+                "reference": "6952a6af195255d13431aa2bad64011b919fe606",
+                "shasum": ""
+            },
+            "require": {
+                "courier/courier": "*",
+                "ext-amqp": "*",
+                "nyholm/dsn": "^2.0",
+                "php": ">=8.1"
+            },
+            "require-dev": {
+                "infection/infection": "^0.25",
+                "php-parallel-lint/php-parallel-lint": "^1.2",
+                "phpstan/phpstan": "^0.12.58",
+                "phpunit/phpunit": "^9.5",
+                "psy/psysh": "^0.10.5",
+                "roave/security-advisories": "dev-latest",
+                "squizlabs/php_codesniffer": "^3.5",
+                "vimeo/psalm": "^4.3"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Courier\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "mit"
+            ],
+            "authors": [
+                {
+                    "name": "Flavio Heleno",
+                    "email": "flaviohbatista@gmail.com"
+                }
+            ],
+            "description": "AMQP-based transport for Courier message bus.",
+            "keywords": [
+                "AMQP"
+            ],
+            "support": {
+                "issues": "https://github.com/courier-php/transport-amqp/issues",
+                "source": "https://github.com/courier-php/transport-amqp/tree/main"
+            },
+            "time": "2022-03-15T18:53:45+00:00"
         },
         {
             "name": "graham-campbell/result-type",
@@ -847,6 +901,67 @@
                 "source": "https://github.com/nikic/FastRoute/tree/master"
             },
             "time": "2018-02-13T20:26:39+00:00"
+        },
+        {
+            "name": "nyholm/dsn",
+            "version": "2.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Nyholm/dsn.git",
+                "reference": "9445621b426bac8c0ca161db8cd700da00a4e618"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Nyholm/dsn/zipball/9445621b426bac8c0ca161db8cd700da00a4e618",
+                "reference": "9445621b426bac8c0ca161db8cd700da00a4e618",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1"
+            },
+            "require-dev": {
+                "symfony/phpunit-bridge": "^5.1"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Nyholm\\Dsn\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Tobias Nyholm",
+                    "email": "tobias.nyholm@gmail.com"
+                }
+            ],
+            "description": "Parse your DSN strings in a powerful and flexible way",
+            "homepage": "http://tnyholm.se",
+            "keywords": [
+                "database",
+                "dsn",
+                "dsn parser",
+                "parser"
+            ],
+            "support": {
+                "issues": "https://github.com/Nyholm/dsn/issues",
+                "source": "https://github.com/Nyholm/dsn/tree/2.0.1"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/Nyholm",
+                    "type": "github"
+                }
+            ],
+            "time": "2021-11-18T09:23:29+00:00"
         },
         {
             "name": "nyholm/psr7",
@@ -8058,6 +8173,9 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
+        "courier/courier": 20,
+        "courier/locator-container": 20,
+        "courier/transport-amqp": 20,
         "roave/security-advisories": 20
     },
     "prefer-stable": true,

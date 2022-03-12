@@ -30,7 +30,7 @@ final class Dependency implements JsonSerializable {
   ) {
     $this->id          = $id;
     $this->versionId   = $versionId;
-    $this->name = $name;
+    $this->name        = $name;
     $this->constraint  = $constraint;
     $this->development = $development;
     $this->status      = $status;

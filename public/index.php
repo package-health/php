@@ -1,8 +1,8 @@
 <?php
 declare(strict_types = 1);
 
-use App\Application\Handlers\HttpErrorHandler;
-use App\Application\Handlers\ShutdownHandler;
+use App\Application\Handler\HttpErrorHandler;
+use App\Application\Handler\ShutdownHandler;
 use App\Application\ResponseEmitter\ResponseEmitter;
 use App\Application\Settings\SettingsInterface;
 use DI\ContainerBuilder;
@@ -38,8 +38,16 @@ $dependencies($containerBuilder);
 $repositories = require __DIR__ . '/../app/repositories.php';
 $repositories($containerBuilder);
 
+// Set up processors (handlers and listeners)
+$processors = require __DIR__ . '/../app/processors.php';
+$processors($containerBuilder);
+
 // Build PHP-DI Container instance
 $container = $containerBuilder->build();
+
+// Register messages (commands and events)
+$messages = require __DIR__ . '/../app/messages.php';
+$messages($container);
 
 // Instantiate the app
 AppFactory::setContainer($container);
