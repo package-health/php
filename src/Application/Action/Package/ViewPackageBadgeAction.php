@@ -83,22 +83,20 @@ final class ViewPackageBadgeAction extends AbstractPackageAction {
         break;
 
       case VersionStatusEnum::Outdated:
-        $reqDependencies = $this->dependencyRepository->find(
+        $dependencyCol = $this->dependencyRepository->find(
           [
             'version_id'  => $release->getId(),
             'development' => false
           ]
         );
 
-        $outdated = count(
-          array_filter(
-            $reqDependencies,
-            static function (Dependency $dependency): bool {
-              return $dependency->getStatus() === DependencyStatusEnum::Outdated;
-            }
-          )
-        );
-        $total = count($reqDependencies);
+        $outdated = $dependencyCol->filter(
+          static function (Dependency $dependency): bool {
+            return $dependency->getStatus() === DependencyStatusEnum::Outdated;
+          }
+        )->count();
+
+        $total = $dependencyCol->count();
 
         $status = [
           'text'  => "${outdated} of ${total} outdated",
