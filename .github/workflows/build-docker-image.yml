@@ -39,7 +39,7 @@ jobs:
             fi
 
       - name: Build NGINX Docker Image
-        uses: docker/build-push-action@v2.9.0
+        uses: docker/build-push-action@v2.10.0
         with:
           push: false
           load: true
@@ -50,7 +50,7 @@ jobs:
           cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
 
       - name: Build PHP-FPM Docker Image
-        uses: docker/build-push-action@v2.9.0
+        uses: docker/build-push-action@v2.10.0
         with:
           push: false
           load: true
@@ -62,7 +62,7 @@ jobs:
           cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
 
       - name: Build PHP-CLI Docker Image
-        uses: docker/build-push-action@v2.9.0
+        uses: docker/build-push-action@v2.10.0
         with:
           push: false
           load: true
