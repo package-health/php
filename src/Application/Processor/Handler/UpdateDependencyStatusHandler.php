@@ -29,8 +29,8 @@ class UpdateDependencyStatusHandler implements InvokeHandlerInterface {
    */
   public function __invoke(CommandInterface $command): HandlerResultEnum {
     $package = $command->getPackage();
-    if ($package->getLatestVersion() === '') {
-      return HandlerResultEnum::Accept;
+    if ($package->getLatestVersion() === '' || $package->getLatestVersion() === 'self.version') {
+      return HandlerResultEnum::Reject;
     }
 
     $dependencyCol = $this->dependencyRepository->find(
