@@ -29,7 +29,7 @@ class UpdateDependencyStatusHandler implements InvokeHandlerInterface {
    */
   public function __invoke(CommandInterface $command): HandlerResultEnum {
     $package = $command->getPackage();
-    if ($package->getLatestVersion() === '' || $package->getLatestVersion() === 'self.version') {
+    if ($package->getLatestVersion() === '') {
       return HandlerResultEnum::Reject;
     }
 
@@ -40,6 +40,11 @@ class UpdateDependencyStatusHandler implements InvokeHandlerInterface {
     );
 
     foreach ($dependencyCol as $dependency) {
+      if ($dependency->getConstraint() === 'self.version') {
+        // need to find out how to handle this
+        continue;
+      }
+
       $dependency = $dependency->withStatus(
         Semver::satisfies($package->getLatestVersion(), $dependency->getConstraint()) ?
           DependencyStatusEnum::UpToDate :
