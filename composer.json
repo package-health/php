@@ -42,6 +42,7 @@
     "nyholm/psr7": "^1.5",
     "nyholm/psr7-server": "^1.0",
     "php-di/php-di": "^6.3",
+    "ramsey/collection": "^1.2",
     "robmorgan/phinx": "^0.12.10",
     "slim/http-cache": "^1.1",
     "slim/slim": "^4.9",

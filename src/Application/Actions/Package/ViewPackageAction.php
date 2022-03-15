@@ -47,7 +47,7 @@ final class ViewPackageAction extends AbstractPackageAction {
       ]
     );
 
-    if (count($versionCol) === 0) {
+    if ($versionCol->isEmpty()) {
       throw new VersionNotFoundException(
         sprintf(
           'Version "%s" was not found. Was that release tagged?',
@@ -56,16 +56,18 @@ final class ViewPackageAction extends AbstractPackageAction {
       );
     }
 
+    $release = $versionCol->first();
+
     $reqDependencies = $this->dependencyRepository->find(
       [
-        'version_id'  => $versionCol[0]->getId(),
+        'version_id'  => $release->getId(),
         'development' => false
       ]
     );
 
     $devDependencies = $this->dependencyRepository->find(
       [
-        'version_id'  => $versionCol[0]->getId(),
+        'version_id'  => $release->getId(),
         'development' => true
       ]
     );
@@ -87,7 +89,7 @@ final class ViewPackageAction extends AbstractPackageAction {
         'type' => ''
       ],
       'package' => $package,
-      'version' => $versionCol[0],
+      'version' => $release,
       'requiredDeps' => [],
       'requiredDepsSubtitle' => '',
       'requiredDevDeps' => [],
@@ -99,7 +101,7 @@ final class ViewPackageAction extends AbstractPackageAction {
       ]
     ];
 
-    $data['status']['type'] = match ($versionCol[0]->getStatus()) {
+    $data['status']['type'] = match ($release->getStatus()) {
       VersionStatusEnum::UpToDate => 'is-success',
       VersionStatusEnum::NoDeps => 'is-success',
       VersionStatusEnum::Outdated => 'is-warning',
@@ -147,11 +149,11 @@ final class ViewPackageAction extends AbstractPackageAction {
           array_map(
             static function (string $key, int $value): string {
               return match (DependencyStatusEnum::tryFrom($key)) {
-                DependencyStatusEnum::Unknown => "${value} unknown",
-                DependencyStatusEnum::Outdated => "${value} outdated",
-                DependencyStatusEnum::Insecure => "${value} insecure",
+                DependencyStatusEnum::Unknown       => "${value} unknown",
+                DependencyStatusEnum::Outdated      => "${value} outdated",
+                DependencyStatusEnum::Insecure      => "${value} insecure",
                 DependencyStatusEnum::MaybeInsecure => "${value} possibly insecure",
-                DependencyStatusEnum::UpToDate => '' // "${value} up-to-date"
+                DependencyStatusEnum::UpToDate      => '' // "${value} up-to-date"
               };
             },
             array_keys($subtitle),
@@ -200,11 +202,11 @@ final class ViewPackageAction extends AbstractPackageAction {
           array_map(
             static function (string $key, int $value): string {
               return match (DependencyStatusEnum::tryFrom($key)) {
-                DependencyStatusEnum::Unknown => "${value} unknown",
-                DependencyStatusEnum::Outdated => "${value} outdated",
-                DependencyStatusEnum::Insecure => "${value} insecure",
+                DependencyStatusEnum::Unknown       => "${value} unknown",
+                DependencyStatusEnum::Outdated      => "${value} outdated",
+                DependencyStatusEnum::Insecure      => "${value} insecure",
                 DependencyStatusEnum::MaybeInsecure => "${value} maybe insecure",
-                DependencyStatusEnum::UpToDate => '' //"${value} up-to-date"
+                DependencyStatusEnum::UpToDate      => '' //"${value} up-to-date"
               };
             },
             array_keys($subtitle),

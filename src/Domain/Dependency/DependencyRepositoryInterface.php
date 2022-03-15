@@ -13,17 +13,14 @@ interface DependencyRepositoryInterface {
     DependencyStatusEnum $status = DependencyStatusEnum::Unknown,
   ): Dependency;
 
-  /**
-   * @return \App\Domain\Dependency[]
-   */
-  public function all(): array;
+  public function all(): DependencyCollection;
 
   /**
    * @throws \App\Domain\Dependency\DependencyNotFoundException
    */
   public function get(int $id): Dependency;
 
-  public function find(array $query): array;
+  public function find(array $query): DependencyCollection;
 
   public function save(Dependency $dependency): Dependency;
 

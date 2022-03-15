@@ -6,33 +6,20 @@ namespace App\Domain\Package;
 interface PackageRepositoryInterface {
   public function create(string $name): Package;
 
-  /**
-   * @return \App\Domain\Package[]
-   */
-  public function all(): array;
+  public function all(): PackageCollection;
 
-  /**
-   * @return \App\Domain\Package[]
-   */
-  public function findPopular(): array;
+  public function findPopular(): PackageCollection;
 
-  /**
-   * @param string $name
-   */
   public function exists(string $name): bool;
 
   /**
-   * @param string $name
-   *
-   * @return \App\Domain\Package
-   *
    * @throws \App\Domain\Package\PackageNotFoundException
    */
   public function get(string $name): Package;
 
-  public function find(array $query): array;
+  public function find(array $query): PackageCollection;
 
-  public function findMatching(array $query): array;
+  public function findMatching(array $query): PackageCollection;
 
   public function save(Package $package): Package;
 

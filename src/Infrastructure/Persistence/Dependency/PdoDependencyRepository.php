@@ -4,6 +4,7 @@ declare(strict_types = 1);
 namespace App\Infrastructure\Persistence\Dependency;
 
 use App\Domain\Dependency\Dependency;
+use App\Domain\Dependency\DependencyCollection;
 use App\Domain\Dependency\DependencyNotFoundException;
 use App\Domain\Dependency\DependencyRepositoryInterface;
 use App\Domain\Dependency\DependencyStatusEnum;
@@ -51,16 +52,10 @@ final class PdoDependencyRepository implements DependencyRepositoryInterface {
     );
   }
 
-  /**
-   * {@inheritdoc}
-   */
-  public function all(): array {
-    return [];
+  public function all(): DependencyCollection {
+    return new DependencyCollection();
   }
 
-  /**
-   * {@inheritdoc}
-   */
   public function get(int $id): Dependency {
     static $stmt = null;
     if ($stmt === null) {
@@ -83,10 +78,7 @@ final class PdoDependencyRepository implements DependencyRepositoryInterface {
     return $this->hydrate($row);
   }
 
-  /**
-   * {@inheritdoc}
-   */
-  public function find(array $query): array {
+  public function find(array $query): DependencyCollection {
     $where = [];
     $cols = array_keys($query);
 
@@ -120,12 +112,12 @@ final class PdoDependencyRepository implements DependencyRepositoryInterface {
 
     $stmt->execute($query);
 
-    $arr = [];
+    $dependencyCol = new DependencyCollection();
     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-      $arr[] = $this->hydrate($row);
+      $dependencyCol->add($this->hydrate($row));
     }
 
-    return $arr;
+    return $dependencyCol;
   }
 
   public function save(Dependency $dependency): Dependency {

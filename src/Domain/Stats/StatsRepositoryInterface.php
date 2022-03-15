@@ -6,37 +6,27 @@ namespace App\Domain\Stats;
 interface StatsRepositoryInterface {
   public function create(
     string $packageName,
-    int $githubStars,
-    int $githubWatchers,
-    int $githubForks,
-    int $dependents,
-    int $suggesters,
-    int $favers,
-    int $totalDownloads,
-    int $monthlyDownloads,
-    int $dailyDownloads
+    int $githubStars = 0,
+    int $githubWatchers = 0,
+    int $githubForks = 0,
+    int $dependents = 0,
+    int $suggesters = 0,
+    int $favers = 0,
+    int $totalDownloads = 0,
+    int $monthlyDownloads = 0,
+    int $dailyDownloads = 0
   ): Stats;
 
-  /**
-   * @return \App\Domain\Stats[]
-   */
-  public function all(): array;
+  public function all(): StatsCollection;
 
-  /**
-   * @param string $packageName
-   */
   public function exists(string $packageName): bool;
 
   /**
-   * @param string $packageName
-   *
-   * @return \App\Domain\Stats
-   *
    * @throws \App\Domain\Stats\StatsNotFoundException
    */
   public function get(string $packageName): Stats;
 
-  public function find(array $query): array;
+  public function find(array $query): StatsCollection;
 
   public function save(Stats $stats): Stats;
 

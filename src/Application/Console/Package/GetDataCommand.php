@@ -265,7 +265,7 @@ final class GetDataCommand extends Command {
             }
           }
 
-          $dependencies = $this->dependencyRepository->find(
+          $dependencyCol = $this->dependencyRepository->find(
             [
               'version_id'  => $version->getId(),
               'name'        => $dependencyName,
@@ -273,8 +273,8 @@ final class GetDataCommand extends Command {
             ]
           );
 
-          if (count($dependencies)) {
-            $dependency = $dependencies[0];
+          if ($dependencyCol->isEmpty() === false) {
+            $dependency = $dependencyCol->first();
             $dependency = $dependency
               ->withConstraint($constraint)
               ->withStatus(
@@ -338,7 +338,7 @@ final class GetDataCommand extends Command {
             }
           }
 
-          $dependencies = $this->dependencyRepository->find(
+          $dependencyCol = $this->dependencyRepository->find(
             [
               'version_id'  => $version->getId(),
               'name'        => $dependencyName,
@@ -346,8 +346,8 @@ final class GetDataCommand extends Command {
             ]
           );
 
-          if (count($dependencies)) {
-            $dependency = $dependencies[0];
+          if ($dependencyCol->isEmpty() === false) {
+            $dependency = $dependencyCol->first();
             $dependency = $dependency
               ->withConstraint($constraint)
               ->withStatus(

@@ -42,12 +42,12 @@ final class RedirectPackageAction extends AbstractPackageAction {
       );
 
       if (count($versionCol)) {
-        $version = array_pop($versionCol);
+        $release = $versionCol->last();
         $this->logger->info(
           sprintf(
             'Package "%s" is being redirected to "%s"',
             $package->getName(),
-            $version->getNumber()
+            $release->getNumber()
           )
         );
 
@@ -57,7 +57,7 @@ final class RedirectPackageAction extends AbstractPackageAction {
             [
               'vendor'  => $vendor,
               'project' => $project,
-              'version' => $version->getNumber()
+              'version' => $release->getNumber()
             ]
           )
         );

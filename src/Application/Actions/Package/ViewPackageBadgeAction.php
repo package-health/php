@@ -52,7 +52,7 @@ final class ViewPackageBadgeAction extends AbstractPackageAction {
       ]
     );
 
-    if (count($versionCol) === 0) {
+    if ($versionCol->isEmpty()) {
       $badge = $this->poser->generate('dependencies', 'unknown', 'lightgrey', 'flat-square');
 
       return $this->respondWith('image/svg+xml', (string)$badge);
@@ -68,11 +68,13 @@ final class ViewPackageBadgeAction extends AbstractPackageAction {
     //   hash('sha1', (string)$lastModified->getTimestamp())
     // );
 
+    $release = $versionCol->first();
+
     $status = [
       'text'  => 'unknown',
       'color' => 'lightgrey'
     ];
-    switch ($versionCol[0]->getStatus()) {
+    switch ($release->getStatus()) {
       case VersionStatusEnum::UpToDate:
         $status = [
           'text'  => 'up-to-date',
@@ -83,7 +85,7 @@ final class ViewPackageBadgeAction extends AbstractPackageAction {
       case VersionStatusEnum::Outdated:
         $reqDependencies = $this->dependencyRepository->find(
           [
-            'version_id'  => $versionCol[0]->getId(),
+            'version_id'  => $release->getId(),
             'development' => false
           ]
         );

@@ -34,13 +34,13 @@ final class PackageListener {
     }
 
     // update all packages that list $package as a require/require-dev dependency
-    $dependencies = $this->dependencyRepository->find(
+    $dependencyCol = $this->dependencyRepository->find(
       [
         'name' => $package->getName()
       ]
     );
 
-    foreach ($dependencies as $dependency) {
+    foreach ($dependencyCol as $dependency) {
       $dependency = $dependency->withStatus(
         Semver::satisfies($latestVersion, $dependency->getConstraint()) ?
         DependencyStatusEnum::UpToDate :

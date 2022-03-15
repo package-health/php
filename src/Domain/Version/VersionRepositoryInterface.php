@@ -10,20 +10,17 @@ interface VersionRepositoryInterface {
     string $normalized,
     string $packageName,
     bool $release,
-    VersionStatusEnum $status
+    VersionStatusEnum $status = VersionStatusEnum::Unknown
   ): Version;
 
-  /**
-   * @return \App\Domain\Version[]
-   */
-  public function all(): array;
+  public function all(): VersionCollection;
 
   /**
    * @throws \App\Domain\Version\VersionNotFoundException
    */
   public function get(int $id): Version;
 
-  public function find(array $query): array;
+  public function find(array $query): VersionCollection;
 
   public function save(Version $version): Version;
 

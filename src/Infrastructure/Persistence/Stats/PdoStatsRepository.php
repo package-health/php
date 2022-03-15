@@ -4,6 +4,7 @@ declare(strict_types = 1);
 namespace App\Infrastructure\Persistence\Stats;
 
 use App\Domain\Stats\Stats;
+use App\Domain\Stats\StatsCollection;
 use App\Domain\Stats\StatsNotFoundException;
 use App\Domain\Stats\StatsRepositoryInterface;
 use DateTimeImmutable;
@@ -36,15 +37,15 @@ final class PdoStatsRepository implements StatsRepositoryInterface {
 
   public function create(
     string $packageName,
-    int $githubStars,
-    int $githubWatchers,
-    int $githubForks,
-    int $dependents,
-    int $suggesters,
-    int $favers,
-    int $totalDownloads,
-    int $monthlyDownloads,
-    int $dailyDownloads
+    int $githubStars = 0,
+    int $githubWatchers = 0,
+    int $githubForks = 0,
+    int $dependents = 0,
+    int $suggesters = 0,
+    int $favers = 0,
+    int $totalDownloads = 0,
+    int $monthlyDownloads = 0,
+    int $dailyDownloads = 0
   ): Stats {
     return $this->save(
       new Stats(
@@ -66,7 +67,7 @@ final class PdoStatsRepository implements StatsRepositoryInterface {
   /**
    * {@inheritdoc}
    */
-  public function all(): array {
+  public function all(): StatsCollection {
     static $stmt = null;
     if ($stmt === null) {
       $stmt = $this->pdo->query(
@@ -78,12 +79,12 @@ final class PdoStatsRepository implements StatsRepositoryInterface {
       );
     }
 
-    $arr = [];
+    $statsCol = new StatsCollection();
     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-      $arr[] = $this->hydrate($row);
+      $statsCol->add($this->hydrate($row));
     }
 
-    return $arr;
+    return $statsCol;
   }
 
   /**
@@ -135,7 +136,7 @@ final class PdoStatsRepository implements StatsRepositoryInterface {
   /**
    * {@inheritdoc}
    */
-  public function find(array $query): array {
+  public function find(array $query): StatsCollection {
     $where = [];
     foreach (array_keys($query) as $col) {
       $where[] = sprintf(
@@ -156,12 +157,12 @@ final class PdoStatsRepository implements StatsRepositoryInterface {
 
     $stmt->execute($query);
 
-    $arr = [];
+    $statsCol = new StatsCollection();
     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-      $arr[] = $this->hydrate($row);
+      $statsCol->add($this->hydrate($row));
     }
 
-    return $arr;
+    return $statsCol;
   }
 
   public function save(Stats $stats): Stats {

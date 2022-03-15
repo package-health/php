@@ -41,11 +41,10 @@ final class DependencyListener {
       ]
     );
 
-    $statuses = array_map(
+    $statuses = $reqDeps->map(
       function (Dependency $dependency): DependencyStatusEnum {
         return $dependency->getStatus();
-      },
-      $reqDeps
+      }
     );
 
     $versionStatus = match (true) {

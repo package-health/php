@@ -4,6 +4,7 @@ declare(strict_types = 1);
 namespace App\Infrastructure\Persistence\Package;
 
 use App\Domain\Package\Package;
+use App\Domain\Package\PackageCollection;
 use App\Domain\Package\PackageNotFoundException;
 use App\Domain\Package\PackageRepositoryInterface;
 use DateTimeImmutable;
@@ -43,7 +44,7 @@ final class PdoPackageRepository implements PackageRepositoryInterface {
   /**
    * {@inheritdoc}
    */
-  public function all(): array {
+  public function all(): PackageCollection {
     static $stmt = null;
     if ($stmt === null) {
       $stmt = $this->pdo->query(
@@ -55,20 +56,20 @@ final class PdoPackageRepository implements PackageRepositoryInterface {
       );
     }
 
-    $arr = [];
+    $packageCol = new PackageCollection();
     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-      $arr[] = $this->hydrate($row);
+      $packageCol->add($this->hydrate($row));
     }
 
-    return $arr;
+    return $packageCol;
   }
 
   /**
    * {@inheritdoc}
    */
-  public function findPopular(): array {
-    static $stmt = null;
-    if ($stmt === null) {
+  public function findPopular(): PackageCollection {
+    // static $stmt = null;
+    // if ($stmt === null) {
       $stmt = $this->pdo->query(
         <<<SQL
           SELECT "packages".*
@@ -78,14 +79,14 @@ final class PdoPackageRepository implements PackageRepositoryInterface {
           LIMIT 10
         SQL
       );
-    }
+    // }
 
-    $arr = [];
+    $packageCol = new PackageCollection();
     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-      $arr[] = $this->hydrate($row);
+      $packageCol->add($this->hydrate($row));
     }
 
-    return $arr;
+    return $packageCol;
   }
 
   /**
@@ -136,7 +137,7 @@ final class PdoPackageRepository implements PackageRepositoryInterface {
   /**
    * {@inheritdoc}
    */
-  public function find(array $query): array {
+  public function find(array $query): PackageCollection {
     $where = [];
     foreach (array_keys($query) as $col) {
       $where[] = sprintf(
@@ -158,15 +159,15 @@ final class PdoPackageRepository implements PackageRepositoryInterface {
 
     $stmt->execute($query);
 
-    $arr = [];
+    $packageCol = new PackageCollection();
     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-      $arr[] = $this->hydrate($row);
+      $packageCol->add($this->hydrate($row));
     }
 
-    return $arr;
+    return $packageCol;
   }
 
-  public function findMatching(array $query): array {
+  public function findMatching(array $query): PackageCollection {
     $where = [];
     foreach (array_keys($query) as $col) {
       $where[] = sprintf(
@@ -188,12 +189,12 @@ final class PdoPackageRepository implements PackageRepositoryInterface {
 
     $stmt->execute($query);
 
-    $arr = [];
+    $packageCol = new PackageCollection();
     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-      $arr[] = $this->hydrate($row);
+      $packageCol->add($this->hydrate($row));
     }
 
-    return $arr;
+    return $packageCol;
   }
 
   public function save(Package $package): Package {

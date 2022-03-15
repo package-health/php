@@ -4,6 +4,7 @@ declare(strict_types = 1);
 namespace App\Infrastructure\Persistence\Version;
 
 use App\Domain\Version\Version;
+use App\Domain\Version\VersionCollection;
 use App\Domain\Version\VersionNotFoundException;
 use App\Domain\Version\VersionRepositoryInterface;
 use App\Domain\Version\VersionStatusEnum;
@@ -54,8 +55,8 @@ final class PdoVersionRepository implements VersionRepositoryInterface {
   /**
    * {@inheritdoc}
    */
-  public function all(): array {
-    return [];
+  public function all(): VersionCollection {
+    return new VersionCollection();
   }
 
   /**
@@ -86,7 +87,7 @@ final class PdoVersionRepository implements VersionRepositoryInterface {
   /**
    * {@inheritdoc}
    */
-  public function find(array $query): array {
+  public function find(array $query): VersionCollection {
     $where = [];
     $cols = array_keys($query);
 
@@ -119,12 +120,12 @@ final class PdoVersionRepository implements VersionRepositoryInterface {
 
     $stmt->execute($query);
 
-    $arr = [];
+    $versionCol = new VersionCollection();
     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-      $arr[] = $this->hydrate($row);
+      $versionCol->add($this->hydrate($row));
     }
 
-    return $arr;
+    return $versionCol;
   }
 
   public function save(Version $version): Version {
