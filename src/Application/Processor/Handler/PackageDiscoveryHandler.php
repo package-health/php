@@ -156,12 +156,11 @@ class PackageDiscoveryHandler implements InvokeHandlerInterface {
       // exclude branches from tagged releases (https://getcomposer.org/doc/articles/versions.md#branches)
       $isBranch = preg_match('/^dev-|-dev$/', $release['version']) === 1;
 
+      // find by the unique constraint (number, package_name)
       $versionCol = $this->versionRepository->find(
         [
           'number'       => $release['version'],
-          'normalized'   => $release['version_normalized'],
-          'package_name' => $package->getName(),
-          'release'      => $isBranch === false
+          'package_name' => $package->getName()
         ]
       );
 
@@ -205,6 +204,7 @@ class PackageDiscoveryHandler implements InvokeHandlerInterface {
           continue;
         }
 
+        // find by the unique constraint (version_id, name, development)
         $dependencyCol = $this->dependencyRepository->find(
           [
             'version_id'  => $version->getId(),
@@ -244,6 +244,7 @@ class PackageDiscoveryHandler implements InvokeHandlerInterface {
           continue;
         }
 
+        // find by the unique constraint (version_id, name, development)
         $dependencyCol = $this->dependencyRepository->find(
           [
             'version_id'  => $version->getId(),
