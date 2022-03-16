@@ -37,7 +37,7 @@ class VersionCreatedListener implements InvokeListenerInterface {
    */
   public function __invoke(EventInterface $event): void {
     $version = $event->getVersion();
-    $this->logger->debug('Version created', [$version]);
+    // $this->logger->debug('Version created', [$version]);
 
     // ignore non-release versions
     if ($version->isRelease() === false) {

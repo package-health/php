@@ -149,8 +149,6 @@ final class GetListCommand extends Command {
         )
       );
 
-      $this->producer->setupBroker();
-
       foreach ($addList as $packageName) {
         $package = $this->packageRepository->create($packageName);
 

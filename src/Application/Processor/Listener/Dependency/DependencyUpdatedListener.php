@@ -23,7 +23,7 @@ class DependencyUpdatedListener implements InvokeListenerInterface {
    */
   public function __invoke(EventInterface $event): void {
     $dependency = $event->getDependency();
-    $this->logger->debug('Dependency updated', [$dependency]);
+    // $this->logger->debug('Dependency updated', [$dependency]);
 
     $this->producer->sendCommand(
       new UpdateVersionStatusCommand($dependency)

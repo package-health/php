@@ -133,8 +133,6 @@ final class GetDataCommand extends Command {
 
       $json = json_decode(file_get_contents($dataPath), true, 512, JSON_THROW_ON_ERROR);
 
-      $this->producer->setupBroker();
-
       $package = $this->packageRepository->get($packageName);
       $package = $package
         ->withDescription($json['package']['description'] ?? '')

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b2331f4914d321fd0994b1f1953871f7",
+    "content-hash": "cac5f9b991b6ce104c803545f256714a",
     "packages": [
         {
             "name": "badges/poser",
@@ -411,12 +411,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/courier-php/courier.git",
-                "reference": "1daaf3ccf6f95f2ef71d2c7aa47063cb2e53827f"
+                "reference": "8db33b9e09df9602eb2ba40618addc455df81b18"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/courier-php/courier/zipball/1daaf3ccf6f95f2ef71d2c7aa47063cb2e53827f",
-                "reference": "1daaf3ccf6f95f2ef71d2c7aa47063cb2e53827f",
+                "url": "https://api.github.com/repos/courier-php/courier/zipball/8db33b9e09df9602eb2ba40618addc455df81b18",
+                "reference": "8db33b9e09df9602eb2ba40618addc455df81b18",
                 "shasum": ""
             },
             "require": {
@@ -424,14 +424,14 @@
                 "ramsey/collection": "^1.2"
             },
             "require-dev": {
-                "infection/infection": "^0.25",
-                "php-parallel-lint/php-parallel-lint": "^1.2",
-                "phpstan/phpstan": "^0.12.58",
+                "infection/infection": "^0.26",
+                "php-parallel-lint/php-parallel-lint": "^1.3",
+                "phpstan/phpstan": "^1.4",
                 "phpunit/phpunit": "^9.5",
-                "psy/psysh": "^0.10.5",
+                "psy/psysh": "^0.11",
                 "roave/security-advisories": "dev-latest",
-                "squizlabs/php_codesniffer": "^3.5",
-                "vimeo/psalm": "^4.3"
+                "squizlabs/php_codesniffer": "^3.6",
+                "vimeo/psalm": "^4.8"
             },
             "default-branch": true,
             "type": "library",
@@ -459,7 +459,7 @@
                 "issues": "https://github.com/courier-php/courier/issues",
                 "source": "https://github.com/courier-php/courier/tree/main"
             },
-            "time": "2022-03-15T18:36:31+00:00"
+            "time": "2022-03-16T01:32:53+00:00"
         },
         {
             "name": "courier/locator-container",

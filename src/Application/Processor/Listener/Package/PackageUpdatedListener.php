@@ -22,7 +22,7 @@ class PackageUpdatedListener implements InvokeListenerInterface {
 
   public function __invoke(EventInterface $event): void {
     $package = $event->getPackage();
-    $this->logger->debug('Package updated', [$package]);
+    // $this->logger->debug('Package updated', [$package]);
 
     if ($package->getLatestVersion() === '') {
       return;

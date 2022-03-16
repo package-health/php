@@ -21,7 +21,7 @@ class PackageCreatedListener implements InvokeListenerInterface {
 
   public function __invoke(EventInterface $event): void {
     $package = $event->getPackage();
-    $this->logger->debug('Package created', [$package]);
+    // $this->logger->debug('Package created', [$package]);
 
     $this->producer->sendCommand(
       new PackageDiscoveryCommand($package)

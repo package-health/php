@@ -48,8 +48,6 @@ final class QueueConsumerCommand extends Command {
         )
       );
 
-      $this->consumer->setupBroker();
-
       while (true) {
         $this->consumer->consume();
         usleep(200000);
