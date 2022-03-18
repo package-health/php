@@ -34,6 +34,8 @@ class VersionCreatedListener implements InvokeListenerInterface {
   /**
    * Checks if the new version is higher than the package's current latest version,
    * if it's, bumps the latest version.
+   *
+   * Note: only sets the latest version if it is stable
    */
   public function __invoke(EventInterface $event): void {
     $version = $event->getVersion();
@@ -48,12 +50,14 @@ class VersionCreatedListener implements InvokeListenerInterface {
       $version->getPackageName()
     );
 
-    $latestNormalizedVersion = '0.0.0.0';
+    $latestVersionNormalized = '0.0.0.0';
+    $latestVersionIsStable   = false;
     if ($package->getLatestVersion() !== '') {
-      $latestNormalizedVersion = $this->versionParser->normalize($package->getLatestVersion());
+      $latestVersionNormalized = $this->versionParser->normalize($package->getLatestVersion());
+      $latestVersionIsStable   = VersionParser::parseStability($latestVersionNormalized) === 'stable';
     }
 
-    if (Comparator::greaterThan($version->getNormalized(), $latestNormalizedVersion)) {
+    if ($latestVersionIsStable && Comparator::greaterThan($version->getNormalized(), $latestVersionNormalized)) {
       $package = $package->withLatestVersion($version->getNumber());
       $package = $this->packageRepository->update($package);
 
