@@ -1,0 +1,10 @@
+.env
+.git
+.github
+.idea/
+.vscode/
+/coverage/
+/logs/*
+/run/
+/tests/
+/vendor/
