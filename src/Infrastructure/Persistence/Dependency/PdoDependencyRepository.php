@@ -49,7 +49,7 @@ final class PdoDependencyRepository implements DependencyRepositoryInterface {
     string $name,
     string $constraint,
     bool $development = false,
-    DependencyStatusEnum $status = DependencyStatusEnum::Unknown,
+    DependencyStatusEnum $status = DependencyStatusEnum::Unknown
   ): Dependency {
     return $this->save(
       new Dependency(

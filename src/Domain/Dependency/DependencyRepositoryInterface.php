@@ -10,7 +10,7 @@ interface DependencyRepositoryInterface {
     string $name,
     string $constraint,
     bool $development = false,
-    DependencyStatusEnum $status = DependencyStatusEnum::Unknown,
+    DependencyStatusEnum $status = DependencyStatusEnum::Unknown
   ): Dependency;
 
   public function all(): DependencyCollection;

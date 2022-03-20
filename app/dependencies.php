@@ -17,6 +17,7 @@ use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Monolog\Processor\UidProcessor;
 use Nyholm\Psr7\Factory\Psr17Factory;
+use Psr\Cache\CacheItemPoolInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use PUGX\Poser\Poser;
@@ -25,6 +26,11 @@ use PUGX\Poser\Render\SvgFlatSquareRender;
 use PUGX\Poser\Render\SvgPlasticRender;
 use Slim\HttpCache\CacheProvider;
 use Slim\Views\Twig;
+use Stash\Driver\Composite;
+use Stash\Driver\Ephemeral;
+use Stash\Driver\FileSystem;
+use Stash\Driver\Redis;
+use Stash\Pool;
 use function DI\autowire;
 
 return static function (ContainerBuilder $containerBuilder): void {
@@ -43,6 +49,43 @@ return static function (ContainerBuilder $containerBuilder): void {
           new SimpleRouter(),
           new AmqpTransport($settings->getString('queue.dsn'))
         );
+      },
+      CacheItemPoolInterface::class => function (ContainerInterface $container): Pool {
+        $settings = $container->get(SettingsInterface::class);
+
+        $drivers = [
+          new Ephemeral()
+        ];
+
+        if ($settings->has('cache.redis')) {
+          $dsn = parse_url($settings->getString('cache.redis'));
+          $drivers[] = new Redis(
+            [
+              'servers' => [
+                'server' => $dsn['host'] ?? 'localhost',
+                'port'   => $dsn['port'] ?? 6379
+              ]
+            ]
+          );
+        }
+
+        $drivers[] = new FileSystem(
+          [
+            'path' => __DIR__ . '/../var/cache'
+          ]
+        );
+
+        if (count($drivers) > 1) {
+          $driver = new Composite(
+            [
+              'drivers' => $drivers
+            ]
+          );
+
+          return new Pool($driver);
+        }
+
+        return new Pool($drivers[0]);
       },
       Consumer::class => function (ContainerInterface $container): Consumer {
         return new Consumer(
