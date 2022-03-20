@@ -59,11 +59,14 @@ return static function (ContainerBuilder $containerBuilder): void {
 
         if ($settings->has('cache.redis')) {
           $dsn = parse_url($settings->getString('cache.redis'));
+
           $drivers[] = new Redis(
             [
               'servers' => [
-                'server' => $dsn['host'] ?? 'localhost',
-                'port'   => $dsn['port'] ?? 6379
+                [
+                  'server' => $dsn['host'] ?? 'localhost',
+                  'port'   => $dsn['port'] ?? 6379
+                ]
               ]
             ]
           );

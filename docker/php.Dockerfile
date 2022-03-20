@@ -17,10 +17,7 @@ RUN apk add --no-cache $PHPIZE_DEPS curl-dev freetype-dev libjpeg-turbo-dev libp
 #============================================
 # Built-in Extensions
 #============================================
-RUN docker-php-ext-install -j$(nproc) zip && \
-    docker-php-ext-install -j$(nproc) pcntl && \
-    docker-php-ext-install -j$(nproc) sockets && \
-    docker-php-ext-install -j$(nproc) pdo_pgsql && \
+RUN docker-php-ext-install -j$(nproc) dom && \
     docker-php-ext-configure gd \
       --enable-gd \
       --with-freetype \
@@ -29,8 +26,11 @@ RUN docker-php-ext-install -j$(nproc) zip && \
       --with-xpm && \
     docker-php-ext-install -j$(nproc) gd && \
     docker-php-ext-install -j$(nproc) opcache && \
+    docker-php-ext-install -j$(nproc) pcntl && \
+    docker-php-ext-install -j$(nproc) pdo_pgsql && \
     docker-php-ext-install -j$(nproc) simplexml && \
-    docker-php-ext-install -j$(nproc) dom
+    docker-php-ext-install -j$(nproc) sockets && \
+    docker-php-ext-install -j$(nproc) zip
 
 #============================================
 # Third party Extensions
@@ -40,6 +40,13 @@ RUN docker-php-source extract && \
     mkdir /usr/src/php/ext/amqp && \
     tar --extract --file amqp.tar.gz --directory /usr/src/php/ext/amqp --strip 1 && \
     docker-php-ext-install -j$(nproc) amqp && \
+    docker-php-source delete
+
+RUN docker-php-source extract && \
+    wget -O redis.tar.gz https://github.com/phpredis/phpredis/archive/refs/tags/5.3.7.tar.gz && \
+    mkdir /usr/src/php/ext/redis && \
+    tar --extract --file redis.tar.gz --directory /usr/src/php/ext/redis --strip 1 && \
+    docker-php-ext-install -j$(nproc) redis && \
     docker-php-source delete
 
 #============================================
@@ -106,12 +113,13 @@ RUN apk add --no-cache libpq --repository=https://dl-cdn.alpinelinux.org/alpine/
 #============================================
 # CLI Extensions
 #============================================
-RUN docker-php-ext-enable zip && \
-    docker-php-ext-enable pcntl && \
-    docker-php-ext-enable sockets && \
-    docker-php-ext-enable pdo_pgsql && \
+RUN docker-php-ext-enable amqp && \
     docker-php-ext-enable opcache && \
-    docker-php-ext-enable amqp
+    docker-php-ext-enable pcntl && \
+    docker-php-ext-enable pdo_pgsql && \
+    docker-php-ext-enable redis && \
+    docker-php-ext-enable sockets && \
+    docker-php-ext-enable zip
 
 #============================================
 # Other dependencies
@@ -181,12 +189,13 @@ RUN wget -O /usr/local/bin/php-fpm-healthcheck https://raw.githubusercontent.com
 #============================================
 # FPM Extensions
 #============================================
-RUN docker-php-ext-enable zip && \
-    docker-php-ext-enable pdo_pgsql && \
+RUN docker-php-ext-enable dom && \
     docker-php-ext-enable gd && \
     docker-php-ext-enable opcache && \
+    docker-php-ext-enable pdo_pgsql && \
+    docker-php-ext-enable redis && \
     docker-php-ext-enable simplexml && \
-    docker-php-ext-enable dom
+    docker-php-ext-enable zip
 
 #============================================
 # User

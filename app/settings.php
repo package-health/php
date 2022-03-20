@@ -13,11 +13,14 @@ return static function (ContainerBuilder $containerBuilder): void {
       SettingsInterface::class => function () {
         return new Settings(
           [
+            'cache' => [
+              'redis' => "redis://${_ENV['REDIS_HOST']}:${_ENV['REDIS_PORT']}"
+            ],
             'db' => [
-              'dsn' => "pgsql://${_ENV['POSTGRES_USER']}:${_ENV['POSTGRES_PASSWORD']}@${_ENV['POSTGRES_HOST']}/${_ENV['POSTGRES_DB']}"
+              'dsn' => "pgsql://${_ENV['POSTGRES_USER']}:${_ENV['POSTGRES_PASSWORD']}@${_ENV['POSTGRES_HOST']}:${_ENV['POSTGRES_PORT']}/${_ENV['POSTGRES_DB']}"
             ],
             'queue' => [
-              'dsn' => "amqp://${_ENV['AMQP_USER']}:${_ENV['AMQP_PASS']}@${_ENV['AMQP_HOST']}"
+              'dsn' => "amqp://${_ENV['AMQP_USER']}:${_ENV['AMQP_PASS']}@${_ENV['AMQP_HOST']}:${_ENV['AMQP_PORT']}"
             ],
             'displayErrorDetails' => (isset($_ENV['PHP_ENV']) === false || $_ENV['PHP_ENV'] === 'development'),
             'logError'            => true,
