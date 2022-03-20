@@ -3,22 +3,55 @@ declare(strict_types = 1);
 
 namespace App\Application\Settings;
 
+use InvalidArgumentException;
+
 final class Settings implements SettingsInterface {
+  /**
+   * @var array<string, mixed>
+   */
   private array $config = [];
+  /**
+   * @var array<string, mixed>
+   */
   private array $envVar = [];
 
-  private function normalize(string $category, string $entry): string {
-    return sprintf(
-      '%s_%s',
-      str_replace('-', '_', strtoupper($category)),
-      str_replace('-', '_', strtoupper($entry))
-    );
+  private function getPath(string $entry) {
+    $path = explode('.', $entry);
+    $walk = $this->config;
+    while (count($path)) {
+      $item = array_shift($path);
+      if (isset($walk[$item]) === false) {
+        return null;
+      }
+
+      $walk = $walk[$item];
+    }
+
+    if (is_array($walk)) {
+      return null;
+    }
+
+    return $walk;
   }
 
-  public static function fromJson(string $path): static {
-    return new static(
+  private function normalize(string $entry): string {
+    return str_replace(['-', '.'], '_', strtoupper($entry));
+  }
+
+  public static function fromJson(string $path): self {
+    $content = file_get_contents($path);
+    if ($content === false) {
+      throw new InvalidArgumentException(
+        sprintf(
+          'Failed to read content from "%s"',
+          $path
+        )
+      );
+    }
+
+    return new self(
       json_decode(
-        file_get_contents($path),
+        $content,
         true,
         512,
         JSON_THROW_ON_ERROR
@@ -36,46 +69,70 @@ final class Settings implements SettingsInterface {
     $this->config = $config;
   }
 
-  /**
-   * @return mixed
-   */
-  public function get(string $key = '') {
-    return (empty($key)) ? $this->config : $this->config[$key];
+  public function has(string $entry): bool {
+    $value = $this->getPath($entry);
+    if ($value === null) {
+      $varName = $this->normalize($entry);
+
+      return isset($this->envVar[$varName]);
+    }
+
+    return true;
   }
 
-  public function has(string $category, string $entry): bool {
-    if (isset($this->config[$category][$entry]) === true) {
-      return true;
+  public function getString(string $entry, string $default = ''): string {
+    $value = $this->getPath($entry);
+    if ($value === null) {
+      $varName = $this->normalize($entry);
+      if (isset($this->envVar[$varName])) {
+        return (string)$this->envVar[$varName];
+      }
+
+      return $default;
     }
 
-    $varName = $this->normalize($category, $entry);
-
-    return isset($this->envVar[$varName]);
+    return (string)$value;
   }
 
-  public function getString(string $category, string $entry, string $default = ''): string {
-    if (isset($this->config[$category][$entry]) === true) {
-      return (string)$this->config[$category][$entry];
+  public function getInt(string $entry, int $default = 0): int {
+    $value = $this->getPath($entry);
+    if ($value === null) {
+      $varName = $this->normalize($entry);
+      if (isset($this->envVar[$varName])) {
+        return (int)$this->envVar[$varName];
+      }
+
+      return $default;
     }
 
-    $varName = $this->normalize($category, $entry);
-    if (isset($this->envVar[$varName])) {
-      return (string)$this->envVar[$varName];
-    }
-
-    return $default;
+    return (int)$value;
   }
 
-  public function getInteger(string $category, string $entry, int $default = -1): int {
-    if (isset($this->config[$category][$entry]) === true) {
-      return (int)$this->config[$category][$entry];
+  public function getFloat(string $entry, float $default = 0.0): float {
+    $value = $this->getPath($entry);
+    if ($value === null) {
+      $varName = $this->normalize($entry);
+      if (isset($this->envVar[$varName])) {
+        return (float)$this->envVar[$varName];
+      }
+
+      return $default;
     }
 
-    $varName = $this->normalize($category, $entry);
-    if (isset($this->envVar[$varName])) {
-      return (int)$this->envVar[$varName];
+    return (float)$value;
+  }
+
+  public function getBool(string $entry, bool $default = false): bool {
+    $value = $this->getPath($entry);
+    if ($value === null) {
+      $varName = $this->normalize($entry);
+      if (isset($this->envVar[$varName])) {
+        return (bool)$this->envVar[$varName];
+      }
+
+      return $default;
     }
 
-    return $default;
+    return (bool)$value;
   }
 }

@@ -17,10 +17,16 @@ abstract class AbstractStatsEvent implements EventInterface {
     return $this->stats;
   }
 
+  /**
+   * @return array{0: \App\Domain\Stats\Stats}
+   */
   public function __serialize(): array {
     return [$this->stats];
   }
 
+  /**
+   * @param array{0: \App\Domain\Stats\Stats} $data
+   */
   public function __unserialize(array $data): void {
     $this->stats = $data[0];
   }

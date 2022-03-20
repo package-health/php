@@ -34,9 +34,9 @@ final class ViewPackageAction extends AbstractPackageAction {
    * {@inheritdoc}
    */
   protected function action(): ResponseInterface {
-    $vendor  = $this->resolveArg('vendor');
-    $project = $this->resolveArg('project');
-    $version = $this->resolveArg('version');
+    $vendor  = $this->resolveStringArg('vendor');
+    $project = $this->resolveStringArg('project');
+    $version = $this->resolveStringArg('version');
     $package = $this->packageRepository->get("${vendor}/${project}");
     $twig = Twig::fromRequest($this->request);
 
@@ -153,7 +153,8 @@ final class ViewPackageAction extends AbstractPackageAction {
                 DependencyStatusEnum::Outdated      => "${value} outdated",
                 DependencyStatusEnum::Insecure      => "${value} insecure",
                 DependencyStatusEnum::MaybeInsecure => "${value} possibly insecure",
-                DependencyStatusEnum::UpToDate      => '' // "${value} up-to-date"
+                DependencyStatusEnum::UpToDate      => '', // "${value} up-to-date"
+                null                                => ''
               };
             },
             array_keys($subtitle),
@@ -206,7 +207,8 @@ final class ViewPackageAction extends AbstractPackageAction {
                 DependencyStatusEnum::Outdated      => "${value} outdated",
                 DependencyStatusEnum::Insecure      => "${value} insecure",
                 DependencyStatusEnum::MaybeInsecure => "${value} maybe insecure",
-                DependencyStatusEnum::UpToDate      => '' //"${value} up-to-date"
+                DependencyStatusEnum::UpToDate      => '', //"${value} up-to-date"
+                null                                => ''
               };
             },
             array_keys($subtitle),

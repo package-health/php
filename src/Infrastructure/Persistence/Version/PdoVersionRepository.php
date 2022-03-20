@@ -15,6 +15,18 @@ use PDO;
 final class PdoVersionRepository implements VersionRepositoryInterface {
   private PDO $pdo;
 
+  /**
+   * @param array{
+   *   id?: int,
+   *   number: string,
+   *   normalized: string,
+   *   package_name: string,
+   *   release: bool,
+   *   status: string,
+   *   created_at: string,
+   *   updated_at: string|null
+   * } $data
+   */
   private function hydrate(array $data): Version {
     return new Version(
       $data['id'] ?? null,
@@ -22,7 +34,7 @@ final class PdoVersionRepository implements VersionRepositoryInterface {
       $data['normalized'],
       $data['package_name'],
       $data['release'],
-      VersionStatusEnum::tryFrom($data['status']),
+      VersionStatusEnum::tryFrom($data['status']) ?? VersionStatusEnum::Unknown,
       new DateTimeImmutable($data['created_at']),
       $data['updated_at'] === null ? null : new DateTimeImmutable($data['updated_at'])
     );

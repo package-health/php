@@ -4,15 +4,13 @@ declare(strict_types = 1);
 namespace App\Application\Settings;
 
 interface SettingsInterface {
-  /**
-   * @param string $key
-   * @return mixed
-   */
-  public function get(string $key = '');
+  public function has(string $entry): bool;
 
-  public function has(string $category, string $entry): bool;
+  public function getString(string $entry, string $default = ''): string;
 
-  public function getString(string $category, string $entry, string $default = ''): string;
+  public function getInt(string $entry, int $default = 0): int;
 
-  public function getInteger(string $category, string $entry, int $default = -1): int;
+  public function getFloat(string $entry, float $default = 0.0): float;
+
+  public function getBool(string $entry, bool $default = false): bool;
 }

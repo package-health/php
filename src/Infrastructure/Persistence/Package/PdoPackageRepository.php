@@ -14,6 +14,16 @@ use PDO;
 final class PdoPackageRepository implements PackageRepositoryInterface {
   private PDO $pdo;
 
+  /**
+   * @param array{
+   *   name: string,
+   *   description: string,
+   *   latest_version: string,
+   *   url: string,
+   *   created_at: string,
+   *   updated_at: string|null
+   * } $data
+   */
   private function hydrate(array $data): Package {
     return new Package(
       $data['name'],
@@ -68,8 +78,8 @@ final class PdoPackageRepository implements PackageRepositoryInterface {
    * {@inheritdoc}
    */
   public function findPopular(): PackageCollection {
-    // static $stmt = null;
-    // if ($stmt === null) {
+    static $stmt = null;
+    if ($stmt === null) {
       $stmt = $this->pdo->query(
         <<<SQL
           SELECT "packages".*
@@ -79,7 +89,7 @@ final class PdoPackageRepository implements PackageRepositoryInterface {
           LIMIT 10
         SQL
       );
-    // }
+    }
 
     $packageCol = new PackageCollection();
     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {

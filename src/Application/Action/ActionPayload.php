@@ -41,6 +41,14 @@ class ActionPayload implements JsonSerializable {
     return $this->error;
   }
 
+  /**
+   * @return array{
+   *   status: bool,
+   *   list?: array<mixed>,
+   *   data?: array|object,
+   *   error?: \App\Application\Action\ActionError
+   * }
+   */
   #[ReturnTypeWillChange]
   public function jsonSerialize(): array {
     if ($this->data !== null) {

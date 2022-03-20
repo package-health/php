@@ -139,6 +139,17 @@ final class Version implements JsonSerializable {
     return $this->dirty;
   }
 
+  /**
+   * @return array{
+   *   id: int|null,
+   *   number: string,
+   *   package_name: string,
+   *   release: bool,
+   *   status: string,
+   *   created_at: int,
+   *   updated_at: int|null
+   * }
+   */
   #[ReturnTypeWillChange]
   public function jsonSerialize(): array {
     return [
@@ -146,7 +157,7 @@ final class Version implements JsonSerializable {
       'number'       => $this->number,
       'package_name' => $this->packageName,
       'release'      => $this->release,
-      'status'       => $this->status,
+      'status'       => $this->status->value,
       'created_at'   => $this->createdAt->getTimestamp(),
       'updated_at'   => $this->updatedAt?->getTimestamp(),
     ];

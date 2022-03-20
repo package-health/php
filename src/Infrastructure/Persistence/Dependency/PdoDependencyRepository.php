@@ -15,6 +15,18 @@ use PDO;
 final class PdoDependencyRepository implements DependencyRepositoryInterface {
   private PDO $pdo;
 
+  /**
+   * @param array{
+   *   id?: int,
+   *   version_id: int,
+   *   name: string,
+   *   constraint: string,
+   *   development: bool,
+   *   status: string,
+   *   created_at: string,
+   *   updated_at: string|null
+   * } $data
+  */
   private function hydrate(array $data): Dependency {
     return new Dependency(
       $data['id'] ?? null,
@@ -22,7 +34,7 @@ final class PdoDependencyRepository implements DependencyRepositoryInterface {
       $data['name'],
       $data['constraint'],
       $data['development'],
-      DependencyStatusEnum::tryFrom($data['status']),
+      DependencyStatusEnum::tryFrom($data['status']) ?? DependencyStatusEnum::Unknown,
       new DateTimeImmutable($data['created_at']),
       $data['updated_at'] === null ? null : new DateTimeImmutable($data['updated_at'])
     );

@@ -13,13 +13,13 @@ use Slim\HttpCache\CacheProvider;
 
 abstract class AbstractAction {
   protected LoggerInterface $logger;
-
   protected CacheProvider $cacheProvider;
-
   protected ServerRequestInterface $request;
-
   protected ResponseInterface $response;
 
+  /**
+   * @var array<string, mixed>
+   */
   protected array $args;
 
   public function __construct(LoggerInterface $logger, CacheProvider $cacheProvider) {
@@ -61,16 +61,47 @@ abstract class AbstractAction {
   }
 
   /**
-   * @return mixed
-   *
    * @throws \Slim\Exception\HttpBadRequestException
    */
-  protected function resolveArg(string $name) {
-    if (!isset($this->args[$name])) {
+  protected function resolveStringArg(string $name): string {
+    if (isset($this->args[$name]) === false) {
       throw new HttpBadRequestException($this->request, "Could not resolve argument '${name}'.");
     }
 
-    return $this->args[$name];
+    return (string)$this->args[$name];
+  }
+
+  /**
+   * @throws \Slim\Exception\HttpBadRequestException
+   */
+  protected function resolveIntArg(string $name): int {
+    if (isset($this->args[$name]) === false) {
+      throw new HttpBadRequestException($this->request, "Could not resolve argument '${name}'.");
+    }
+
+    return (int)$this->args[$name];
+  }
+
+  /**
+   * @throws \Slim\Exception\HttpBadRequestException
+   */
+  protected function resolveFloatArg(string $name): float {
+    if (isset($this->args[$name]) === false) {
+      throw new HttpBadRequestException($this->request, "Could not resolve argument '${name}'.");
+    }
+
+    return (float)$this->args[$name];
+  }
+
+  /**
+   * @throws \Slim\Exception\HttpBadRequestException
+   */
+  protected function resolveBoolArg(string $name): bool {
+    if (isset($this->args[$name]) === false) {
+      throw new HttpBadRequestException($this->request, "Could not resolve argument '${name}'.");
+    }
+
+    return (bool)$this->args[$name];
   }
 
   protected function respondWith(string $contentType, string $content, int $statusCode = 200): ResponseInterface {

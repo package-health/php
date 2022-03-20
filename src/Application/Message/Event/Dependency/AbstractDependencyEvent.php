@@ -17,10 +17,16 @@ abstract class AbstractDependencyEvent implements EventInterface {
     return $this->dependency;
   }
 
+  /**
+   * @return array{0: \App\Domain\Dependency\Dependency}
+   */
   public function __serialize(): array {
     return [$this->dependency];
   }
 
+  /**
+   * @param array{0: \App\Domain\Dependency\Dependency} $data
+   */
   public function __unserialize(array $data): void {
     $this->dependency = $data[0];
   }

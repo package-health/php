@@ -11,8 +11,8 @@ final class RedirectPackageBadgeAction extends AbstractPackageAction {
    * {@inheritdoc}
    */
   protected function action(): ResponseInterface {
-    $vendor  = $this->resolveArg('vendor');
-    $project = $this->resolveArg('project');
+    $vendor  = $this->resolveStringArg('vendor');
+    $project = $this->resolveStringArg('project');
     $package = $this->packageRepository->get("${vendor}/${project}");
 
     $routeParser = RouteContext::fromRequest($this->request)->getRouteParser();
@@ -25,7 +25,7 @@ final class RedirectPackageBadgeAction extends AbstractPackageAction {
         [
           'vendor'  => $vendor,
           'project' => $project,
-          'version' => $package->getLatestVersion() ?: 'unknown'
+          'version' => (string)($package->getLatestVersion() ?: 'unknown')
         ]
       )
     );

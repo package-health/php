@@ -10,7 +10,6 @@ use Courier\Processor\Listener\InvokeListenerInterface;
 use Psr\Log\LoggerInterface;
 
 class PackageUpdatedListener implements InvokeListenerInterface {
-  private DependencyRepositoryInterface $dependencyRepository;
   private Producer $producer;
   private LoggerInterface $logger;
 

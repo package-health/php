@@ -14,6 +14,22 @@ use PDO;
 final class PdoStatsRepository implements StatsRepositoryInterface {
   private PDO $pdo;
 
+  /**
+   * @param array{
+   *   package_name: string,
+   *   github_stars: int,
+   *   github_watchers: int,
+   *   github_forks: int,
+   *   dependents: int,
+   *   suggesters: int,
+   *   favers: int,
+   *   total_downloads: int,
+   *   monthly_downloads: int,
+   *   daily_downloads: int,
+   *   created_at: string,
+   *   updated_at: string|null
+   * } $data
+   */
   private function hydrate(array $data): Stats {
     return new Stats(
       $data['package_name'],

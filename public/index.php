@@ -69,7 +69,7 @@ if (isset($_ENV['PHP_ENV']) && $_ENV['PHP_ENV'] === 'production') {
 /** @var SettingsInterface $settings */
 $settings = $container->get(SettingsInterface::class);
 
-$displayErrorDetails = $settings->get('displayErrorDetails');
+$displayErrorDetails = $settings->getBool('displayErrorDetails');
 
 // Create Request object from globals
 $serverRequestCreator = ServerRequestCreatorFactory::create();
@@ -91,8 +91,8 @@ $app->addBodyParsingMiddleware();
 // Add Error Middleware
 $errorMiddleware = $app->addErrorMiddleware(
   $displayErrorDetails,
-  $settings->get('logError'),
-  $settings->get('logErrorDetails')
+  $settings->getBool('logError'),
+  $settings->getBool('logErrorDetails')
 );
 $errorMiddleware->setDefaultErrorHandler($errorHandler);
 

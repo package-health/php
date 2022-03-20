@@ -28,8 +28,8 @@ final class RedirectPackageAction extends AbstractPackageAction {
    * {@inheritdoc}
    */
   protected function action(): ResponseInterface {
-    $vendor  = $this->resolveArg('vendor');
-    $project = $this->resolveArg('project');
+    $vendor  = $this->resolveStringArg('vendor');
+    $project = $this->resolveStringArg('project');
     $package = $this->packageRepository->get("${vendor}/${project}");
 
     $routeParser = RouteContext::fromRequest($this->request)->getRouteParser();

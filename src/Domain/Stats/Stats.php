@@ -219,6 +219,22 @@ final class Stats implements JsonSerializable {
     return $this->dirty;
   }
 
+  /**
+   * @return array{
+   *   package_name: string,
+   *   github_stars: int,
+   *   github_watchers: int,
+   *   github_forks: int,
+   *   dependents: int,
+   *   suggesters: int,
+   *   favers: int,
+   *   total_downloads: int,
+   *   monthly_downloads: int,
+   *   daily_downloads: int,
+   *   created_at: int,
+   *   updated_at: int|null
+   * }
+   */
   #[ReturnTypeWillChange]
   public function jsonSerialize(): array {
     return [

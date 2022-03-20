@@ -17,7 +17,7 @@ enum VcsBrandEnum: string {
   }
 
   public static function fromUrl(string $url): self {
-    return match (true) {
+    return match (1) {
       preg_match('/^https:\/\/bitbucket\.com\//', $url) => self::Bitbucket,
       preg_match('/^https:\/\/gitea\.com\//', $url) => self::Gitea,
       preg_match('/^https:\/\/github\.com\//', $url) => self::Github,

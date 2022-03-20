@@ -41,7 +41,7 @@ return static function (ContainerBuilder $containerBuilder): void {
 
         return new Bus(
           new SimpleRouter(),
-          new AmqpTransport($settings->getString('queue', 'dsn'))
+          new AmqpTransport($settings->getString('queue.dsn'))
         );
       },
       Consumer::class => function (ContainerInterface $container): Consumer {
@@ -60,20 +60,22 @@ return static function (ContainerBuilder $containerBuilder): void {
       LoggerInterface::class => function (ContainerInterface $container): LoggerInterface {
         $settings = $container->get(SettingsInterface::class);
 
-        $loggerSettings = $settings->get('logger');
-        $logger = new Logger($loggerSettings['name']);
+        $logger = new Logger($settings->getString('logger.name'));
 
         $processor = new UidProcessor();
         $logger->pushProcessor($processor);
 
-        $handler = new StreamHandler($loggerSettings['path'], $loggerSettings['level']);
+        $handler = new StreamHandler(
+          $settings->getString('logger.path'),
+          $settings->getString('logger.level')
+        );
         $logger->pushHandler($handler);
 
         return $logger;
       },
       PDO::class => function (ContainerInterface $container): PDO {
         $settings = $container->get(SettingsInterface::class);
-        $dsn = parse_url($settings->getString('db', 'dsn'));
+        $dsn = parse_url($settings->getString('db.dsn'));
 
         return new PDO(
           sprintf(
@@ -105,7 +107,6 @@ return static function (ContainerBuilder $containerBuilder): void {
       SvgPlasticRender::class => autowire(SvgPlasticRender::class),
       VersionParser::class => autowire(VersionParser::class),
       Twig::class => function (ContainerInterface $container): Twig {
-        $settings = $container->get(SettingsInterface::class);
         $cache = false;
         if (isset($_ENV['PHP_ENV']) && $_ENV['PHP_ENV'] === 'production') {
           $cache = __DIR__ . '/../var/cache';

@@ -38,9 +38,9 @@ final class ViewPackageBadgeAction extends AbstractPackageAction {
    * {@inheritdoc}
    */
   protected function action(): ResponseInterface {
-    $vendor  = $this->resolveArg('vendor');
-    $project = $this->resolveArg('project');
-    $version = $this->resolveArg('version');
+    $vendor  = $this->resolveStringArg('vendor');
+    $project = $this->resolveStringArg('project');
+    $version = $this->resolveStringArg('version');
     $package = $this->packageRepository->get("${vendor}/${project}");
 
     $this->logger->info("Status badge for package '${vendor}/${project}' was viewed.");

@@ -111,6 +111,16 @@ final class Package implements JsonSerializable {
     return $this->dirty;
   }
 
+  /**
+   * @return array{
+   *   name: string,
+   *   description: string,
+   *   latest_version: string,
+   *   url: string,
+   *   created_at: int,
+   *   updated_at: int|null
+   * }
+   */
   #[ReturnTypeWillChange]
   public function jsonSerialize(): array {
     return [
