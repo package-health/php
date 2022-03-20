@@ -54,6 +54,10 @@ $console($containerBuilder);
 $processors = require __DIR__ . '/../app/processors.php';
 $processors($containerBuilder);
 
+// Set up services
+$services = require __DIR__ . '/../app/services.php';
+$services($containerBuilder);
+
 // Build PHP-DI Container instance
 $container = $containerBuilder->build();
 

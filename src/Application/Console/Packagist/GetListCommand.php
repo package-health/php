@@ -7,7 +7,7 @@ use App\Application\Message\Event\Package\PackageCreatedEvent;
 use App\Application\Message\Event\Package\PackageRemovedEvent;
 use App\Domain\Package\Package;
 use App\Domain\Package\PackageRepositoryInterface;
-use Buzz\Browser;
+use App\Application\Service\Packagist;
 use Courier\Client\Producer;
 use Exception;
 use InvalidArgumentException;
@@ -27,7 +27,7 @@ final class GetListCommand extends Command {
   protected static $defaultName = 'packagist:get-list';
   private PackageRepositoryInterface $packageRepository;
   private Producer $producer;
-  private Browser $browser;
+  private Packagist $packagist;
 
   /**
    * Command configuration.
@@ -71,41 +71,9 @@ final class GetListCommand extends Command {
         throw new InvalidArgumentException('Invalid mirror option');
       }
 
-      $dataPath = sys_get_temp_dir() . '/list.json';
+      $packageList = $this->packagist->getPackageList($mirror);
 
-      $modTime = false;
-      if (file_exists($dataPath)) {
-        $modTime = filemtime($dataPath);
-      }
-
-      if ($modTime === false || (time() - $modTime) > self::FILE_TIMEOUT) {
-        $url = "${mirror}/packages/list.json";
-        if ($output->isVerbose()) {
-          $io->text(
-            sprintf(
-              "[%s] Downloading a fresh copy of <options=bold;fg=cyan>${url}</>",
-              date('H:i:s'),
-            )
-          );
-        }
-
-        $response = $this->browser->get($url, ['User-Agent' => 'php.package.health (twitter.com/flavioheleno)']);
-        if ($response->getStatusCode() >= 400) {
-          throw new RuntimeException(
-            sprintf(
-              'Request to "%s" returned status code %d',
-              $url,
-              $response->getStatusCode()
-            )
-          );
-        }
-
-        file_put_contents($dataPath, (string)$response->getBody());
-      }
-
-      $json = json_decode(file_get_contents($dataPath), true, 512, JSON_THROW_ON_ERROR);
-
-      $listCount = count($json['packageNames']);
+      $listCount = count($packageList);
 
       $io->text(
         sprintf(
@@ -131,7 +99,7 @@ final class GetListCommand extends Command {
         )
       );
 
-      $addList = array_diff($json['packageNames'], $packages);
+      $addList = array_diff($packageList, $packages);
       $io->text(
         sprintf(
           '[%s] <options=bold;fg=green>%d</> package(s) will be added',
@@ -140,7 +108,7 @@ final class GetListCommand extends Command {
         )
       );
 
-      $removeList = array_diff($packages, $json['packageNames']);
+      $removeList = array_diff($packages, $packageList);
       $io->text(
         sprintf(
           '[%s] <options=bold;fg=red>%d</> package(s) will be removed',
@@ -193,11 +161,11 @@ final class GetListCommand extends Command {
   public function __construct(
     PackageRepositoryInterface $packageRepository,
     Producer $producer,
-    Browser $browser
+    Packagist $packagist
   ) {
     $this->packageRepository = $packageRepository;
     $this->producer          = $producer;
-    $this->browser           = $browser;
+    $this->packagist         = $packagist;
 
     parent::__construct();
   }

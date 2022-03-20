@@ -10,13 +10,13 @@ use App\Application\Message\Event\Stats\StatsCreatedEvent;
 use App\Application\Message\Event\Stats\StatsUpdatedEvent;
 use App\Application\Message\Event\Version\VersionCreatedEvent;
 use App\Application\Message\Event\Version\VersionUpdatedEvent;
+use App\Application\Service\Packagist;
 use App\Domain\Dependency\DependencyRepositoryInterface;
 use App\Domain\Dependency\DependencyStatusEnum;
 use App\Domain\Package\PackageRepositoryInterface;
 use App\Domain\Stats\StatsRepositoryInterface;
 use App\Domain\Version\VersionRepositoryInterface;
 use App\Domain\Version\VersionStatusEnum;
-use Buzz\Browser;
 use Composer\Semver\Comparator;
 use Composer\Semver\Semver;
 use Composer\Semver\VersionParser;
@@ -43,8 +43,8 @@ final class GetDataCommand extends Command {
   private DependencyRepositoryInterface $dependencyRepository;
   private StatsRepositoryInterface $statsRepository;
   private Producer $producer;
-  private Browser $browser;
   private VersionParser $versionParser;
+  private Packagist $packagist;
 
   /**
    * Command configuration.
@@ -95,48 +95,12 @@ final class GetDataCommand extends Command {
 
       $packageName = $input->getArgument('package');
 
-      $dataPath = sprintf(
-        '%s/packages-%s.json',
-        sys_get_temp_dir(),
-        str_replace('/', '-', $packageName)
-      );
-
-      $modTime = false;
-      if (file_exists($dataPath)) {
-        $modTime = filemtime($dataPath);
-      }
-
-      if ($modTime === false || (time() - $modTime) > self::FILE_TIMEOUT) {
-        $url = "${mirror}/packages/${packageName}.json";
-        if ($output->isVerbose()) {
-          $io->text(
-            sprintf(
-              "[%s] Downloading a fresh copy of <options=bold;fg=cyan>${url}</>",
-              date('H:i:s'),
-            )
-          );
-        }
-
-        $response = $this->browser->get($url, ['User-Agent' => 'php.package.health (twitter.com/flavioheleno)']);
-        if ($response->getStatusCode() >= 400) {
-          throw new RuntimeException(
-            sprintf(
-              'Request to "%s" returned status code %d',
-              $url,
-              $response->getStatusCode()
-            )
-          );
-        }
-
-        file_put_contents($dataPath, (string)$response->getBody());
-      }
-
-      $json = json_decode(file_get_contents($dataPath), true, 512, JSON_THROW_ON_ERROR);
+      $metadata = $this->packagist->getPackageMetadataVersion1($packageName, $mirror);
 
       $package = $this->packageRepository->get($packageName);
       $package = $package
-        ->withDescription($json['package']['description'] ?? '')
-        ->withUrl($json['package']['repository'] ?? '');
+        ->withDescription($metadata['description'] ?? '')
+        ->withUrl($metadata['repository'] ?? '');
       if ($package->isDirty()) {
         $package = $this->packageRepository->update($package);
         $this->producer->sendEvent(
@@ -151,15 +115,15 @@ final class GetDataCommand extends Command {
       if ($this->statsRepository->exists($packageName)) {
         $stats = $this->statsRepository->get($packageName);
         $stats = $stats
-          ->withGithubStars($json['package']['github_stars'] ?? 0)
-          ->withGithubWatchers($json['package']['github_watchers'] ?? 0)
-          ->withGithubForks($json['package']['github_forks'] ?? 0)
-          ->withDependents($json['package']['dependents'] ?? 0)
-          ->withSuggesters($json['package']['suggesters'] ?? 0)
-          ->withFavers($json['package']['favers'] ?? 0)
-          ->withTotalDownloads($json['package']['downloads']['total'] ?? 0)
-          ->withMonthlyDownloads($json['package']['downloads']['monthly'] ?? 0)
-          ->withDailyDownloads($json['package']['downloads']['daily'] ?? 0);
+          ->withGithubStars($metadata['github_stars'] ?? 0)
+          ->withGithubWatchers($metadata['github_watchers'] ?? 0)
+          ->withGithubForks($metadata['github_forks'] ?? 0)
+          ->withDependents($metadata['dependents'] ?? 0)
+          ->withSuggesters($metadata['suggesters'] ?? 0)
+          ->withFavers($metadata['favers'] ?? 0)
+          ->withTotalDownloads($metadata['downloads']['total'] ?? 0)
+          ->withMonthlyDownloads($metadata['downloads']['monthly'] ?? 0)
+          ->withDailyDownloads($metadata['downloads']['daily'] ?? 0);
 
         if ($stats->isDirty()) {
           $stats = $this->statsRepository->update($stats);
@@ -170,15 +134,15 @@ final class GetDataCommand extends Command {
       } else {
         $stats = $this->statsRepository->create(
           $packageName,
-          $json['package']['github_stars'] ?? 0,
-          $json['package']['github_watchers'] ?? 0,
-          $json['package']['github_forks'] ?? 0,
-          $json['package']['dependents'] ?? 0,
-          $json['package']['suggesters'] ?? 0,
-          $json['package']['favers'] ?? 0,
-          $json['package']['downloads']['total'] ?? 0,
-          $json['package']['downloads']['monthly'] ?? 0,
-          $json['package']['downloads']['daily'] ?? 0
+          $metadata['github_stars'] ?? 0,
+          $metadata['github_watchers'] ?? 0,
+          $metadata['github_forks'] ?? 0,
+          $metadata['dependents'] ?? 0,
+          $metadata['suggesters'] ?? 0,
+          $metadata['favers'] ?? 0,
+          $metadata['downloads']['total'] ?? 0,
+          $metadata['downloads']['monthly'] ?? 0,
+          $metadata['downloads']['daily'] ?? 0
         );
 
         $this->producer->sendEvent(
@@ -191,16 +155,16 @@ final class GetDataCommand extends Command {
           sprintf(
             '[%s] Found <options=bold;fg=cyan>%d</> releases',
             date('H:i:s'),
-            count($json['package']['versions'])
+            count($metadata['versions'])
           )
         );
       }
 
-      if (count($json['package']['versions']) === 0) {
+      if (count($metadata['versions']) === 0) {
         return Command::SUCCESS;
       }
 
-      foreach (array_reverse($json['package']['versions']) as $release) {
+      foreach (array_reverse($metadata['versions']) as $release) {
         // exclude branches from tagged releases (https://getcomposer.org/doc/articles/versions.md#branches)
         $isBranch = preg_match('/^dev-|-dev$/', $release['version']) === 1;
 
@@ -471,16 +435,16 @@ final class GetDataCommand extends Command {
     DependencyRepositoryInterface $dependencyRepository,
     StatsRepositoryInterface $statsRepository,
     Producer $producer,
-    Browser $browser,
-    VersionParser $versionParser
+    VersionParser $versionParser,
+    Packagist $packagist
   ) {
     $this->packageRepository    = $packageRepository;
     $this->versionRepository    = $versionRepository;
     $this->dependencyRepository = $dependencyRepository;
     $this->statsRepository      = $statsRepository;
     $this->producer             = $producer;
-    $this->browser              = $browser;
     $this->versionParser        = $versionParser;
+    $this->packagist            = $packagist;
 
     parent::__construct();
   }
