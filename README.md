@@ -10,6 +10,7 @@ Interface assets:
 
 * [Bulma CSS Framework](https://bulma.io/)
 * [CoreUI Icons](https://icons.coreui.io/icons/)
+* [Favicon](https://favicon.io/)
 
 Project Idea:
 

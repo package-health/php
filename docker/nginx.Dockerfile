@@ -13,6 +13,7 @@ COPY docker/nginx/upstream.conf.template /etc/nginx/templates/upstream.conf.temp
 
 # static assets
 COPY public/css/ /usr/share/nginx/html/css/
+COPY public/favicon/ /usr/share/nginx/html/favicon/
 COPY public/fonts/ /usr/share/nginx/html/fonts/
 COPY public/sprites/ /usr/share/nginx/html/sprites/
 COPY public/svg/ /usr/share/nginx/html/svg/

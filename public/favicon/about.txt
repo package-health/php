@@ -1,0 +1,6 @@
+This favicon was generated using the following font:
+
+- Font Title: Heebo
+- Font Author: Copyright 2014 The Heebo Project Authors (https://github.com/OdedEzer/heebo)
+- Font Source: http://fonts.gstatic.com/s/heebo/v18/NGSpv5_NC0k9P_v6ZUCbLRAHxK1E1yycckOnz02SXQ.ttf
+- Font License: SIL Open Font License, 1.1 (http://scripts.sil.org/OFL))
