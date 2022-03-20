@@ -120,7 +120,7 @@ final class ViewPackageBadgeAction extends AbstractPackageAction {
 
       case VersionStatusEnum::NoDeps:
         $status = [
-          'text'  => 'no deps',
+          'text'  => 'none',
           'color' => 'blue'
         ];
         break;

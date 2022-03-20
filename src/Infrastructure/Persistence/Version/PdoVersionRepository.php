@@ -64,16 +64,10 @@ final class PdoVersionRepository implements VersionRepositoryInterface {
     );
   }
 
-  /**
-   * {@inheritdoc}
-   */
   public function all(): VersionCollection {
     return new VersionCollection();
   }
 
-  /**
-   * {@inheritdoc}
-   */
   public function get(int $id): Version {
     static $stmt = null;
     if ($stmt === null) {
@@ -96,9 +90,6 @@ final class PdoVersionRepository implements VersionRepositoryInterface {
     return $this->hydrate($row);
   }
 
-  /**
-   * {@inheritdoc}
-   */
   public function find(array $query): VersionCollection {
     $where = [];
     $cols = array_keys($query);

@@ -51,9 +51,6 @@ final class PdoPackageRepository implements PackageRepositoryInterface {
     );
   }
 
-  /**
-   * {@inheritdoc}
-   */
   public function all(): PackageCollection {
     static $stmt = null;
     if ($stmt === null) {
@@ -74,34 +71,37 @@ final class PdoPackageRepository implements PackageRepositoryInterface {
     return $packageCol;
   }
 
-  /**
-   * {@inheritdoc}
-   */
-  public function findPopular(): PackageCollection {
+  public function findPopular(int $limit = 10): PackageCollection {
     static $stmt = null;
     if ($stmt === null) {
       $stmt = $this->pdo->query(
         <<<SQL
-          SELECT "packages".*
+          SELECT "dependencies"."name", COUNT("dependencies".*) AS "total"
           FROM "packages"
-          LEFT JOIN "stats" ON ("stats"."package_name" = "packages"."name")
-          ORDER BY "stats"."daily_downloads" DESC, "packages"."created_at" ASC
-          LIMIT 10
+          INNER JOIN "versions" ON (
+            "versions"."package_name" = "packages"."name" AND
+            "versions"."number" = "packages"."latest_version"
+          )
+          INNER JOIN "dependencies" ON ("dependencies"."version_id" = "versions"."id")
+          WHERE "packages"."latest_version" != '' AND "versions"."release" IS TRUE
+          GROUP BY "dependencies"."name"
+          ORDER BY "total" DESC
         SQL
       );
     }
 
     $packageCol = new PackageCollection();
-    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-      $packageCol->add($this->hydrate($row));
+    while (($row = $stmt->fetch(PDO::FETCH_ASSOC)) && $packageCol->count() < $limit) {
+      if ($this->exists($row['name']) === false) {
+        continue;
+      }
+
+      $packageCol->add($this->get($row['name']));
     }
 
     return $packageCol;
   }
 
-  /**
-   * {@inheritdoc}
-   */
   public function exists(string $name): bool {
     static $stmt = null;
     if ($stmt === null) {
@@ -119,9 +119,6 @@ final class PdoPackageRepository implements PackageRepositoryInterface {
     return $stmt->rowCount() === 1;
   }
 
-  /**
-   * {@inheritdoc}
-   */
   public function get(string $name): Package {
     static $stmt = null;
     if ($stmt === null) {
@@ -144,9 +141,6 @@ final class PdoPackageRepository implements PackageRepositoryInterface {
     return $this->hydrate($row);
   }
 
-  /**
-   * {@inheritdoc}
-   */
   public function find(array $query): PackageCollection {
     $where = [];
     foreach (array_keys($query) as $col) {

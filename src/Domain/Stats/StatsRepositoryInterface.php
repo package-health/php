@@ -19,6 +19,8 @@ interface StatsRepositoryInterface {
 
   public function all(): StatsCollection;
 
+  public function findPopular(): StatsCollection;
+
   public function exists(string $packageName): bool;
 
   /**

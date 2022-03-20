@@ -8,7 +8,7 @@ interface PackageRepositoryInterface {
 
   public function all(): PackageCollection;
 
-  public function findPopular(): PackageCollection;
+  public function findPopular(int $limit = 10): PackageCollection;
 
   public function exists(string $name): bool;
 

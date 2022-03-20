@@ -80,9 +80,6 @@ final class PdoStatsRepository implements StatsRepositoryInterface {
     );
   }
 
-  /**
-   * {@inheritdoc}
-   */
   public function all(): StatsCollection {
     static $stmt = null;
     if ($stmt === null) {
@@ -103,9 +100,28 @@ final class PdoStatsRepository implements StatsRepositoryInterface {
     return $statsCol;
   }
 
-  /**
-   * {@inheritdoc}
-   */
+  public function findPopular(): StatsCollection {
+    static $stmt = null;
+    if ($stmt === null) {
+      $stmt = $this->pdo->query(
+        <<<SQL
+          SELECT "stats".*
+          FROM "stats"
+          INNER JOIN "packages" ON ("packages"."name" = "stats"."package_name")
+          ORDER BY "stats"."daily_downloads" DESC, "packages"."created_at" ASC
+          LIMIT 10
+        SQL
+      );
+    }
+
+    $statsCol = new StatsCollection();
+    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+      $statsCol->add($this->hydrate($row));
+    }
+
+    return $statsCol;
+  }
+
   public function exists(string $packageName): bool {
     static $stmt = null;
     if ($stmt === null) {
@@ -124,9 +140,6 @@ final class PdoStatsRepository implements StatsRepositoryInterface {
     return $stmt->rowCount() === 1;
   }
 
-  /**
-   * {@inheritdoc}
-   */
   public function get(string $packageName): Stats {
     static $stmt = null;
     if ($stmt === null) {
@@ -149,9 +162,6 @@ final class PdoStatsRepository implements StatsRepositoryInterface {
     return $this->hydrate($row);
   }
 
-  /**
-   * {@inheritdoc}
-   */
   public function find(array $query): StatsCollection {
     $where = [];
     foreach (array_keys($query) as $col) {
