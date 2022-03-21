@@ -21,7 +21,7 @@ jobs:
 
       # https://github.com/docker/build-push-action/blob/master/docs/advanced/cache.md#local-cache
       - name: Cache Docker layers
-        uses: actions/cache@v2.1.7
+        uses: actions/cache@v3
         with:
           path: /tmp/.buildx-cache
           key: ${{ runner.os }}-buildx-${{ github.sha }}
