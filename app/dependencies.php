@@ -16,6 +16,7 @@ use DI\ContainerBuilder;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Monolog\Processor\UidProcessor;
+use Nyholm\Dsn\DsnParser;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Container\ContainerInterface;
@@ -58,14 +59,14 @@ return static function (ContainerBuilder $containerBuilder): void {
         ];
 
         if ($settings->has('cache.redis')) {
-          $dsn = parse_url($settings->getString('cache.redis'));
+          $dsn = DsnParser::parse($settings->getString('cache.redis'));
 
           $drivers[] = new Redis(
             [
               'servers' => [
                 [
-                  'server' => $dsn['host'] ?? 'localhost',
-                  'port'   => $dsn['port'] ?? 6379
+                  'server' => $dsn->getHost() ?? 'localhost',
+                  'port'   => $dsn->getPort() ?? 6379
                 ]
               ]
             ]
@@ -121,17 +122,17 @@ return static function (ContainerBuilder $containerBuilder): void {
       },
       PDO::class => function (ContainerInterface $container): PDO {
         $settings = $container->get(SettingsInterface::class);
-        $dsn = parse_url($settings->getString('db.dsn'));
+        $dsn = DsnParser::parse($settings->getString('db.dsn'));
 
         return new PDO(
           sprintf(
             '%s:host=%s;port=%d;dbname=%s;user=%s;password=%s',
-            $dsn['scheme'] ?? 'pgsql',
-            $dsn['host'] ?? 'localhost',
-            $dsn['port'] ?? 5432,
-            ltrim($dsn['path'] ?? 'postgres', '/'),
-            $dsn['user'] ?? 'postgres',
-            $dsn['pass'] ?? '',
+            $dsn->getScheme() ?? 'pgsql',
+            $dsn->getHost() ?? 'localhost',
+            $dsn->getPort() ?? 5432,
+            ltrim($dsn->getPath() ?? 'postgres', '/'),
+            $dsn->getUser() ?? 'postgres',
+            $dsn->getPassword() ?? '',
           ),
           options: [
             PDO::ATTR_EMULATE_PREPARES => false,

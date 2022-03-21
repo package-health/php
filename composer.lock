@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "59dd7d00fdf73719c4ed7c4700ec8c5c",
+    "content-hash": "317e4117326e2c3077a2b8683272eb7d",
     "packages": [
         {
             "name": "badges/poser",
@@ -480,12 +480,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/courier-php/courier.git",
-                "reference": "8db33b9e09df9602eb2ba40618addc455df81b18"
+                "reference": "742e8ead489a3a463bef439edf92ccb30bbad7f2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/courier-php/courier/zipball/8db33b9e09df9602eb2ba40618addc455df81b18",
-                "reference": "8db33b9e09df9602eb2ba40618addc455df81b18",
+                "url": "https://api.github.com/repos/courier-php/courier/zipball/742e8ead489a3a463bef439edf92ccb30bbad7f2",
+                "reference": "742e8ead489a3a463bef439edf92ccb30bbad7f2",
                 "shasum": ""
             },
             "require": {
@@ -528,7 +528,7 @@
                 "issues": "https://github.com/courier-php/courier/issues",
                 "source": "https://github.com/courier-php/courier/tree/main"
             },
-            "time": "2022-03-16T01:32:53+00:00"
+            "time": "2022-03-20T19:28:22+00:00"
         },
         {
             "name": "courier/locator-container",
@@ -593,12 +593,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/courier-php/transport-amqp.git",
-                "reference": "6952a6af195255d13431aa2bad64011b919fe606"
+                "reference": "b945eb9ff0c1f4b57698b4a7880eb6b85d67568c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/courier-php/transport-amqp/zipball/6952a6af195255d13431aa2bad64011b919fe606",
-                "reference": "6952a6af195255d13431aa2bad64011b919fe606",
+                "url": "https://api.github.com/repos/courier-php/transport-amqp/zipball/b945eb9ff0c1f4b57698b4a7880eb6b85d67568c",
+                "reference": "b945eb9ff0c1f4b57698b4a7880eb6b85d67568c",
                 "shasum": ""
             },
             "require": {
@@ -608,14 +608,14 @@
                 "php": ">=8.1"
             },
             "require-dev": {
-                "infection/infection": "^0.25",
-                "php-parallel-lint/php-parallel-lint": "^1.2",
-                "phpstan/phpstan": "^0.12.58",
+                "infection/infection": "^0.26",
+                "php-parallel-lint/php-parallel-lint": "^1.3",
+                "phpstan/phpstan": "^1.4",
                 "phpunit/phpunit": "^9.5",
-                "psy/psysh": "^0.10.5",
+                "psy/psysh": "^0.11",
                 "roave/security-advisories": "dev-latest",
-                "squizlabs/php_codesniffer": "^3.5",
-                "vimeo/psalm": "^4.3"
+                "squizlabs/php_codesniffer": "^3.6",
+                "vimeo/psalm": "^4.8"
             },
             "default-branch": true,
             "type": "library",
@@ -642,7 +642,7 @@
                 "issues": "https://github.com/courier-php/transport-amqp/issues",
                 "source": "https://github.com/courier-php/transport-amqp/tree/main"
             },
-            "time": "2022-03-15T18:53:45+00:00"
+            "time": "2022-03-20T19:26:45+00:00"
         },
         {
             "name": "graham-campbell/result-type",
@@ -6088,12 +6088,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Roave/SecurityAdvisories.git",
-                "reference": "4701a5552ca324de5333d742d51d9cf2786f3186"
+                "reference": "681ac6df534af9555084589696aca768376a3e2b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/4701a5552ca324de5333d742d51d9cf2786f3186",
-                "reference": "4701a5552ca324de5333d742d51d9cf2786f3186",
+                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/681ac6df534af9555084589696aca768376a3e2b",
+                "reference": "681ac6df534af9555084589696aca768376a3e2b",
                 "shasum": ""
             },
             "conflict": {
@@ -6268,7 +6268,7 @@
                 "magento/magento1ee": ">=1,<1.14.4.3",
                 "magento/product-community-edition": ">=2,<2.2.10|>=2.3,<2.3.2-p.2",
                 "marcwillmann/turn": "<0.3.3",
-                "matyhtf/framework": "<=3.0.5",
+                "matyhtf/framework": "<3.0.6",
                 "mautic/core": "<4.2|= 2.13.1",
                 "mediawiki/core": ">=1.27,<1.27.6|>=1.29,<1.29.3|>=1.30,<1.30.2|>=1.31,<1.31.9|>=1.32,<1.32.6|>=1.32.99,<1.33.3|>=1.33.99,<1.34.3|>=1.34.99,<1.35",
                 "microweber/microweber": "<1.3",
@@ -6542,7 +6542,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-03-18T16:08:45+00:00"
+            "time": "2022-03-21T11:08:46+00:00"
         },
         {
             "name": "sanmai/later",

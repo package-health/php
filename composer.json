@@ -42,6 +42,7 @@
     "courier/transport-amqp": "dev-main",
     "kriswallsmith/buzz": "^1.2",
     "monolog/monolog": "^2.3",
+    "nyholm/dsn": "^2.0",
     "nyholm/psr7": "^1.5",
     "nyholm/psr7-server": "^1.0",
     "php-di/php-di": "^6.3",
