@@ -4,16 +4,17 @@ declare(strict_types = 1);
 use App\Application\Settings\Settings;
 use App\Application\Settings\SettingsInterface;
 use DI\ContainerBuilder;
-use Monolog\Logger;
+use Psr\Log\LogLevel;
 
 return static function (ContainerBuilder $containerBuilder): void {
   // Global Settings Object
   $containerBuilder->addDefinitions(
     [
-      SettingsInterface::class => function () {
+      SettingsInterface::class => static function (): SettingsInterface {
         return new Settings(
           [
             'cache' => [
+              'enabled' => PHP_SAPI !== 'cli',
               'redis' => "redis://${_ENV['REDIS_HOST']}:${_ENV['REDIS_PORT']}"
             ],
             'db' => [
@@ -28,7 +29,7 @@ return static function (ContainerBuilder $containerBuilder): void {
             'logger' => [
               'name' => 'slim-app',
               'path' => isset($_ENV['docker']) ? 'php://stdout' : __DIR__ . '/../logs/app.log',
-              'level' => Logger::DEBUG,
+              'level' => LogLevel::DEBUG,
             ]
           ]
         );

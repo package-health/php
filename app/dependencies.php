@@ -27,6 +27,7 @@ use PUGX\Poser\Render\SvgFlatSquareRender;
 use PUGX\Poser\Render\SvgPlasticRender;
 use Slim\HttpCache\CacheProvider;
 use Slim\Views\Twig;
+use Stash\Driver\BlackHole;
 use Stash\Driver\Composite;
 use Stash\Driver\Ephemeral;
 use Stash\Driver\FileSystem;
@@ -54,6 +55,13 @@ return static function (ContainerBuilder $containerBuilder): void {
       CacheItemPoolInterface::class => function (ContainerInterface $container): Pool {
         $settings = $container->get(SettingsInterface::class);
 
+        // disables cache by using a black hole driver
+        if ($settings->has('cache') === false || $settings->getBool('cache.enabled', false) === false) {
+          return new Pool(
+            new BlackHole()
+          );
+        }
+
         $drivers = [
           new Ephemeral()
         ];
@@ -79,17 +87,13 @@ return static function (ContainerBuilder $containerBuilder): void {
           ]
         );
 
-        if (count($drivers) > 1) {
-          $driver = new Composite(
+        return new Pool(
+          new Composite(
             [
               'drivers' => $drivers
             ]
-          );
-
-          return new Pool($driver);
-        }
-
-        return new Pool($drivers[0]);
+          )
+        );
       },
       Consumer::class => function (ContainerInterface $container): Consumer {
         return new Consumer(

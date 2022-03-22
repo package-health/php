@@ -1,6 +1,7 @@
 <?php
 declare(strict_types = 1);
 
+use App\Application\Settings\SettingsInterface;
 use App\Domain\Dependency\DependencyRepositoryInterface;
 use App\Domain\Package\PackageRepositoryInterface;
 use App\Domain\Stats\StatsRepositoryInterface;
@@ -23,7 +24,13 @@ return static function (ContainerBuilder $containerBuilder): void {
     [
       // Dependency
       PdoDependencyRepository::class => autowire(PdoDependencyRepository::class),
-      DependencyRepositoryInterface::class => static function (ContainerInterface $container): CachedDependencyRepository {
+      DependencyRepositoryInterface::class => static function (ContainerInterface $container): DependencyRepositoryInterface {
+        $settings = $container->get(SettingsInterface::class);
+
+        if ($settings->has('cache') === false || $settings->getBool('cache.enabled', false) === false) {
+          return $container->get(PdoDependencyRepository::class);
+        }
+
         return new CachedDependencyRepository(
           $container->get(PdoDependencyRepository::class),
           $container->get(CacheItemPoolInterface::class)
@@ -31,7 +38,13 @@ return static function (ContainerBuilder $containerBuilder): void {
       },
       // Package
       PdoPackageRepository::class => autowire(PdoPackageRepository::class),
-      PackageRepositoryInterface::class => static function (ContainerInterface $container): CachedPackageRepository {
+      PackageRepositoryInterface::class => static function (ContainerInterface $container): PackageRepositoryInterface {
+        $settings = $container->get(SettingsInterface::class);
+
+        if ($settings->has('cache') === false || $settings->getBool('cache.enabled', false) === false) {
+          return $container->get(PdoPackageRepository::class);
+        }
+
         return new CachedPackageRepository(
           $container->get(PdoPackageRepository::class),
           $container->get(CacheItemPoolInterface::class)
@@ -39,7 +52,13 @@ return static function (ContainerBuilder $containerBuilder): void {
       },
       // Stats
       PdoStatsRepository::class => autowire(PdoStatsRepository::class),
-      StatsRepositoryInterface::class => static function (ContainerInterface $container): CachedStatsRepository {
+      StatsRepositoryInterface::class => static function (ContainerInterface $container): StatsRepositoryInterface {
+        $settings = $container->get(SettingsInterface::class);
+
+        if ($settings->has('cache') === false || $settings->getBool('cache.enabled', false) === false) {
+          return $container->get(PdoStatsRepository::class);
+        }
+
         return new CachedStatsRepository(
           $container->get(PdoStatsRepository::class),
           $container->get(CacheItemPoolInterface::class)
@@ -47,7 +66,13 @@ return static function (ContainerBuilder $containerBuilder): void {
       },
       // Version
       PdoVersionRepository::class => autowire(PdoVersionRepository::class),
-      VersionRepositoryInterface::class => static function (ContainerInterface $container): CachedVersionRepository {
+      VersionRepositoryInterface::class => static function (ContainerInterface $container): VersionRepositoryInterface {
+        $settings = $container->get(SettingsInterface::class);
+
+        if ($settings->has('cache') === false || $settings->getBool('cache.enabled', false) === false) {
+          return $container->get(PdoVersionRepository::class);
+        }
+
         return new CachedVersionRepository(
           $container->get(PdoVersionRepository::class),
           $container->get(CacheItemPoolInterface::class)
