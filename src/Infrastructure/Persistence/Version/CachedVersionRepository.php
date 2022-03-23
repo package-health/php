@@ -7,6 +7,7 @@ use App\Domain\Version\Version;
 use App\Domain\Version\VersionCollection;
 use App\Domain\Version\VersionRepositoryInterface;
 use App\Domain\Version\VersionStatusEnum;
+use DateTimeImmutable;
 use Psr\Cache\CacheItemPoolInterface;
 
 final class CachedVersionRepository implements VersionRepositoryInterface {
@@ -26,14 +27,16 @@ final class CachedVersionRepository implements VersionRepositoryInterface {
     string $normalized,
     string $packageName,
     bool $release,
-    VersionStatusEnum $status = VersionStatusEnum::Unknown
+    VersionStatusEnum $status = VersionStatusEnum::Unknown,
+    DateTimeImmutable $createdAt = new DateTimeImmutable()
   ): Version {
     return $this->versionRepository->create(
       $number,
       $normalized,
       $packageName,
       $release,
-      $status
+      $status,
+      $createdAt
     );
   }
 

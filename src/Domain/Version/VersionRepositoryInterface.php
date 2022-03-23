@@ -3,14 +3,16 @@ declare(strict_types = 1);
 
 namespace App\Domain\Version;
 
-interface VersionRepositoryInterface {
+use DateTimeImmutable;
 
+interface VersionRepositoryInterface {
   public function create(
     string $number,
     string $normalized,
     string $packageName,
     bool $release,
-    VersionStatusEnum $status = VersionStatusEnum::Unknown
+    VersionStatusEnum $status = VersionStatusEnum::Unknown,
+    DateTimeImmutable $createdAt = new DateTimeImmutable()
   ): Version;
 
   public function all(): VersionCollection;

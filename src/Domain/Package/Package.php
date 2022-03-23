@@ -23,14 +23,14 @@ final class Package implements JsonSerializable {
     string $description,
     string $latestVersion,
     string $url,
-    DateTimeImmutable $createdAt = null,
+    DateTimeImmutable $createdAt = new DateTimeImmutable(),
     DateTimeImmutable $updatedAt = null
   ) {
     $this->name          = $name;
     $this->description   = $description;
     $this->latestVersion = $latestVersion;
     $this->url           = $url;
-    $this->createdAt     = $createdAt ?? new DateTimeImmutable();
+    $this->createdAt     = $createdAt;
     $this->updatedAt     = $updatedAt;
 
     [$this->vendor, $this->project] = explode('/', $name);
@@ -129,7 +129,7 @@ final class Package implements JsonSerializable {
       'latest_version' => $this->latestVersion,
       'url'            => $this->url,
       'created_at'     => $this->createdAt->getTimestamp(),
-      'updated_at'     => $this->updatedAt?->getTimestamp(),
+      'updated_at'     => $this->updatedAt?->getTimestamp()
     ];
   }
 }

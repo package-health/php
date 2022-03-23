@@ -49,7 +49,8 @@ final class PdoVersionRepository implements VersionRepositoryInterface {
     string $normalized,
     string $packageName,
     bool $release,
-    VersionStatusEnum $status = VersionStatusEnum::Unknown
+    VersionStatusEnum $status = VersionStatusEnum::Unknown,
+    DateTimeImmutable $createdAt = new DateTimeImmutable()
   ): Version {
     return $this->save(
       new Version(
@@ -59,13 +60,26 @@ final class PdoVersionRepository implements VersionRepositoryInterface {
         $packageName,
         $release,
         $status,
-        new DateTimeImmutable()
+        $createdAt
       )
     );
   }
 
   public function all(): VersionCollection {
-    return new VersionCollection();
+    $stmt = $this->pdo->query(
+      <<<SQL
+        SELECT *
+        FROM "versions"
+        ORDER BY "created_at"
+      SQL
+    );
+
+    $versionCol = new VersionCollection();
+    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+      $versionCol->add($this->hydrate($row));
+    }
+
+    return $versionCol;
   }
 
   public function get(int $id): Version {

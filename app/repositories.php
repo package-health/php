@@ -4,12 +4,15 @@ declare(strict_types = 1);
 use App\Application\Settings\SettingsInterface;
 use App\Domain\Dependency\DependencyRepositoryInterface;
 use App\Domain\Package\PackageRepositoryInterface;
+use App\Domain\Preference\PreferenceRepositoryInterface;
 use App\Domain\Stats\StatsRepositoryInterface;
 use App\Domain\Version\VersionRepositoryInterface;
 use App\Infrastructure\Persistence\Dependency\CachedDependencyRepository;
 use App\Infrastructure\Persistence\Dependency\PdoDependencyRepository;
 use App\Infrastructure\Persistence\Package\CachedPackageRepository;
 use App\Infrastructure\Persistence\Package\PdoPackageRepository;
+use App\Infrastructure\Persistence\Preference\CachedPreferenceRepository;
+use App\Infrastructure\Persistence\Preference\PdoPreferenceRepository;
 use App\Infrastructure\Persistence\Stats\CachedStatsRepository;
 use App\Infrastructure\Persistence\Stats\PdoStatsRepository;
 use App\Infrastructure\Persistence\Version\CachedVersionRepository;
@@ -47,6 +50,20 @@ return static function (ContainerBuilder $containerBuilder): void {
 
         return new CachedPackageRepository(
           $container->get(PdoPackageRepository::class),
+          $container->get(CacheItemPoolInterface::class)
+        );
+      },
+      // Preference
+      PdoPreferenceRepository::class => autowire(PdoPreferenceRepository::class),
+      PreferenceRepositoryInterface::class => static function (ContainerInterface $container): PreferenceRepositoryInterface {
+        $settings = $container->get(SettingsInterface::class);
+
+        if ($settings->has('cache') === false || $settings->getBool('cache.enabled', false) === false) {
+          return $container->get(PdoPreferenceRepository::class);
+        }
+
+        return new CachedPreferenceRepository(
+          $container->get(PdoPreferenceRepository::class),
           $container->get(CacheItemPoolInterface::class)
         );
       },

@@ -14,8 +14,8 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-final class QueueConsumerCommand extends Command {
-  protected static $defaultName = 'queue:consumer';
+final class QueueConsumeCommand extends Command {
+  protected static $defaultName = 'queue:consume';
   private Consumer $consumer;
 
   /**
@@ -25,7 +25,7 @@ final class QueueConsumerCommand extends Command {
    */
   protected function configure(): void {
     $this
-      ->setDescription('Consume all message bus queues');
+      ->setDescription('Consume message bus queues');
   }
 
   /**

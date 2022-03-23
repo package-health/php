@@ -49,7 +49,8 @@ final class PdoDependencyRepository implements DependencyRepositoryInterface {
     string $name,
     string $constraint,
     bool $development = false,
-    DependencyStatusEnum $status = DependencyStatusEnum::Unknown
+    DependencyStatusEnum $status = DependencyStatusEnum::Unknown,
+    DateTimeImmutable $createdAt = new DateTimeImmutable()
   ): Dependency {
     return $this->save(
       new Dependency(
@@ -59,13 +60,26 @@ final class PdoDependencyRepository implements DependencyRepositoryInterface {
         $constraint,
         $development,
         $status,
-        new DateTimeImmutable()
+        $createdAt
       )
     );
   }
 
   public function all(): DependencyCollection {
-    return new DependencyCollection();
+    $stmt = $this->pdo->query(
+      <<<SQL
+        SELECT *
+        FROM "dependencies"
+        ORDER BY "created_at"
+      SQL
+    );
+
+    $dependencyCol = new DependencyCollection();
+    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+      $dependencyCol->add($this->hydrate($row));
+    }
+
+    return $dependencyCol;
   }
 
   public function get(int $id): Dependency {

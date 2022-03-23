@@ -7,6 +7,7 @@ use App\Domain\Dependency\Dependency;
 use App\Domain\Dependency\DependencyCollection;
 use App\Domain\Dependency\DependencyRepositoryInterface;
 use App\Domain\Dependency\DependencyStatusEnum;
+use DateTimeImmutable;
 use Psr\Cache\CacheItemPoolInterface;
 
 final class CachedDependencyRepository implements DependencyRepositoryInterface {
@@ -26,14 +27,16 @@ final class CachedDependencyRepository implements DependencyRepositoryInterface 
     string $name,
     string $constraint,
     bool $development = false,
-    DependencyStatusEnum $status = DependencyStatusEnum::Unknown
+    DependencyStatusEnum $status = DependencyStatusEnum::Unknown,
+    DateTimeImmutable $createdAt = new DateTimeImmutable()
   ): Dependency {
     return $this->dependencyRepository->create(
       $versionId,
       $name,
       $constraint,
       $development,
-      $status
+      $status,
+      $createdAt
     );
   }
 

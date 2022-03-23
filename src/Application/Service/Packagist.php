@@ -113,6 +113,10 @@ final class Packagist {
     );
 
     $json = json_decode($content, true, 512, JSON_THROW_ON_ERROR);
+    if (str_ends_with($packageName, '~dev')) {
+      $packageName = substr($packageName, 0, strlen($packageName) - 4);
+    }
+
     if (isset($json['packages'][$packageName]) === false) {
       throw new RuntimeException('Invalid package metadata v2 format');
     }
@@ -122,16 +126,16 @@ final class Packagist {
 
   public function getPackageUpdates(int $since = 0, string $mirror = 'https://packagist.org'): array {
     $content = $this->updateFileContent(
-      "packagist/updates.json",
+      'packagist/updates.json',
       "${mirror}/metadata/changes.json?since=${since}"
     );
 
     $json = json_decode($content, true, 512, JSON_THROW_ON_ERROR);
-    if (isset($json['actions']) === false) {
+    if (isset($json['actions']) === false || isset($json['timestamp']) === false) {
       throw new RuntimeException('Invalid package updates format');
     }
 
-    return $json['actions'];
+    return $json;
   }
 
   public function getSecurityAdvisories(string $packageName, string $mirror = 'https://packagist.org'): array {

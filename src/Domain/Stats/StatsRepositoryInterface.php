@@ -3,6 +3,8 @@ declare(strict_types = 1);
 
 namespace App\Domain\Stats;
 
+use DateTimeImmutable;
+
 interface StatsRepositoryInterface {
   public function create(
     string $packageName,
@@ -14,7 +16,8 @@ interface StatsRepositoryInterface {
     int $favers = 0,
     int $totalDownloads = 0,
     int $monthlyDownloads = 0,
-    int $dailyDownloads = 0
+    int $dailyDownloads = 0,
+    DateTimeImmutable $createdAt = new DateTimeImmutable()
   ): Stats;
 
   public function all(): StatsCollection;

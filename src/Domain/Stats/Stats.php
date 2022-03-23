@@ -33,7 +33,7 @@ final class Stats implements JsonSerializable {
     int $totalDownloads,
     int $monthlyDownloads,
     int $dailyDownloads,
-    DateTimeImmutable $createdAt = null,
+    DateTimeImmutable $createdAt = new DateTimeImmutable(),
     DateTimeImmutable $updatedAt = null
   ) {
     $this->packageName      = $packageName;
@@ -46,7 +46,7 @@ final class Stats implements JsonSerializable {
     $this->totalDownloads   = $totalDownloads;
     $this->monthlyDownloads = $monthlyDownloads;
     $this->dailyDownloads   = $dailyDownloads;
-    $this->createdAt        = $createdAt ?? new DateTimeImmutable();
+    $this->createdAt        = $createdAt;
     $this->updatedAt        = $updatedAt;
   }
 
@@ -249,7 +249,7 @@ final class Stats implements JsonSerializable {
       'monthly_downloads' => $this->monthlyDownloads,
       'daily_downloads'   => $this->dailyDownloads,
       'created_at'        => $this->createdAt->getTimestamp(),
-      'updated_at'        => $this->updatedAt?->getTimestamp(),
+      'updated_at'        => $this->updatedAt?->getTimestamp()
     ];
   }
 }

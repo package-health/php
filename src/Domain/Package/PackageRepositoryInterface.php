@@ -3,8 +3,13 @@ declare(strict_types = 1);
 
 namespace App\Domain\Package;
 
+use DateTimeImmutable;
+
 interface PackageRepositoryInterface {
-  public function create(string $name): Package;
+  public function create(
+    string $name,
+    DateTimeImmutable $createdAt = new DateTimeImmutable()
+  ): Package;
 
   public function all(): PackageCollection;
 

@@ -6,6 +6,7 @@ namespace App\Infrastructure\Persistence\Stats;
 use App\Domain\Stats\Stats;
 use App\Domain\Stats\StatsCollection;
 use App\Domain\Stats\StatsRepositoryInterface;
+use DateTimeImmutable;
 use Psr\Cache\CacheItemPoolInterface;
 
 final class CachedStatsRepository implements StatsRepositoryInterface {
@@ -30,7 +31,8 @@ final class CachedStatsRepository implements StatsRepositoryInterface {
     int $favers = 0,
     int $totalDownloads = 0,
     int $monthlyDownloads = 0,
-    int $dailyDownloads = 0
+    int $dailyDownloads = 0,
+    DateTimeImmutable $createdAt = new DateTimeImmutable()
   ): Stats {
     return $this->statsRepository->create(
       $packageName,
@@ -42,7 +44,8 @@ final class CachedStatsRepository implements StatsRepositoryInterface {
       $favers,
       $totalDownloads,
       $monthlyDownloads,
-      $dailyDownloads
+      $dailyDownloads,
+      $createdAt
     );
   }
 

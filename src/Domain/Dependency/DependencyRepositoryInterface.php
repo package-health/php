@@ -3,14 +3,16 @@ declare(strict_types = 1);
 
 namespace App\Domain\Dependency;
 
-interface DependencyRepositoryInterface {
+use DateTimeImmutable;
 
+interface DependencyRepositoryInterface {
   public function create(
     int $versionId,
     string $name,
     string $constraint,
     bool $development = false,
-    DependencyStatusEnum $status = DependencyStatusEnum::Unknown
+    DependencyStatusEnum $status = DependencyStatusEnum::Unknown,
+    DateTimeImmutable $createdAt = new DateTimeImmutable()
   ): Dependency;
 
   public function all(): DependencyCollection;

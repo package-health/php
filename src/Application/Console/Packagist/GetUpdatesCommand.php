@@ -3,9 +3,12 @@ declare(strict_types = 1);
 
 namespace App\Application\Console\Packagist;
 
-use App\Domain\Package\Package;
+use App\Application\Message\Command\PackageDiscoveryCommand;
+use App\Application\Service\Packagist;
 use App\Domain\Package\PackageRepositoryInterface;
-use Buzz\Browser;
+use App\Domain\Preference\PreferenceRepositoryInterface;
+use App\Domain\Preference\PreferenceTypeEnum;
+use Courier\Client\Producer;
 use Exception;
 use InvalidArgumentException;
 use RuntimeException;
@@ -22,8 +25,10 @@ final class GetUpdatesCommand extends Command {
   private const FILE_TIMEOUT = 43200;
 
   protected static $defaultName = 'packagist:get-updates';
+  private PreferenceRepositoryInterface $preferenceRepository;
   private PackageRepositoryInterface $packageRepository;
-  private Browser $browser;
+  private Packagist $packagist;
+  private Producer $producer;
 
   /**
    * Command configuration.
@@ -67,56 +72,62 @@ final class GetUpdatesCommand extends Command {
         throw new InvalidArgumentException('Invalid mirror option');
       }
 
-      $dataPath = sys_get_temp_dir() . '/changes.json';
+      $preferenceCol = $this->preferenceRepository->find(
+        [
+          'category' => 'packagist',
+          'property' => 'timestamp'
+        ]
+      );
 
-      $modTime = false;
-      if (file_exists($dataPath)) {
-        $modTime = filemtime($dataPath);
+      $preference = $preferenceCol[0] ?? null;
+      if ($preference === null) {
+        $since = $this->packagist->getChangesTimestamp();
+        $preference = $this->preferenceRepository->create(
+          'packagist',
+          'timestamp',
+          (string)$since,
+          PreferenceTypeEnum::isInteger
+        );
       }
 
-      if ($modTime === false || (time() - $modTime) > self::FILE_TIMEOUT) {
-        $url = "${mirror}/metadata/changes.json?since=${since}";
-        if ($output->isVerbose()) {
-          $io->text(
-            sprintf(
-              "[%s] Downloading a fresh copy of <options=bold;fg=cyan>${url}</>",
-              date('H:i:s'),
-            )
-          );
-        }
-
-        $response = $this->browser->get($url, ['User-Agent' => 'php.package.health (twitter.com/flavioheleno)']);
-        if ($response->getStatusCode() >= 400) {
-          throw new RuntimeException(
-            sprintf(
-              'Request to "%s" returned status code %d',
-              $url,
-              $response->getStatusCode()
-            )
-          );
-        }
-
-        file_put_contents($dataPath, (string)$response->getBody());
-      }
-
-      $json = json_decode(file_get_contents($dataPath), true, 512, JSON_THROW_ON_ERROR);
-
-
-      foreach ($json['actions'] as $action) {
+      $changes = $this->packagist->getPackageUpdates($preference->getValueAsInteger());
+      foreach ($changes['changes'] as $action) {
         switch ($action['type']) {
           case 'update':
+            $packageName = $action['package'];
+            if (str_ends_with($packageName, '~dev')) {
+              $packageName = substr($packageName, 0, strlen($packageName) - 4);
+            }
+
+            $packageCol = $this->packageRepository->find(['name' => $packageName]);
+
+            $package = $packageCol[0] ?? null;
+            if ($package === null) {
+              $package = $this->packageRepository->create($packageName);
+            }
+
+            $this->producer->sendCommand(
+              new PackageDiscoveryCommand($package)
+            );
+
             break;
           case 'delete':
+            // TODO
+            // $this->producer->sendCommand(
+            //   new PackageRemoveCommand($package);
+            // );
+
             break;
           case 'resync':
             break;
           default:
             //
         }
+      }
 
-        $package = new Package($packageName, '', '', '');
-
-        $this->packageRepository->save($package);
+      $preference = $preference->withIntegerValue($changes['timestamp']);
+      if ($preference->isDirty()) {
+        $this->preferenceRepository->update($preference);
       }
 
       $io->text(
@@ -146,11 +157,15 @@ final class GetUpdatesCommand extends Command {
   }
 
   public function __construct(
+    PreferenceRepositoryInterface $preferenceRepository,
     PackageRepositoryInterface $packageRepository,
-    Browser $browser
+    Packagist $packagist,
+    Producer $producer
   ) {
-    $this->packageRepository = $packageRepository;
-    $this->browser           = $browser;
+    $this->preferenceRepository = $preferenceRepository;
+    $this->packageRepository    = $packageRepository;
+    $this->packagist            = $packagist;
+    $this->producer             = $producer;
 
     parent::__construct();
   }

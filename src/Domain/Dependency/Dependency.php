@@ -25,7 +25,7 @@ final class Dependency implements JsonSerializable {
     string $constraint,
     bool $development = false,
     DependencyStatusEnum $status = DependencyStatusEnum::Unknown,
-    DateTimeImmutable $createdAt = null,
+    DateTimeImmutable $createdAt = new DateTimeImmutable(),
     DateTimeImmutable $updatedAt = null
   ) {
     $this->id          = $id;
@@ -34,7 +34,7 @@ final class Dependency implements JsonSerializable {
     $this->constraint  = $constraint;
     $this->development = $development;
     $this->status      = $status;
-    $this->createdAt   = $createdAt ?? new DateTimeImmutable();
+    $this->createdAt   = $createdAt;
     $this->updatedAt   = $updatedAt;
   }
 
@@ -148,7 +148,7 @@ final class Dependency implements JsonSerializable {
       'development' => $this->development,
       'status'      => $this->status->value,
       'created_at'  => $this->createdAt->getTimestamp(),
-      'updated_at'  => $this->updatedAt?->getTimestamp(),
+      'updated_at'  => $this->updatedAt?->getTimestamp()
     ];
   }
 }

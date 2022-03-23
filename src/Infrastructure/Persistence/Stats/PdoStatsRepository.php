@@ -61,7 +61,8 @@ final class PdoStatsRepository implements StatsRepositoryInterface {
     int $favers = 0,
     int $totalDownloads = 0,
     int $monthlyDownloads = 0,
-    int $dailyDownloads = 0
+    int $dailyDownloads = 0,
+    DateTimeImmutable $createdAt = new DateTimeImmutable()
   ): Stats {
     return $this->save(
       new Stats(
@@ -75,22 +76,19 @@ final class PdoStatsRepository implements StatsRepositoryInterface {
         $totalDownloads,
         $monthlyDownloads,
         $dailyDownloads,
-        new DateTimeImmutable()
+        $createdAt
       )
     );
   }
 
   public function all(): StatsCollection {
-    static $stmt = null;
-    if ($stmt === null) {
-      $stmt = $this->pdo->query(
-        <<<SQL
-          SELECT *
-          FROM "stats"
-          ORDER BY "created_at"
-        SQL
-      );
-    }
+    $stmt = $this->pdo->query(
+      <<<SQL
+        SELECT *
+        FROM "stats"
+        ORDER BY "created_at"
+      SQL
+    );
 
     $statsCol = new StatsCollection();
     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {

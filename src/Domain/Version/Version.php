@@ -25,7 +25,7 @@ final class Version implements JsonSerializable {
     string $packageName,
     bool $release = false,
     VersionStatusEnum $status = VersionStatusEnum::Unknown,
-    DateTimeImmutable $createdAt = null,
+    DateTimeImmutable $createdAt = new DateTimeImmutable(),
     DateTimeImmutable $updatedAt = null
   ) {
     $this->id          = $id;
@@ -34,7 +34,7 @@ final class Version implements JsonSerializable {
     $this->packageName = $packageName;
     $this->release     = $release;
     $this->status      = $status;
-    $this->createdAt   = $createdAt ?? new DateTimeImmutable();
+    $this->createdAt   = $createdAt;
     $this->updatedAt   = $updatedAt;
   }
 
@@ -159,7 +159,7 @@ final class Version implements JsonSerializable {
       'release'      => $this->release,
       'status'       => $this->status->value,
       'created_at'   => $this->createdAt->getTimestamp(),
-      'updated_at'   => $this->updatedAt?->getTimestamp(),
+      'updated_at'   => $this->updatedAt?->getTimestamp()
     ];
   }
 }

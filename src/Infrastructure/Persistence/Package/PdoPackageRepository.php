@@ -39,29 +39,29 @@ final class PdoPackageRepository implements PackageRepositoryInterface {
     $this->pdo = $pdo;
   }
 
-  public function create(string $name): Package {
+  public function create(
+    string $name,
+    DateTimeImmutable $createdAt = new DateTimeImmutable()
+  ): Package {
     return $this->save(
       new Package(
         $name,
         '',
         '',
         '',
-        new DateTimeImmutable()
+        $createdAt
       )
     );
   }
 
   public function all(): PackageCollection {
-    static $stmt = null;
-    if ($stmt === null) {
-      $stmt = $this->pdo->query(
-        <<<SQL
-          SELECT *
-          FROM "packages"
-          ORDER BY "created_at"
-        SQL
-      );
-    }
+    $stmt = $this->pdo->query(
+      <<<SQL
+        SELECT *
+        FROM "packages"
+        ORDER BY "created_at"
+      SQL
+    );
 
     $packageCol = new PackageCollection();
     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {

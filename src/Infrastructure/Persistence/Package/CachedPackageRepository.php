@@ -6,6 +6,7 @@ namespace App\Infrastructure\Persistence\Package;
 use App\Domain\Package\Package;
 use App\Domain\Package\PackageCollection;
 use App\Domain\Package\PackageRepositoryInterface;
+use DateTimeImmutable;
 use Psr\Cache\CacheItemPoolInterface;
 
 final class CachedPackageRepository implements PackageRepositoryInterface {
@@ -20,8 +21,14 @@ final class CachedPackageRepository implements PackageRepositoryInterface {
     $this->cacheItemPool        = $cacheItemPool;
   }
 
-  public function create(string $name): Package {
-    return $this->packageRepository->create($name);
+  public function create(
+    string $name,
+    DateTimeImmutable $createdAt = new DateTimeImmutable()
+  ): Package {
+    return $this->packageRepository->create(
+      $name,
+      $createdAt
+    );
   }
 
   public function all(): PackageCollection {
