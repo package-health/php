@@ -3,6 +3,7 @@ declare(strict_types = 1);
 
 namespace App\Domain\Version;
 
+use Composer\Semver\VersionParser;
 use DateTimeImmutable;
 use JsonSerializable;
 use ReturnTypeWillChange;
@@ -133,6 +134,10 @@ final class Version implements JsonSerializable {
 
   public function getUpdatedAt(): ?DateTimeImmutable {
     return $this->updatedAt;
+  }
+
+  public function isStable(): bool {
+    return VersionParser::parseStability($this->normalized) === 'stable';
   }
 
   public function isDirty(): bool {

@@ -6,7 +6,6 @@ namespace App\Application\Processor\Listener\Version;
 use App\Application\Message\Event\Package\PackageUpdatedEvent;
 use App\Domain\Package\PackageRepositoryInterface;
 use Composer\Semver\Comparator;
-use Composer\Semver\Semver;
 use Composer\Semver\VersionParser;
 use Courier\Client\Producer;
 use Courier\Message\EventInterface;
@@ -41,8 +40,8 @@ class VersionCreatedListener implements InvokeListenerInterface {
     $version = $event->getVersion();
     // $this->logger->debug('Version created', [$version]);
 
-    // ignore non-release versions
-    if ($version->isRelease() === false) {
+    // ignore non-release or non-stable versions
+    if ($version->isRelease() === false || $version->isStable() === false) {
       return;
     }
 
@@ -51,13 +50,11 @@ class VersionCreatedListener implements InvokeListenerInterface {
     );
 
     $latestVersionNormalized = '0.0.0.0';
-    $latestVersionIsStable   = false;
     if ($package->getLatestVersion() !== '') {
       $latestVersionNormalized = $this->versionParser->normalize($package->getLatestVersion());
-      $latestVersionIsStable   = VersionParser::parseStability($latestVersionNormalized) === 'stable';
     }
 
-    if ($latestVersionIsStable && Comparator::greaterThan($version->getNormalized(), $latestVersionNormalized)) {
+    if (Comparator::greaterThan($version->getNormalized(), $latestVersionNormalized)) {
       $package = $package->withLatestVersion($version->getNumber());
       $package = $this->packageRepository->update($package);
 
