@@ -3,6 +3,7 @@ declare(strict_types = 1);
 
 namespace App\Application\Console\Packagist;
 
+use App\Application\Message\Command\PackageDiscoveryCommand;
 use App\Application\Message\Event\Package\PackageCreatedEvent;
 use App\Application\Message\Event\Package\PackageRemovedEvent;
 use App\Domain\Package\Package;
@@ -37,6 +38,12 @@ final class GetListCommand extends Command {
   protected function configure(): void {
     $this
       ->setDescription('Get the complete list of packages from a Packagist mirror')
+      ->addOption(
+        'resync',
+        'r',
+        InputOption::VALUE_NONE,
+        'Resync the list'
+      )
       ->addOption(
         'mirror',
         'm',
@@ -82,6 +89,36 @@ final class GetListCommand extends Command {
           $listCount
         )
       );
+
+      if ((bool)$input->getOption('resync')) {
+        $io->text(
+          sprintf(
+            '[%s] Running in resync mode',
+            date('H:i:s')
+          )
+        );
+
+        foreach ($packageList as $package) {
+          if ($this->packageRepository->exists($package)) {
+            $package = $this->packageRepository->get($package);
+          } else {
+            $package = $this->packageRepository->create($package);
+          }
+
+          $this->producer->sendCommand(
+            new PackageDiscoveryCommand($package)
+          );
+        }
+
+        $io->text(
+          sprintf(
+            '[%s] Done',
+            date('H:i:s')
+          )
+        );
+
+        return Command::SUCCESS;
+      }
 
       $packageCol = $this->packageRepository->all();
       $packages = $packageCol->map(
