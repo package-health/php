@@ -43,6 +43,8 @@ jobs:
         with:
           push: false
           load: true
+          build-args:
+            "VERSION=${{ steps.prepare-build.outputs.environment }}-${{ steps.prepare-build.outputs.short }}"
           tags: package-health/nginx:${{ steps.prepare-build.outputs.environment }}-${{ steps.prepare-build.outputs.short }}
           file: ./docker/nginx.Dockerfile
           context: .
@@ -54,6 +56,8 @@ jobs:
         with:
           push: false
           load: true
+          build-args:
+            "VERSION=${{ steps.prepare-build.outputs.environment }}-${{ steps.prepare-build.outputs.short }}"
           tags: package-health/php-fpm:${{ steps.prepare-build.outputs.environment }}-${{ steps.prepare-build.outputs.short }}
           file: ./docker/php.Dockerfile
           target: fpm
@@ -66,6 +70,8 @@ jobs:
         with:
           push: false
           load: true
+          build-args:
+            "VERSION=${{ steps.prepare-build.outputs.environment }}-${{ steps.prepare-build.outputs.short }}"
           tags: package-health/php-cli:${{ steps.prepare-build.outputs.environment }}-${{ steps.prepare-build.outputs.short }}
           file: ./docker/php.Dockerfile
           target: cli

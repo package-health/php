@@ -135,10 +135,14 @@ WORKDIR /var/www/html/bin
 #============================================
 # Metadata
 #============================================
-LABEL org.opencontainers.image.authors="flaviohbatista@gmail.com" \
+ARG VERSION=latest
+LABEL maintainer="Flavio Heleno <flaviohbatista@gmail.com>" \
+      org.opencontainers.image.authors="flaviohbatista@gmail.com" \
       org.opencontainers.image.title="PHP-Package-Health: PHP-CLI" \
       org.opencontainers.image.url="https://github.com/package-health/php" \
-      org.opencontainers.image.vendor="Package Health"
+      org.opencontainers.image.vendor="Package Health" \
+      org.opencontainers.image.version="${VERSION}" \
+      org.opencontainers.image.base.name="ghcr.io/package-health/pph-php-cli:${VERSION}"
 
 ENTRYPOINT ["/usr/bin/dumb-init", "--"]
 CMD ["php"]
@@ -212,10 +216,14 @@ HEALTHCHECK --interval=1m30s --timeout=10s --retries=3 --start-period=40s CMD ph
 #============================================
 # Metadata
 #============================================
-LABEL org.opencontainers.image.authors="flaviohbatista@gmail.com" \
+ARG VERSION=latest
+LABEL maintainer="Flavio Heleno <flaviohbatista@gmail.com>" \
+      org.opencontainers.image.authors="flaviohbatista@gmail.com" \
       org.opencontainers.image.title="PHP-Package-Health: PHP-FPM" \
       org.opencontainers.image.url="https://github.com/package-health/php" \
-      org.opencontainers.image.vendor="Package Health"
+      org.opencontainers.image.vendor="Package Health" \
+      org.opencontainers.image.version="${VERSION}" \
+      org.opencontainers.image.base.name="ghcr.io/package-health/pph-php-fpm:${VERSION}"
 
 ENTRYPOINT ["/usr/bin/dumb-init", "--"]
 CMD ["php-fpm"]
