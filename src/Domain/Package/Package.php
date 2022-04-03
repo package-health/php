@@ -115,21 +115,21 @@ final class Package implements JsonSerializable {
    * @return array{
    *   name: string,
    *   description: string,
-   *   latest_version: string,
+   *   latestVersion: string,
    *   url: string,
-   *   created_at: int,
-   *   updated_at: int|null
+   *   createdAt: \DateTimeImmutable,
+   *   updatedAt: \DateTimeImmutable|null
    * }
    */
   #[ReturnTypeWillChange]
   public function jsonSerialize(): array {
     return [
-      'name'           => $this->name,
-      'description'    => $this->description,
-      'latest_version' => $this->latestVersion,
-      'url'            => $this->url,
-      'created_at'     => $this->createdAt->getTimestamp(),
-      'updated_at'     => $this->updatedAt?->getTimestamp()
+      'name'          => $this->name,
+      'description'   => $this->description,
+      'latestVersion' => $this->latestVersion,
+      'url'           => $this->url,
+      'createdAt'     => $this->createdAt,
+      'updatedAt'     => $this->updatedAt
     ];
   }
 }

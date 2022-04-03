@@ -9,7 +9,7 @@ use App\Domain\Dependency\DependencyRepositoryInterface;
 use App\Domain\Dependency\DependencyStatusEnum;
 use App\Domain\Version\VersionRepositoryInterface;
 use App\Domain\Version\VersionStatusEnum;
-use Courier\Client\Producer;
+use Courier\Client\Producer\ProducerInterface;
 use Courier\Message\CommandInterface;
 use Courier\Processor\Handler\HandlerResultEnum;
 use Courier\Processor\Handler\InvokeHandlerInterface;
@@ -17,12 +17,12 @@ use Courier\Processor\Handler\InvokeHandlerInterface;
 final class UpdateVersionStatusHandler implements InvokeHandlerInterface {
   private VersionRepositoryInterface $versionRepository;
   private DependencyRepositoryInterface $dependencyRepository;
-  private Producer $producer;
+  private ProducerInterface $producer;
 
   public function __construct(
     VersionRepositoryInterface $versionRepository,
     DependencyRepositoryInterface $dependencyRepository,
-    Producer $producer
+    ProducerInterface $producer
   ) {
     $this->versionRepository    = $versionRepository;
     $this->dependencyRepository = $dependencyRepository;

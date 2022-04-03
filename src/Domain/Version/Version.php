@@ -148,23 +148,23 @@ final class Version implements JsonSerializable {
    * @return array{
    *   id: int|null,
    *   number: string,
-   *   package_name: string,
+   *   packageName: string,
    *   release: bool,
-   *   status: string,
-   *   created_at: int,
-   *   updated_at: int|null
+   *   status: \App\Domain\Version\VersionStatusEnum,
+   *   createdAt: \DateTimeImmutable,
+   *   updatedAt: \DateTimeImmutable|null
    * }
    */
   #[ReturnTypeWillChange]
   public function jsonSerialize(): array {
     return [
-      'id'           => $this->id,
-      'number'       => $this->number,
-      'package_name' => $this->packageName,
-      'release'      => $this->release,
-      'status'       => $this->status->value,
-      'created_at'   => $this->createdAt->getTimestamp(),
-      'updated_at'   => $this->updatedAt?->getTimestamp()
+      'id'          => $this->id,
+      'number'      => $this->number,
+      'packageName' => $this->packageName,
+      'release'     => $this->release,
+      'status'      => $this->status,
+      'createdAt'   => $this->createdAt,
+      'updatedAt'   => $this->updatedAt
     ];
   }
 }

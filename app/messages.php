@@ -26,43 +26,50 @@ return static function (ContainerInterface $container): void {
   $router
     ->addRoute(
       DependencyUpdatedEvent::class,
-      DependencyUpdatedListener::class
+      DependencyUpdatedListener::class,
+      'DependencyUpdated'
     );
 
   /* PACKAGE EVENTS */
   $router
     ->addRoute(
       PackageCreatedEvent::class,
-      PackageCreatedListener::class
+      PackageCreatedListener::class,
+      'PackageCreated'
     )
     ->addRoute(
       PackageUpdatedEvent::class,
-      PackageUpdatedListener::class
+      PackageUpdatedListener::class,
+      'PackageUpdated'
     );
 
   /* VERSION EVENTS */
   $router
     ->addRoute(
       VersionCreatedEvent::class,
-      VersionCreatedListener::class
+      VersionCreatedListener::class,
+      'VersionCreated'
     );
 
   /* PACKAGE COMMANDS */
   $router->addRoute(
     PackageDiscoveryCommand::class,
-    PackageDiscoveryHandler::class
+    PackageDiscoveryHandler::class,
+    'PackageDiscovery'
   );
 
   /* DEPENDENCY COMMANDS */
   $router->addRoute(
     UpdateDependencyStatusCommand::class,
-    UpdateDependencyStatusHandler::class
+    UpdateDependencyStatusHandler::class,
+    'UpdateDependencyStatus'
   );
 
   /* VERSION COMMANDS */
   $router->addRoute(
     UpdateVersionStatusCommand::class,
-    UpdateVersionStatusHandler::class
+    UpdateVersionStatusHandler::class,
+    'UpdateVersionStatus'
   );
 
   $bus->bindRoutes();

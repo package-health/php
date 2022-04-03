@@ -124,14 +124,14 @@ final class Packagist {
     return MetadataMinifier::expand($json['packages'][$packageName]);
   }
 
-  public function getPackageUpdates(int $since = 0, string $mirror = 'https://packagist.org'): array {
+  public function getPackageUpdates(int $since, string $mirror = 'https://packagist.org'): array {
     $content = $this->updateFileContent(
       'packagist/updates.json',
       "${mirror}/metadata/changes.json?since=${since}"
     );
 
     $json = json_decode($content, true, 512, JSON_THROW_ON_ERROR);
-    if (isset($json['actions']) === false || isset($json['timestamp']) === false) {
+    if (isset($json['actions'], $json['timestamp']) === false) {
       throw new RuntimeException('Invalid package updates format');
     }
 

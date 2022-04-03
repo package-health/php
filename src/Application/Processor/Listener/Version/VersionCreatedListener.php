@@ -7,7 +7,7 @@ use App\Application\Message\Event\Package\PackageUpdatedEvent;
 use App\Domain\Package\PackageRepositoryInterface;
 use Composer\Semver\Comparator;
 use Composer\Semver\VersionParser;
-use Courier\Client\Producer;
+use Courier\Client\Producer\ProducerInterface;
 use Courier\Message\EventInterface;
 use Courier\Processor\Listener\InvokeListenerInterface;
 use Psr\Log\LoggerInterface;
@@ -15,13 +15,13 @@ use Psr\Log\LoggerInterface;
 class VersionCreatedListener implements InvokeListenerInterface {
   private PackageRepositoryInterface $packageRepository;
   private VersionParser $versionParser;
-  private Producer $producer;
+  private ProducerInterface $producer;
   private LoggerInterface $logger;
 
   public function __construct(
     PackageRepositoryInterface $packageRepository,
     VersionParser $versionParser,
-    Producer $producer,
+    ProducerInterface $producer,
     LoggerInterface $logger
   ) {
     $this->packageRepository = $packageRepository;

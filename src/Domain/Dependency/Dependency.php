@@ -129,26 +129,26 @@ final class Dependency implements JsonSerializable {
   /**
    * @return array{
    *   id: int|null,
-   *   version_id: int,
+   *   versionId: int,
    *   name: string,
    *   constraint: string,
    *   development: bool,
-   *   status: string,
-   *   created_at: int,
-   *   updated_at: int|null
+   *   status: \App\Domain\Dependency\DependencyStatusEnum,
+   *   createdAt: \DateTimeImmutable,
+   *   updatedAt: \DateTimeImmutable|null
    * }
    */
   #[ReturnTypeWillChange]
   public function jsonSerialize(): array {
     return [
       'id'          => $this->id,
-      'version_id'  => $this->versionId,
+      'versionId'   => $this->versionId,
       'name'        => $this->name,
       'constraint'  => $this->constraint,
       'development' => $this->development,
       'status'      => $this->status->value,
-      'created_at'  => $this->createdAt->getTimestamp(),
-      'updated_at'  => $this->updatedAt?->getTimestamp()
+      'createdAt'   => $this->createdAt,
+      'updatedAt'   => $this->updatedAt
     ];
   }
 }

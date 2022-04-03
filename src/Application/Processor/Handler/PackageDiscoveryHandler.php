@@ -14,7 +14,7 @@ use App\Domain\Dependency\DependencyStatusEnum;
 use App\Domain\Package\PackageRepositoryInterface;
 use App\Domain\Version\VersionRepositoryInterface;
 use App\Domain\Version\VersionStatusEnum;
-use Courier\Client\Producer;
+use Courier\Client\Producer\ProducerInterface;
 use Courier\Message\CommandInterface;
 use Courier\Processor\Handler\HandlerResultEnum;
 use Courier\Processor\Handler\InvokeHandlerInterface;
@@ -26,7 +26,7 @@ class PackageDiscoveryHandler implements InvokeHandlerInterface {
   private DependencyRepositoryInterface $dependencyRepository;
   private PackageRepositoryInterface $packageRepository;
   private VersionRepositoryInterface $versionRepository;
-  private Producer $producer;
+  private ProducerInterface $producer;
   private Packagist $packagist;
   private LoggerInterface $logger;
 
@@ -34,7 +34,7 @@ class PackageDiscoveryHandler implements InvokeHandlerInterface {
     DependencyRepositoryInterface $dependencyRepository,
     PackageRepositoryInterface $packageRepository,
     VersionRepositoryInterface $versionRepository,
-    Producer $producer,
+    ProducerInterface $producer,
     Packagist $packagist,
     LoggerInterface $logger
   ) {

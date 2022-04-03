@@ -20,7 +20,7 @@ use App\Domain\Version\VersionStatusEnum;
 use Composer\Semver\Comparator;
 use Composer\Semver\Semver;
 use Composer\Semver\VersionParser;
-use Courier\Client\Producer;
+use Courier\Client\Producer\ProducerInterface;
 use Exception;
 use InvalidArgumentException;
 use RuntimeException;
@@ -42,7 +42,7 @@ final class GetDataCommand extends Command {
   private VersionRepositoryInterface $versionRepository;
   private DependencyRepositoryInterface $dependencyRepository;
   private StatsRepositoryInterface $statsRepository;
-  private Producer $producer;
+  private ProducerInterface $producer;
   private VersionParser $versionParser;
   private Packagist $packagist;
 
@@ -434,7 +434,7 @@ final class GetDataCommand extends Command {
     VersionRepositoryInterface $versionRepository,
     DependencyRepositoryInterface $dependencyRepository,
     StatsRepositoryInterface $statsRepository,
-    Producer $producer,
+    ProducerInterface $producer,
     VersionParser $versionParser,
     Packagist $packagist
   ) {

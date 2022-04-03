@@ -9,7 +9,7 @@ use App\Application\Message\Event\Package\PackageRemovedEvent;
 use App\Domain\Package\Package;
 use App\Domain\Package\PackageRepositoryInterface;
 use App\Application\Service\Packagist;
-use Courier\Client\Producer;
+use Courier\Client\Producer\ProducerInterface;
 use Exception;
 use InvalidArgumentException;
 use RuntimeException;
@@ -27,7 +27,7 @@ final class GetListCommand extends Command {
 
   protected static $defaultName = 'packagist:get-list';
   private PackageRepositoryInterface $packageRepository;
-  private Producer $producer;
+  private ProducerInterface $producer;
   private Packagist $packagist;
 
   /**
@@ -197,7 +197,7 @@ final class GetListCommand extends Command {
 
   public function __construct(
     PackageRepositoryInterface $packageRepository,
-    Producer $producer,
+    ProducerInterface $producer,
     Packagist $packagist
   ) {
     $this->packageRepository = $packageRepository;

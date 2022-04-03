@@ -6,6 +6,7 @@ namespace App\Application\Console\Queue;
 use Courier\Client\Consumer;
 use Exception;
 use InvalidArgumentException;
+use SebastianBergmann\Timer\Timer;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
@@ -25,7 +26,19 @@ final class QueueConsumeCommand extends Command {
    */
   protected function configure(): void {
     $this
-      ->setDescription('Consume message bus queues');
+      ->setDescription('Consume messages from a bus queue')
+      ->addOption(
+        'messageCount',
+        'm',
+        InputOption::VALUE_REQUIRED,
+        'Number of messages to consume',
+        1
+      )
+      ->addArgument(
+        'name',
+        InputArgument::REQUIRED,
+        'Name of the bus queue'
+      );
   }
 
   /**
@@ -48,9 +61,41 @@ final class QueueConsumeCommand extends Command {
         )
       );
 
-      while (true) {
-        $this->consumer->consume();
-        usleep(200000);
+      $messageCount = (int)$input->getOption('messageCount');
+
+      $queueName = $input->getArgument('name');
+
+      if ($output->isVerbose()) {
+        $io->text(
+          sprintf(
+            '[%s] Queue name: <options=bold;fg=green>%s</>',
+            date('H:i:s'),
+            $queueName
+          )
+        );
+        $io->text(
+          sprintf(
+            '[%s] Message count: <options=bold;fg=green>%d</>',
+            date('H:i:s'),
+            $messageCount
+          )
+        );
+      }
+
+      $timer = new Timer();
+      $timer->start();
+
+      $this->consumer->consume($queueName, $messageCount);
+
+      $duration = $timer->stop();
+      if ($output->isVerbose()) {
+        $io->text(
+          sprintf(
+            '[%s] Elapsed time: <options=bold;fg=green>%.2f</>ms',
+            date('H:i:s'),
+            $duration->asMilliseconds()
+          )
+        );
       }
 
       $io->text(
