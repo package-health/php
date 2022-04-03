@@ -7,18 +7,18 @@ use App\Application\Message\Event\Dependency\DependencyUpdatedEvent;
 use App\Domain\Dependency\DependencyRepositoryInterface;
 use App\Domain\Dependency\DependencyStatusEnum;
 use Composer\Semver\Semver;
-use Courier\Client\Producer;
+use Courier\Client\Producer\ProducerInterface;
 use Courier\Message\CommandInterface;
 use Courier\Processor\Handler\HandlerResultEnum;
 use Courier\Processor\Handler\InvokeHandlerInterface;
 
 class UpdateDependencyStatusHandler implements InvokeHandlerInterface {
   private DependencyRepositoryInterface $dependencyRepository;
-  private Producer $producer;
+  private ProducerInterface $producer;
 
   public function __construct(
     DependencyRepositoryInterface $dependencyRepository,
-    Producer $producer
+    ProducerInterface $producer
   ) {
     $this->dependencyRepository = $dependencyRepository;
     $this->producer             = $producer;

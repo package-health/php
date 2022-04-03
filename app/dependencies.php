@@ -7,10 +7,14 @@ use Buzz\Client\Curl;
 use Composer\Semver\VersionParser;
 use Courier\Bus;
 use Courier\Client\Consumer;
-use Courier\Client\Producer;
+use Courier\Client\Producer\BufferedProducer;
+use Courier\Client\Producer\Producer;
+use Courier\Client\Producer\ProducerInterface;
 use Courier\Inflector\InterfaceInflector;
 use Courier\Locator\ContainerLocator;
+use Courier\Middleware\EnvelopeCompressionMiddleware;
 use Courier\Router\SimpleRouter;
+use Courier\Serializer\IgBinarySerializer;
 use Courier\Transport\AmqpTransport;
 use DI\ContainerBuilder;
 use Monolog\Handler\StreamHandler;
@@ -49,7 +53,7 @@ return static function (ContainerBuilder $containerBuilder): void {
 
         return new Bus(
           new SimpleRouter(),
-          new AmqpTransport($settings->getString('queue.dsn'))
+          AmqpTransport::fromDsn($settings->getString('queue.dsn'))
         );
       },
       CacheItemPoolInterface::class => function (ContainerInterface $container): Pool {
@@ -95,19 +99,19 @@ return static function (ContainerBuilder $containerBuilder): void {
           )
         );
       },
-      Consumer::class => function (ContainerInterface $container): Consumer {
-        return new Consumer(
-          $container->get(Bus::class),
-          new ContainerLocator($container),
-          new InterfaceInflector()
-        );
-      },
-      Producer::class => function (ContainerInterface $container): Producer {
-        return new Producer(
-          $container->get(Bus::class)
-        );
-      },
       CacheProvider::class => autowire(CacheProvider::class),
+      Consumer::class => function (ContainerInterface $container): Consumer {
+        $consumer = new Consumer(
+          $container->get(Bus::class),
+          new InterfaceInflector(),
+          new ContainerLocator($container),
+          new IgBinarySerializer()
+        );
+
+        $consumer->addMiddleware(new EnvelopeCompressionMiddleware());
+
+        return $consumer;
+      },
       LoggerInterface::class => function (ContainerInterface $container): LoggerInterface {
         $settings = $container->get(SettingsInterface::class);
 
@@ -152,6 +156,18 @@ return static function (ContainerBuilder $containerBuilder): void {
             $container->get(SvgPlasticRender::class)
           ]
         );
+      },
+      ProducerInterface::class => function (ContainerInterface $container): ProducerInterface {
+        $producer = new BufferedProducer(
+          new Producer(
+            $container->get(Bus::class),
+            new IgBinarySerializer()
+          )
+        );
+
+        $producer->addMiddleware(new EnvelopeCompressionMiddleware());
+
+        return $producer;
       },
       SvgFlatRender::class => autowire(SvgFlatRender::class),
       SvgFlatSquareRender::class => autowire(SvgFlatSquareRender::class),

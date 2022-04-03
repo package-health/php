@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "317e4117326e2c3077a2b8683272eb7d",
+    "content-hash": "e9e0d4a20e279c4a6cbd93b3f4da298a",
     "packages": [
         {
             "name": "badges/poser",
@@ -480,12 +480,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/courier-php/courier.git",
-                "reference": "742e8ead489a3a463bef439edf92ccb30bbad7f2"
+                "reference": "cd2c102c44cb9dcb2bf647954c09b5d4f25bf8b1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/courier-php/courier/zipball/742e8ead489a3a463bef439edf92ccb30bbad7f2",
-                "reference": "742e8ead489a3a463bef439edf92ccb30bbad7f2",
+                "url": "https://api.github.com/repos/courier-php/courier/zipball/cd2c102c44cb9dcb2bf647954c09b5d4f25bf8b1",
+                "reference": "cd2c102c44cb9dcb2bf647954c09b5d4f25bf8b1",
                 "shasum": ""
             },
             "require": {
@@ -528,7 +528,7 @@
                 "issues": "https://github.com/courier-php/courier/issues",
                 "source": "https://github.com/courier-php/courier/tree/main"
             },
-            "time": "2022-03-20T19:28:22+00:00"
+            "time": "2022-04-03T21:21:54+00:00"
         },
         {
             "name": "courier/locator-container",
@@ -536,12 +536,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/courier-php/locator-container.git",
-                "reference": "c6d6fb5738a64494a489946971ee72e68574b2a9"
+                "reference": "c96288231630ee9dcb91b7b63bbfb50856197475"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/courier-php/locator-container/zipball/c6d6fb5738a64494a489946971ee72e68574b2a9",
-                "reference": "c6d6fb5738a64494a489946971ee72e68574b2a9",
+                "url": "https://api.github.com/repos/courier-php/locator-container/zipball/c96288231630ee9dcb91b7b63bbfb50856197475",
+                "reference": "c96288231630ee9dcb91b7b63bbfb50856197475",
                 "shasum": ""
             },
             "require": {
@@ -550,14 +550,14 @@
                 "psr/container": "^1.0"
             },
             "require-dev": {
-                "infection/infection": "^0.25",
-                "php-parallel-lint/php-parallel-lint": "^1.2",
-                "phpstan/phpstan": "^0.12.58",
+                "infection/infection": "^0.26",
+                "php-parallel-lint/php-parallel-lint": "^1.3",
+                "phpstan/phpstan": "^1.4",
                 "phpunit/phpunit": "^9.5",
-                "psy/psysh": "^0.10.5",
+                "psy/psysh": "^0.11",
                 "roave/security-advisories": "dev-latest",
-                "squizlabs/php_codesniffer": "^3.5",
-                "vimeo/psalm": "^4.3"
+                "squizlabs/php_codesniffer": "^3.6",
+                "vimeo/psalm": "^4.8"
             },
             "default-branch": true,
             "type": "library",
@@ -585,7 +585,121 @@
                 "issues": "https://github.com/courier-php/locator-container/issues",
                 "source": "https://github.com/courier-php/locator-container/tree/main"
             },
-            "time": "2022-03-15T14:00:58+00:00"
+            "time": "2022-04-03T20:07:47+00:00"
+        },
+        {
+            "name": "courier/middleware-envelope-compression",
+            "version": "dev-main",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/courier-php/middleware-envelope-compression.git",
+                "reference": "379f7c4ad2aa1ad7077b5fdab8dc56f2dcedc60b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/courier-php/middleware-envelope-compression/zipball/379f7c4ad2aa1ad7077b5fdab8dc56f2dcedc60b",
+                "reference": "379f7c4ad2aa1ad7077b5fdab8dc56f2dcedc60b",
+                "shasum": ""
+            },
+            "require": {
+                "courier/courier": "*",
+                "php": ">=8.1"
+            },
+            "require-dev": {
+                "infection/infection": "^0.26",
+                "php-parallel-lint/php-parallel-lint": "^1.3",
+                "phpstan/phpstan": "^1.4",
+                "phpunit/phpunit": "^9.5",
+                "psy/psysh": "^0.11",
+                "roave/security-advisories": "dev-latest",
+                "squizlabs/php_codesniffer": "^3.6",
+                "vimeo/psalm": "^4.8"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Courier\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "mit"
+            ],
+            "authors": [
+                {
+                    "name": "Flavio Heleno",
+                    "email": "flaviohbatista@gmail.com"
+                }
+            ],
+            "description": "Zlib-based envelope compression.",
+            "keywords": [
+                "deflate",
+                "gzip",
+                "zlib"
+            ],
+            "support": {
+                "issues": "https://github.com/courier-php/middleware-envelope-compression/issues",
+                "source": "https://github.com/courier-php/middleware-envelope-compression/tree/main"
+            },
+            "time": "2022-04-03T20:13:14+00:00"
+        },
+        {
+            "name": "courier/serializer-igbinary",
+            "version": "dev-main",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/courier-php/serializer-igbinary.git",
+                "reference": "a263997ce65aa12d4cc35303814bc7569aff61f8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/courier-php/serializer-igbinary/zipball/a263997ce65aa12d4cc35303814bc7569aff61f8",
+                "reference": "a263997ce65aa12d4cc35303814bc7569aff61f8",
+                "shasum": ""
+            },
+            "require": {
+                "courier/courier": "*",
+                "ext-igbinary": "*",
+                "php": ">=8.1"
+            },
+            "require-dev": {
+                "infection/infection": "^0.26",
+                "php-parallel-lint/php-parallel-lint": "^1.3",
+                "phpstan/phpstan": "^1.4",
+                "phpunit/phpunit": "^9.5",
+                "psy/psysh": "^0.11",
+                "roave/security-advisories": "dev-latest",
+                "squizlabs/php_codesniffer": "^3.6",
+                "vimeo/psalm": "^4.8"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Courier\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "mit"
+            ],
+            "authors": [
+                {
+                    "name": "Flavio Heleno",
+                    "email": "flaviohbatista@gmail.com"
+                }
+            ],
+            "description": "IgBinary-based object serialization.",
+            "keywords": [
+                "igbinary",
+                "object serializer"
+            ],
+            "support": {
+                "issues": "https://github.com/courier-php/serializer-igbinary/issues",
+                "source": "https://github.com/courier-php/serializer-igbinary/tree/main"
+            },
+            "time": "2022-04-03T20:11:01+00:00"
         },
         {
             "name": "courier/transport-amqp",
@@ -593,12 +707,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/courier-php/transport-amqp.git",
-                "reference": "b945eb9ff0c1f4b57698b4a7880eb6b85d67568c"
+                "reference": "bd0d74f73659efdab94955c030f357f97669a8f2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/courier-php/transport-amqp/zipball/b945eb9ff0c1f4b57698b4a7880eb6b85d67568c",
-                "reference": "b945eb9ff0c1f4b57698b4a7880eb6b85d67568c",
+                "url": "https://api.github.com/repos/courier-php/transport-amqp/zipball/bd0d74f73659efdab94955c030f357f97669a8f2",
+                "reference": "bd0d74f73659efdab94955c030f357f97669a8f2",
                 "shasum": ""
             },
             "require": {
@@ -642,7 +756,7 @@
                 "issues": "https://github.com/courier-php/transport-amqp/issues",
                 "source": "https://github.com/courier-php/transport-amqp/tree/main"
             },
-            "time": "2022-03-20T19:26:45+00:00"
+            "time": "2022-04-03T21:25:39+00:00"
         },
         {
             "name": "graham-campbell/result-type",
@@ -1656,6 +1770,65 @@
                 }
             ],
             "time": "2021-12-04T23:24:31+00:00"
+        },
+        {
+            "name": "phpunit/php-timer",
+            "version": "5.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sebastianbergmann/php-timer.git",
+                "reference": "5a63ce20ed1b5bf577850e2c4e87f4aa902afbd2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-timer/zipball/5a63ce20ed1b5bf577850e2c4e87f4aa902afbd2",
+                "reference": "5a63ce20ed1b5bf577850e2c4e87f4aa902afbd2",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.3"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^9.3"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "5.0-dev"
+                }
+            },
+            "autoload": {
+                "classmap": [
+                    "src/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Sebastian Bergmann",
+                    "email": "sebastian@phpunit.de",
+                    "role": "lead"
+                }
+            ],
+            "description": "Utility class for timing",
+            "homepage": "https://github.com/sebastianbergmann/php-timer/",
+            "keywords": [
+                "timer"
+            ],
+            "support": {
+                "issues": "https://github.com/sebastianbergmann/php-timer/issues",
+                "source": "https://github.com/sebastianbergmann/php-timer/tree/5.0.3"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/sebastianbergmann",
+                    "type": "github"
+                }
+            ],
+            "time": "2020-10-26T13:16:10+00:00"
         },
         {
             "name": "psr/cache",
@@ -5445,16 +5618,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "1.5.3",
+            "version": "1.5.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "39953ac1452a8843702ee41a35b4861d3e8207a7"
+                "reference": "bbf68cae24f6dc023c607ea0f87da55dd9d55c2b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/39953ac1452a8843702ee41a35b4861d3e8207a7",
-                "reference": "39953ac1452a8843702ee41a35b4861d3e8207a7",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/bbf68cae24f6dc023c607ea0f87da55dd9d55c2b",
+                "reference": "bbf68cae24f6dc023c607ea0f87da55dd9d55c2b",
                 "shasum": ""
             },
             "require": {
@@ -5480,7 +5653,7 @@
             "description": "PHPStan - PHP Static Analysis Tool",
             "support": {
                 "issues": "https://github.com/phpstan/phpstan/issues",
-                "source": "https://github.com/phpstan/phpstan/tree/1.5.3"
+                "source": "https://github.com/phpstan/phpstan/tree/1.5.4"
             },
             "funding": [
                 {
@@ -5500,7 +5673,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-03-30T21:55:08+00:00"
+            "time": "2022-04-03T12:39:00+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -5760,65 +5933,6 @@
                 }
             ],
             "time": "2020-10-26T05:33:50+00:00"
-        },
-        {
-            "name": "phpunit/php-timer",
-            "version": "5.0.3",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/sebastianbergmann/php-timer.git",
-                "reference": "5a63ce20ed1b5bf577850e2c4e87f4aa902afbd2"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-timer/zipball/5a63ce20ed1b5bf577850e2c4e87f4aa902afbd2",
-                "reference": "5a63ce20ed1b5bf577850e2c4e87f4aa902afbd2",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=7.3"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^9.3"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "5.0-dev"
-                }
-            },
-            "autoload": {
-                "classmap": [
-                    "src/"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "authors": [
-                {
-                    "name": "Sebastian Bergmann",
-                    "email": "sebastian@phpunit.de",
-                    "role": "lead"
-                }
-            ],
-            "description": "Utility class for timing",
-            "homepage": "https://github.com/sebastianbergmann/php-timer/",
-            "keywords": [
-                "timer"
-            ],
-            "support": {
-                "issues": "https://github.com/sebastianbergmann/php-timer/issues",
-                "source": "https://github.com/sebastianbergmann/php-timer/tree/5.0.3"
-            },
-            "funding": [
-                {
-                    "url": "https://github.com/sebastianbergmann",
-                    "type": "github"
-                }
-            ],
-            "time": "2020-10-26T13:16:10+00:00"
         },
         {
             "name": "phpunit/phpunit",
@@ -6961,16 +7075,16 @@
         },
         {
             "name": "sebastian/environment",
-            "version": "5.1.3",
+            "version": "5.1.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/environment.git",
-                "reference": "388b6ced16caa751030f6a69e588299fa09200ac"
+                "reference": "1b5dff7bb151a4db11d49d90e5408e4e938270f7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/environment/zipball/388b6ced16caa751030f6a69e588299fa09200ac",
-                "reference": "388b6ced16caa751030f6a69e588299fa09200ac",
+                "url": "https://api.github.com/repos/sebastianbergmann/environment/zipball/1b5dff7bb151a4db11d49d90e5408e4e938270f7",
+                "reference": "1b5dff7bb151a4db11d49d90e5408e4e938270f7",
                 "shasum": ""
             },
             "require": {
@@ -7012,7 +7126,7 @@
             ],
             "support": {
                 "issues": "https://github.com/sebastianbergmann/environment/issues",
-                "source": "https://github.com/sebastianbergmann/environment/tree/5.1.3"
+                "source": "https://github.com/sebastianbergmann/environment/tree/5.1.4"
             },
             "funding": [
                 {
@@ -7020,7 +7134,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2020-09-28T05:52:38+00:00"
+            "time": "2022-04-03T09:37:03+00:00"
         },
         {
             "name": "sebastian/exporter",
@@ -8299,6 +8413,8 @@
     "stability-flags": {
         "courier/courier": 20,
         "courier/locator-container": 20,
+        "courier/middleware-envelope-compression": 20,
+        "courier/serializer-igbinary": 20,
         "courier/transport-amqp": 20,
         "roave/security-advisories": 20
     },

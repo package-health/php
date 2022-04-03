@@ -126,20 +126,20 @@ final class Preference implements JsonSerializable {
    *   property: string,
    *   value: string,
    *   type: string,
-   *   created_at: int,
-   *   updated_at: int|null
+   *   createdAt: \DateTimeImmutable,
+   *   updatedAt: \DateTimeImmutable|null
    * }
    */
   #[ReturnTypeWillChange]
   public function jsonSerialize(): array {
     return [
-      'id'         => $this->id,
-      'category'   => $this->category,
-      'property'   => $this->property,
-      'value'      => $this->value,
-      'type'       => $this->type->value,
-      'created_at' => $this->createdAt->getTimestamp(),
-      'updated_at' => $this->updatedAt?->getTimestamp()
+      'id'        => $this->id,
+      'category'  => $this->category,
+      'property'  => $this->property,
+      'value'     => $this->value,
+      'type'      => $this->type->value,
+      'createdAt' => $this->createdAt,
+      'updatedAt' => $this->updatedAt
     ];
   }
 }

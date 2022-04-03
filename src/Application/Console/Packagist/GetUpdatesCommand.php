@@ -8,7 +8,7 @@ use App\Application\Service\Packagist;
 use App\Domain\Package\PackageRepositoryInterface;
 use App\Domain\Preference\PreferenceRepositoryInterface;
 use App\Domain\Preference\PreferenceTypeEnum;
-use Courier\Client\Producer;
+use Courier\Client\Producer\ProducerInterface;
 use Exception;
 use InvalidArgumentException;
 use RuntimeException;
@@ -28,7 +28,7 @@ final class GetUpdatesCommand extends Command {
   private PreferenceRepositoryInterface $preferenceRepository;
   private PackageRepositoryInterface $packageRepository;
   private Packagist $packagist;
-  private Producer $producer;
+  private ProducerInterface $producer;
 
   /**
    * Command configuration.
@@ -160,7 +160,7 @@ final class GetUpdatesCommand extends Command {
     PreferenceRepositoryInterface $preferenceRepository,
     PackageRepositoryInterface $packageRepository,
     Packagist $packagist,
-    Producer $producer
+    ProducerInterface $producer
   ) {
     $this->preferenceRepository = $preferenceRepository;
     $this->packageRepository    = $packageRepository;

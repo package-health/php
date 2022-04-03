@@ -20,14 +20,7 @@ abstract class AbstractPackageEvent implements EventInterface {
   /**
    * @return array{0: \App\Domain\Package\Package}
    */
-  public function __serialize(): array {
+  public function toArray(): array {
     return [$this->package];
-  }
-
-  /**
-   * @param array{0: \App\Domain\Package\Package} $data
-   */
-  public function __unserialize(array $data): void {
-    $this->package = $data[0];
   }
 }

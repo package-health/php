@@ -4,16 +4,16 @@ declare(strict_types = 1);
 namespace App\Application\Processor\Listener\Dependency;
 
 use App\Application\Message\Command\UpdateVersionStatusCommand;
-use Courier\Client\Producer;
+use Courier\Client\Producer\ProducerInterface;
 use Courier\Message\EventInterface;
 use Courier\Processor\Listener\InvokeListenerInterface;
 use Psr\Log\LoggerInterface;
 
 class DependencyUpdatedListener implements InvokeListenerInterface {
-  private Producer $producer;
+  private ProducerInterface $producer;
   private LoggerInterface $logger;
 
-  public function __construct(Producer $producer, LoggerInterface $logger) {
+  public function __construct(ProducerInterface $producer, LoggerInterface $logger) {
     $this->producer = $producer;
     $this->logger   = $logger;
   }

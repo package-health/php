@@ -20,14 +20,7 @@ abstract class AbstractStatsEvent implements EventInterface {
   /**
    * @return array{0: \App\Domain\Stats\Stats}
    */
-  public function __serialize(): array {
+  public function toArray(): array {
     return [$this->stats];
-  }
-
-  /**
-   * @param array{0: \App\Domain\Stats\Stats} $data
-   */
-  public function __unserialize(array $data): void {
-    $this->stats = $data[0];
   }
 }

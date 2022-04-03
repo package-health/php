@@ -20,14 +20,7 @@ abstract class AbstractVersionEvent implements EventInterface {
   /**
    * @return array{0: \App\Domain\Version\Version}
    */
-  public function __serialize(): array {
+  public function toArray(): array {
     return [$this->version];
-  }
-
-  /**
-   * @param array{0: \App\Domain\Version\Version} $data
-   */
-  public function __unserialize(array $data): void {
-    $this->version = $data[0];
   }
 }

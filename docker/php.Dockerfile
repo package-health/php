@@ -49,6 +49,13 @@ RUN docker-php-source extract && \
     docker-php-ext-install -j$(nproc) redis && \
     docker-php-source delete
 
+RUN docker-php-source extract && \
+    wget -O igbinary.tar.gz https://github.com/igbinary/igbinary/archive/refs/tags/3.2.7.tar.gz && \
+    mkdir /usr/src/php/ext/igbinary && \
+    tar --extract --file igbinary.tar.gz --directory /usr/src/php/ext/igbinary --strip 1 && \
+    docker-php-ext-install -j$(nproc) igbinary && \
+    docker-php-source delete
+
 #============================================
 # Opcache
 #============================================
@@ -114,6 +121,7 @@ RUN apk add --no-cache libpq --repository=https://dl-cdn.alpinelinux.org/alpine/
 # CLI Extensions
 #============================================
 RUN docker-php-ext-enable amqp && \
+    docker-php-ext-enable igbinary && \
     docker-php-ext-enable opcache && \
     docker-php-ext-enable pcntl && \
     docker-php-ext-enable pdo_pgsql && \
@@ -195,6 +203,7 @@ RUN wget -O /usr/local/bin/php-fpm-healthcheck https://raw.githubusercontent.com
 #============================================
 RUN docker-php-ext-enable dom && \
     docker-php-ext-enable gd && \
+    docker-php-ext-enable igbinary && \
     docker-php-ext-enable opcache && \
     docker-php-ext-enable pdo_pgsql && \
     docker-php-ext-enable redis && \

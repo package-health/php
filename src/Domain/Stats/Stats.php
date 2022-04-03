@@ -221,35 +221,35 @@ final class Stats implements JsonSerializable {
 
   /**
    * @return array{
-   *   package_name: string,
-   *   github_stars: int,
-   *   github_watchers: int,
-   *   github_forks: int,
+   *   packageName: string,
+   *   githubStars: int,
+   *   githubWatchers: int,
+   *   githubForks: int,
    *   dependents: int,
    *   suggesters: int,
    *   favers: int,
-   *   total_downloads: int,
-   *   monthly_downloads: int,
-   *   daily_downloads: int,
-   *   created_at: int,
-   *   updated_at: int|null
+   *   totalDownloads: int,
+   *   monthlyDownloads: int,
+   *   dailyDownloads: int,
+   *   createdAt: \DateTimeImmutable,
+   *   updatedAt: \DateTimeImmutable|null
    * }
    */
   #[ReturnTypeWillChange]
   public function jsonSerialize(): array {
     return [
-      'package_name'      => $this->packageName,
-      'github_stars'      => $this->githubStars,
-      'github_watchers'   => $this->githubWatchers,
-      'github_forks'      => $this->githubForks,
-      'dependents'        => $this->dependents,
-      'suggesters'        => $this->suggesters,
-      'favers'            => $this->favers,
-      'total_downloads'   => $this->totalDownloads,
-      'monthly_downloads' => $this->monthlyDownloads,
-      'daily_downloads'   => $this->dailyDownloads,
-      'created_at'        => $this->createdAt->getTimestamp(),
-      'updated_at'        => $this->updatedAt?->getTimestamp()
+      'packageName'      => $this->packageName,
+      'githubStars'      => $this->githubStars,
+      'githubWatchers'   => $this->githubWatchers,
+      'githubForks'      => $this->githubForks,
+      'dependents'       => $this->dependents,
+      'suggesters'       => $this->suggesters,
+      'favers'           => $this->favers,
+      'totalDownloads'   => $this->totalDownloads,
+      'monthlyDownloads' => $this->monthlyDownloads,
+      'dailyDownloads'   => $this->dailyDownloads,
+      'createdAt'        => $this->createdAt,
+      'updatedAt'        => $this->updatedAt
     ];
   }
 }
