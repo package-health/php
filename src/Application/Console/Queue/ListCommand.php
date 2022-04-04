@@ -58,7 +58,12 @@ final class ListCommand extends Command {
           [
             $route->getRouteName(),
             $route->getQueueName(),
-            $transp->pending($route->getQueueName())
+            number_format(
+              $transp->pending($route->getQueueName()),
+              0,
+              ',',
+              '.'
+            )
           ]
         );
       }

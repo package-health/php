@@ -88,7 +88,12 @@ final class GetListCommand extends Command implements SignalableCommandInterface
         sprintf(
           '[%s] Got <options=bold;fg=cyan>%d</> package(s) from Packagist',
           date('H:i:s'),
-          $listCount
+          number_format(
+            $listCount,
+            0,
+            ',',
+            '.'
+          )
         )
       );
 
@@ -134,7 +139,12 @@ final class GetListCommand extends Command implements SignalableCommandInterface
         sprintf(
           '[%s] Local storage has <options=bold;fg=cyan>%d</> package(s)',
           date('H:i:s'),
-          $storedCount
+          number_format(
+            $storedCount,
+            0,
+            ',',
+            '.'
+          )
         )
       );
 
@@ -143,7 +153,12 @@ final class GetListCommand extends Command implements SignalableCommandInterface
         sprintf(
           '[%s] <options=bold;fg=green>%d</> package(s) will be added',
           date('H:i:s'),
-          count($addList)
+          number_format(
+            count($addList),
+            0,
+            ',',
+            '.'
+          )
         )
       );
 
@@ -152,7 +167,12 @@ final class GetListCommand extends Command implements SignalableCommandInterface
         sprintf(
           '[%s] <options=bold;fg=red>%d</> package(s) will be removed',
           date('H:i:s'),
-          count($removeList)
+          number_format(
+            count($removeList),
+            0,
+            ',',
+            '.'
+          )
         )
       );
 

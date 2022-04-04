@@ -96,10 +96,17 @@ final class ConsumeCommand extends Command implements SignalableCommandInterface
       do {
         $timer->start();
 
-        $this->consumer->consume($queueName, $messageCount);
+        $consumed = $this->consumer->consume($queueName, $messageCount);
 
         $duration = $timer->stop();
         if ($output->isVerbose()) {
+          $io->text(
+            sprintf(
+              '[%s] Consumed messages: <options=bold;fg=green>%d</>',
+              date('H:i:s'),
+              $consumed
+            )
+          );
           $io->text(
             sprintf(
               '[%s] Elapsed time: <options=bold;fg=green>%.2f</>ms',
@@ -108,7 +115,7 @@ final class ConsumeCommand extends Command implements SignalableCommandInterface
             )
           );
         }
-      } while ($daemonize && $this->stopDaemon === false);
+      } while ($consumed === $messageCount && $daemonize && $this->stopDaemon === false);
 
       $io->text(
         sprintf(
