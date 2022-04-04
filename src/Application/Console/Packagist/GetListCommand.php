@@ -14,12 +14,13 @@ use Exception;
 use InvalidArgumentException;
 use RuntimeException;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Command\SignalableCommandInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-final class GetListCommand extends Command {
+final class GetListCommand extends Command implements SignalableCommandInterface {
   /**
    * File cache lifetime (12 hour TTL)
    */
@@ -29,6 +30,7 @@ final class GetListCommand extends Command {
   private PackageRepositoryInterface $packageRepository;
   private ProducerInterface $producer;
   private Packagist $packagist;
+  private bool $mustStop = false;
 
   /**
    * Command configuration.
@@ -160,13 +162,36 @@ final class GetListCommand extends Command {
         $this->producer->sendEvent(
           new PackageCreatedEvent($package)
         );
+
+        if ($this->mustStop === true) {
+          $io->text(
+            sprintf(
+              '[%s] Interrupted, leaving',
+              date('H:i:s')
+            )
+          );
+
+          return Command::SUCCESS;
+        }
       }
 
       foreach ($removeList as $packageName) {
         // $this->packageRepository->delete($package);
+        //
         // $this->producer->sendEvent(
         //   new PackageRemovedEvent($package)
         // );
+        //
+        // if ($this->mustStop === true) {
+        //   $io->text(
+        //     sprintf(
+        //       '[%s] Interrupted, leaving',
+        //       date('H:i:s')
+        //     )
+        //   );
+
+        //   return Command::SUCCESS;
+        // }
       }
 
       $io->text(
@@ -205,5 +230,13 @@ final class GetListCommand extends Command {
     $this->packagist         = $packagist;
 
     parent::__construct();
+  }
+
+  public function getSubscribedSignals(): array {
+    return [SIGINT, SIGTERM];
+  }
+
+  public function handleSignal(int $signal): void {
+    $this->mustStop = true;
   }
 }

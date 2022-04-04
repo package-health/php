@@ -8,6 +8,7 @@ use Exception;
 use InvalidArgumentException;
 use SebastianBergmann\Timer\Timer;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Command\SignalableCommandInterface;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -15,9 +16,10 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-final class QueueConsumeCommand extends Command {
+final class QueueConsumeCommand extends Command implements SignalableCommandInterface {
   protected static $defaultName = 'queue:consume';
   private Consumer $consumer;
+  private bool $stopDaemon = false;
 
   /**
    * Command configuration.
@@ -27,6 +29,12 @@ final class QueueConsumeCommand extends Command {
   protected function configure(): void {
     $this
       ->setDescription('Consume messages from a bus queue')
+      ->addOption(
+        'daemonize',
+        'd',
+        InputOption::VALUE_NONE,
+        'Run command as daemon'
+      )
       ->addOption(
         'messageCount',
         'm',
@@ -61,6 +69,8 @@ final class QueueConsumeCommand extends Command {
         )
       );
 
+      $daemonize = (bool)$input->getOption('daemonize');
+
       $messageCount = (int)$input->getOption('messageCount');
 
       $queueName = $input->getArgument('name');
@@ -83,20 +93,22 @@ final class QueueConsumeCommand extends Command {
       }
 
       $timer = new Timer();
-      $timer->start();
+      do {
+        $timer->start();
 
-      $this->consumer->consume($queueName, $messageCount);
+        $this->consumer->consume($queueName, $messageCount);
 
-      $duration = $timer->stop();
-      if ($output->isVerbose()) {
-        $io->text(
-          sprintf(
-            '[%s] Elapsed time: <options=bold;fg=green>%.2f</>ms',
-            date('H:i:s'),
-            $duration->asMilliseconds()
-          )
-        );
-      }
+        $duration = $timer->stop();
+        if ($output->isVerbose()) {
+          $io->text(
+            sprintf(
+              '[%s] Elapsed time: <options=bold;fg=green>%.2f</>ms',
+              date('H:i:s'),
+              $duration->asMilliseconds()
+            )
+          );
+        }
+      } while ($daemonize && $this->stopDaemon === false);
 
       $io->text(
         sprintf(
@@ -130,5 +142,13 @@ final class QueueConsumeCommand extends Command {
     $this->consumer = $consumer;
 
     parent::__construct();
+  }
+
+  public function getSubscribedSignals(): array {
+    return [SIGINT, SIGTERM];
+  }
+
+  public function handleSignal(int $signal): void {
+    $this->stopDaemon = true;
   }
 }
