@@ -13,20 +13,24 @@ use Courier\Client\Producer\ProducerInterface;
 use Courier\Message\CommandInterface;
 use Courier\Processor\Handler\HandlerResultEnum;
 use Courier\Processor\Handler\InvokeHandlerInterface;
+use Psr\Log\LoggerInterface;
 
 final class UpdateVersionStatusHandler implements InvokeHandlerInterface {
   private VersionRepositoryInterface $versionRepository;
   private DependencyRepositoryInterface $dependencyRepository;
   private ProducerInterface $producer;
+  private LoggerInterface $logger;
 
   public function __construct(
     VersionRepositoryInterface $versionRepository,
     DependencyRepositoryInterface $dependencyRepository,
-    ProducerInterface $producer
+    ProducerInterface $producer,
+    LoggerInterface $logger
   ) {
     $this->versionRepository    = $versionRepository;
     $this->dependencyRepository = $dependencyRepository;
     $this->producer             = $producer;
+    $this->logger               = $logger;
   }
 
   /**

@@ -11,17 +11,21 @@ use Courier\Client\Producer\ProducerInterface;
 use Courier\Message\CommandInterface;
 use Courier\Processor\Handler\HandlerResultEnum;
 use Courier\Processor\Handler\InvokeHandlerInterface;
+use Psr\Log\LoggerInterface;
 
 class UpdateDependencyStatusHandler implements InvokeHandlerInterface {
   private DependencyRepositoryInterface $dependencyRepository;
   private ProducerInterface $producer;
+  private LoggerInterface $logger;
 
   public function __construct(
     DependencyRepositoryInterface $dependencyRepository,
-    ProducerInterface $producer
+    ProducerInterface $producer,
+    LoggerInterface $logger
   ) {
     $this->dependencyRepository = $dependencyRepository;
     $this->producer             = $producer;
+    $this->logger               = $logger;
   }
 
   /**
