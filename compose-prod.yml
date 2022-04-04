@@ -1,0 +1,58 @@
+services:
+  pph-nginx-prod:
+    container_name: pph-nginx-prod
+    image: package-health/nginx:prod-841c5fd
+    environment:
+      - PHP_FPM=pph-php-fpm-prod
+    depends_on:
+      - pph-php-fpm-prod
+    ports:
+      - 127.0.0.1:8080:80/tcp
+    networks:
+      - pph-network-prod
+
+  pph-php-fpm-prod:
+    container_name: pph-php-fpm-prod
+    image: package-health/php-fpm:prod-841c5fd
+    env_file: ./.env
+    environment:
+      - AMQP_HOST=pph-rabbit-prod
+      - POSTGRES_HOST=pph-postgres-prod
+      - REDIS_HOST=pph-redis-prod
+    depends_on:
+      - pph-postgres-prod
+      - pph-rabbit-prod
+      - pph-redis-prod
+    networks:
+      - pph-network-prod
+
+  pph-postgres-prod:
+    container_name: pph-postgres-prod
+    image: postgres:14.2-alpine3.15
+    env_file: ./.env
+    ports:
+      - 127.0.0.1:5432:5432/tcp
+    volumes:
+      - ./run/db:/var/lib/postgresql/data
+    networks:
+      - pph-network-prod
+
+  pph-rabbit-prod:
+    container_name: pph-rabbit-prod
+    image: rabbitmq:3.9-management-alpine
+    ports:
+      - 127.0.0.1:5672:5672/tcp
+      - 127.0.0.1:15672:15672/tcp
+    volumes:
+      - ./run/mq:/var/lib/rabbitmq
+    networks:
+      - pph-network-prod
+
+  pph-redis-prod:
+    container_name: pph-redis-prod
+    image: redis:6.2-alpine3.15
+    networks:
+      - pph-network-prod
+
+networks:
+  pph-network-prod:

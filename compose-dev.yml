@@ -1,0 +1,73 @@
+services:
+  pph-nginx-dev:
+    container_name: pph-nginx-dev
+    image: package-health/nginx:prod-841c5fd
+    environment:
+      - PHP_FPM=pph-php-fpm-dev
+    depends_on:
+      - pph-php-fpm-dev
+    ports:
+      - 127.0.0.1:8080:80/tcp
+    volumes:
+      - ./public/css/:/usr/share/nginx/html/css/
+      - ./public/favicon/:/usr/share/nginx/html/favicon/
+      - ./public/fonts/:/usr/share/nginx/html/fonts/
+      - ./public/robots.txt:/usr/share/nginx/html/robots.txt
+      - ./public/sprites/:/usr/share/nginx/html/sprites/
+      - ./public/svg/:/usr/share/nginx/html/svg/
+    networks:
+      - pph-network-dev
+
+  pph-php-fpm-dev:
+    container_name: php-fpm-dev
+    image: package-health/php-fpm:prod-841c5fd
+    env_file: ./.env
+    environment:
+      - AMQP_HOST=pph-rabbit-dev
+      - POSTGRES_HOST=pph-postgres-dev
+      - REDIS_HOST=pph-redis-dev
+    depends_on:
+      - pph-postgres-dev
+      - pph-rabbit-dev
+      - pph-redis-dev
+    volumes:
+      - ./app/:/var/www/html/app/
+      - ./public/index.php:/var/www/html/public/index.php
+      - ./resources/:/var/www/html/resources/
+      - ./run/php/:/var/www/html/run/
+      - ./src/:/var/www/html/src/
+      - ./var/:/var/www/html/var/
+      - ./vendor/:/var/www/html/vendor/
+    networks:
+      - pph-network-dev
+
+  pph-postgres-dev:
+    container_name: pph-postgres-dev
+    image: postgres:14.2-alpine3.15
+    env_file: ./.env
+    ports:
+      - 127.0.0.1:5432:5432/tcp
+    volumes:
+      - ./run/db:/var/lib/postgresql/data
+    networks:
+      - pph-network-dev
+
+  pph-rabbit-dev:
+    container_name: pph-rabbit-dev
+    image: rabbitmq:3.9-management-alpine
+    ports:
+      - 127.0.0.1:5672:5672/tcp
+      - 127.0.0.1:15672:15672/tcp
+    volumes:
+      - ./run/mq:/var/lib/rabbitmq
+    networks:
+      - pph-network-dev
+
+  pph-redis-dev:
+    container_name: pph-redis-dev
+    image: redis:6.2-alpine3.15
+    networks:
+      - pph-network-dev
+
+networks:
+  pph-network-dev:
