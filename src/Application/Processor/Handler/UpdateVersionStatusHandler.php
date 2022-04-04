@@ -34,6 +34,12 @@ final class UpdateVersionStatusHandler implements InvokeHandlerInterface {
    */
   public function __invoke(CommandInterface $command): HandlerResultEnum {
     $dependency = $command->getDependency();
+
+    $this->logger->info(
+      'Update version status handler',
+      ['dependency' => $dependency->getName()]
+    );
+
     $version = $this->versionRepository->get($dependency->getVersionId());
     $reqDeps = $this->dependencyRepository->find(
       [

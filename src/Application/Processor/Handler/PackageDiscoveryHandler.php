@@ -58,6 +58,11 @@ class PackageDiscoveryHandler implements InvokeHandlerInterface {
 
       $packageName = $package->getName();
 
+      $this->logger->info(
+        'Package discovery handler',
+        ['package' => $packageName]
+      );
+
       $pkgs = [
         // dev versions
         "${packageName}~dev",
@@ -68,6 +73,8 @@ class PackageDiscoveryHandler implements InvokeHandlerInterface {
       foreach ($pkgs as $pkg) {
         $metadata = $this->packagist->getPackageMetadataVersion2($pkg);
         if (count($metadata) === 0) {
+          $this->logger->debug('Empty package metadata', ['package' => $pkg]);
+
           continue;
         }
 
@@ -81,6 +88,14 @@ class PackageDiscoveryHandler implements InvokeHandlerInterface {
             new PackageUpdatedEvent($package)
           );
         }
+
+        $this->logger->debug(
+          'Processing release list',
+          [
+            'package' => $pkg,
+            'count'   => count($metadata)
+          ]
+        );
 
         foreach (array_reverse($metadata) as $release) {
           // exclude branches from tagged releases (https://getcomposer.org/doc/articles/versions.md#branches)
@@ -130,6 +145,15 @@ class PackageDiscoveryHandler implements InvokeHandlerInterface {
             );
           }
 
+          $this->logger->debug(
+            'Processing "require" dependencies',
+            [
+              'package' => $pkg,
+              'version' => $release['version'],
+              'count'   => count($filteredRequire)
+            ]
+          );
+
           foreach ($filteredRequire as $dependencyName => $constraint) {
             if ($constraint === 'self.version') {
               // need to find out how to handle this
@@ -170,6 +194,19 @@ class PackageDiscoveryHandler implements InvokeHandlerInterface {
             ARRAY_FILTER_USE_KEY
           );
 
+          if (empty($filteredRequireDev)) {
+            continue;
+          }
+
+          $this->logger->debug(
+            'Processing "require-dev" dependencies',
+            [
+              'package' => $pkg,
+              'version' => $release['version'],
+              'count'   => count($filteredRequireDev)
+            ]
+          );
+
           foreach ($filteredRequireDev as $dependencyName => $constraint) {
             if ($constraint === 'self.version') {
               // need to find out how to handle this
@@ -204,7 +241,17 @@ class PackageDiscoveryHandler implements InvokeHandlerInterface {
 
       return HandlerResultEnum::Accept;
     } catch (Exception $exception) {
-      $this->logger->error($exception->getMessage(), [$exception]);
+      $this->logger->error(
+        $exception->getMessage(),
+        [
+          'package'   => $packageName,
+          'exception' => [
+            'file'  => $exception->getFile(),
+            'line'  => $exception->getLine(),
+            'trace' => $exception->getTrace()
+          ]
+        ]
+      );
 
       return HandlerResultEnum::Requeue;
     }

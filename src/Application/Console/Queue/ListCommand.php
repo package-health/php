@@ -15,8 +15,8 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-final class QueueListRoutesCommand extends Command {
-  protected static $defaultName = 'queue:list-routes';
+final class ListCommand extends Command {
+  protected static $defaultName = 'queue:list';
   private Bus $bus;
 
   /**
@@ -26,7 +26,7 @@ final class QueueListRoutesCommand extends Command {
    */
   protected function configure(): void {
     $this
-      ->setDescription('List message bus bound routes');
+      ->setDescription('List message bus available queues (bound routes)');
   }
 
   /**

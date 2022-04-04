@@ -14,8 +14,8 @@ use App\Application\Console\Packagist\GetDataCommand;
 use App\Application\Console\Packagist\GetListCommand;
 use App\Application\Console\Packagist\GetUpdatesCommand;
 use App\Application\Console\Packagist\MassImportCommand;
-use App\Application\Console\Queue\QueueConsumeCommand;
-use App\Application\Console\Queue\QueueListRoutesCommand;
+use App\Application\Console\Queue\ConsumeCommand;
+use App\Application\Console\Queue\ListCommand;
 use DI\ContainerBuilder;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\CommandLoader\FactoryCommandLoader;
@@ -82,11 +82,11 @@ $app->setCommandLoader(
       MassImportCommand::getDefaultName() => static function () use ($container): MassImportCommand {
         return $container->get(MassImportCommand::class);
       },
-      QueueConsumeCommand::getDefaultName() => static function () use ($container): QueueConsumeCommand {
-        return $container->get(QueueConsumeCommand::class);
+      ConsumeCommand::getDefaultName() => static function () use ($container): ConsumeCommand {
+        return $container->get(ConsumeCommand::class);
       },
-      QueueListRoutesCommand::getDefaultName() => static function () use ($container): QueueListRoutesCommand {
-        return $container->get(QueueListRoutesCommand::class);
+      ListCommand::getDefaultName() => static function () use ($container): ListCommand {
+        return $container->get(ListCommand::class);
       }
     ]
   )

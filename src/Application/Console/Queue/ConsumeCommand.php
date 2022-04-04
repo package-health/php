@@ -16,7 +16,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-final class QueueConsumeCommand extends Command implements SignalableCommandInterface {
+final class ConsumeCommand extends Command implements SignalableCommandInterface {
   protected static $defaultName = 'queue:consume';
   private Consumer $consumer;
   private bool $stopDaemon = false;
