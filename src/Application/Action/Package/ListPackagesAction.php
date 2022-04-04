@@ -41,7 +41,10 @@ final class ListPackagesAction extends AbstractPackageAction {
       $twig->fetch(
         'index.twig',
         [
-          'packages' => $packages
+          'packages' => $packages,
+          'app'      => [
+            'version' => $_ENV['VERSION']
+          ]
         ]
       )
     );

@@ -66,7 +66,7 @@ $container = $containerBuilder->build();
 $messages = require __DIR__ . '/../app/messages.php';
 $messages($container);
 
-$app = new Application('php.package.health console');
+$app = new Application('php.package.health console', $_ENV['VERSION'] ?? '');
 $app->setCommandLoader(
   new FactoryCommandLoader(
     [

@@ -85,6 +85,9 @@ final class RedirectPackageAction extends AbstractPackageAction {
                 'subtitle' => false,
                 'footer'   => false
               ]
+            ],
+            'app' => [
+              'version' => $_ENV['VERSION']
             ]
           ]
         )

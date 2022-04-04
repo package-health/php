@@ -98,6 +98,9 @@ final class ViewPackageAction extends AbstractPackageAction {
         'hero' => [
           'footer' => true,
         ]
+      ],
+      'app' => [
+        'version' => $_ENV['VERSION']
       ]
     ];
 

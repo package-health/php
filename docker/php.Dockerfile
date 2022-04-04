@@ -89,7 +89,7 @@ FROM php:8.1.4-cli-alpine3.15 as cli
 
 # https://blog.packagecloud.io/eng/2017/02/21/set-environment-variable-save-thousands-of-system-calls/
 ENV TZ=:/etc/localtime
-ENV PHP_ENV=:dev
+ENV PHP_ENV=development
 
 #============================================
 # Settings
@@ -144,6 +144,7 @@ WORKDIR /var/www/html/bin
 # Metadata
 #============================================
 ARG VERSION=latest
+ENV VERSION="${VERSION}"
 LABEL maintainer="Flavio Heleno <flaviohbatista@gmail.com>" \
       org.opencontainers.image.authors="flaviohbatista@gmail.com" \
       org.opencontainers.image.title="PHP-Package-Health: PHP-CLI" \
@@ -162,7 +163,7 @@ FROM php:8.1.4-fpm-alpine3.15 as fpm
 
 # https://blog.packagecloud.io/eng/2017/02/21/set-environment-variable-save-thousands-of-system-calls/
 ENV TZ=:/etc/localtime
-ENV PHP_ENV=:dev
+ENV PHP_ENV=development
 
 #============================================
 # Settings
@@ -226,6 +227,7 @@ HEALTHCHECK --interval=1m30s --timeout=10s --retries=3 --start-period=40s CMD ph
 # Metadata
 #============================================
 ARG VERSION=latest
+ENV VERSION="${VERSION}"
 LABEL maintainer="Flavio Heleno <flaviohbatista@gmail.com>" \
       org.opencontainers.image.authors="flaviohbatista@gmail.com" \
       org.opencontainers.image.title="PHP-Package-Health: PHP-FPM" \
