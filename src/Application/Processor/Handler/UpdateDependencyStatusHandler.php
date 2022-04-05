@@ -33,7 +33,7 @@ class UpdateDependencyStatusHandler implements InvokeHandlerInterface {
   /**
    * Updates all dependency references that "require" or "require-dev" $package
    */
-  public function __invoke(CommandInterface $command): HandlerResultEnum {
+  public function __invoke(CommandInterface $command, array $attributes = []): HandlerResultEnum {
     static $lastPackage = '';
     static $lastTimestamp = 0;
     try {
@@ -47,7 +47,7 @@ class UpdateDependencyStatusHandler implements InvokeHandlerInterface {
         $lastPackage === $packageName &&
         time() - $lastTimestamp < 10
       ) {
-        $this->logger->info(
+        $this->logger->debug(
           'Update dependency status handler: Skipping duplicated job',
           [
             'package'       => $packageName,
@@ -98,8 +98,8 @@ class UpdateDependencyStatusHandler implements InvokeHandlerInterface {
       }
 
       // update deduplication guards
-      $lastPackage = $packageName;
-      $lastTimestamp = time();
+      $lastPackage   = $packageName;
+      $lastTimestamp = ($attributes['timestamp'] ?? new DateTimeImmutable())->getTimestamp();
 
       return HandlerResultEnum::Accept;
     } catch (Exception $exception) {
@@ -114,6 +114,11 @@ class UpdateDependencyStatusHandler implements InvokeHandlerInterface {
           ]
         ]
       );
+
+      // reject a command that has been requeued
+      if ($attributes['isRedelivery'] ?? false) {
+        return HandlerResultEnum::Reject;
+      }
 
       return HandlerResultEnum::Requeue;
     }

@@ -480,12 +480,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/courier-php/courier.git",
-                "reference": "ce57f0d4a98163448fbd3093937a71dafb096462"
+                "reference": "57fb58c8cfdbeae2749203bbf37606259c294161"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/courier-php/courier/zipball/ce57f0d4a98163448fbd3093937a71dafb096462",
-                "reference": "ce57f0d4a98163448fbd3093937a71dafb096462",
+                "url": "https://api.github.com/repos/courier-php/courier/zipball/57fb58c8cfdbeae2749203bbf37606259c294161",
+                "reference": "57fb58c8cfdbeae2749203bbf37606259c294161",
                 "shasum": ""
             },
             "require": {
@@ -528,7 +528,7 @@
                 "issues": "https://github.com/courier-php/courier/issues",
                 "source": "https://github.com/courier-php/courier/tree/main"
             },
-            "time": "2022-04-04T20:16:12+00:00"
+            "time": "2022-04-05T15:17:21+00:00"
         },
         {
             "name": "courier/locator-container",
@@ -536,12 +536,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/courier-php/locator-container.git",
-                "reference": "c96288231630ee9dcb91b7b63bbfb50856197475"
+                "reference": "16d2a64a48be4518ed93a60cb5f8675accc9481f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/courier-php/locator-container/zipball/c96288231630ee9dcb91b7b63bbfb50856197475",
-                "reference": "c96288231630ee9dcb91b7b63bbfb50856197475",
+                "url": "https://api.github.com/repos/courier-php/locator-container/zipball/16d2a64a48be4518ed93a60cb5f8675accc9481f",
+                "reference": "16d2a64a48be4518ed93a60cb5f8675accc9481f",
                 "shasum": ""
             },
             "require": {
@@ -585,7 +585,7 @@
                 "issues": "https://github.com/courier-php/locator-container/issues",
                 "source": "https://github.com/courier-php/locator-container/tree/main"
             },
-            "time": "2022-04-03T20:07:47+00:00"
+            "time": "2022-04-05T15:19:52+00:00"
         },
         {
             "name": "courier/middleware-envelope-compression",
@@ -707,12 +707,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/courier-php/transport-amqp.git",
-                "reference": "bd0d74f73659efdab94955c030f357f97669a8f2"
+                "reference": "31981b5005c130a7960df5c0e849bdff66b93f5d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/courier-php/transport-amqp/zipball/bd0d74f73659efdab94955c030f357f97669a8f2",
-                "reference": "bd0d74f73659efdab94955c030f357f97669a8f2",
+                "url": "https://api.github.com/repos/courier-php/transport-amqp/zipball/31981b5005c130a7960df5c0e849bdff66b93f5d",
+                "reference": "31981b5005c130a7960df5c0e849bdff66b93f5d",
                 "shasum": ""
             },
             "require": {
@@ -756,7 +756,7 @@
                 "issues": "https://github.com/courier-php/transport-amqp/issues",
                 "source": "https://github.com/courier-php/transport-amqp/tree/main"
             },
-            "time": "2022-04-03T21:25:39+00:00"
+            "time": "2022-04-05T15:18:15+00:00"
         },
         {
             "name": "graham-campbell/result-type",
@@ -2878,25 +2878,25 @@
         },
         {
             "name": "symfony/deprecation-contracts",
-            "version": "v2.5.0",
+            "version": "v3.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/deprecation-contracts.git",
-                "reference": "6f981ee24cf69ee7ce9736146d1c57c2780598a8"
+                "reference": "26954b3d62a6c5fd0ea8a2a00c0353a14978d05c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/deprecation-contracts/zipball/6f981ee24cf69ee7ce9736146d1c57c2780598a8",
-                "reference": "6f981ee24cf69ee7ce9736146d1c57c2780598a8",
+                "url": "https://api.github.com/repos/symfony/deprecation-contracts/zipball/26954b3d62a6c5fd0ea8a2a00c0353a14978d05c",
+                "reference": "26954b3d62a6c5fd0ea8a2a00c0353a14978d05c",
                 "shasum": ""
             },
             "require": {
-                "php": ">=7.1"
+                "php": ">=8.0.2"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-main": "2.5-dev"
+                    "dev-main": "3.0-dev"
                 },
                 "thanks": {
                     "name": "symfony/contracts",
@@ -2925,7 +2925,7 @@
             "description": "A generic function and convention to trigger deprecation notices",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/deprecation-contracts/tree/v2.5.0"
+                "source": "https://github.com/symfony/deprecation-contracts/tree/v3.0.1"
             },
             "funding": [
                 {
@@ -2941,7 +2941,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-07-12T14:48:14+00:00"
+            "time": "2022-01-02T09:55:41+00:00"
         },
         {
             "name": "symfony/filesystem",
@@ -3567,22 +3567,22 @@
         },
         {
             "name": "symfony/service-contracts",
-            "version": "v2.5.0",
+            "version": "v2.5.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/service-contracts.git",
-                "reference": "1ab11b933cd6bc5464b08e81e2c5b07dec58b0fc"
+                "reference": "24d9dc654b83e91aa59f9d167b131bc3b5bea24c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/service-contracts/zipball/1ab11b933cd6bc5464b08e81e2c5b07dec58b0fc",
-                "reference": "1ab11b933cd6bc5464b08e81e2c5b07dec58b0fc",
+                "url": "https://api.github.com/repos/symfony/service-contracts/zipball/24d9dc654b83e91aa59f9d167b131bc3b5bea24c",
+                "reference": "24d9dc654b83e91aa59f9d167b131bc3b5bea24c",
                 "shasum": ""
             },
             "require": {
                 "php": ">=7.2.5",
                 "psr/container": "^1.1",
-                "symfony/deprecation-contracts": "^2.1"
+                "symfony/deprecation-contracts": "^2.1|^3"
             },
             "conflict": {
                 "ext-psr": "<1.1|>=2"
@@ -3630,7 +3630,7 @@
                 "standards"
             ],
             "support": {
-                "source": "https://github.com/symfony/service-contracts/tree/v2.5.0"
+                "source": "https://github.com/symfony/service-contracts/tree/v2.5.1"
             },
             "funding": [
                 {
@@ -3646,7 +3646,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-11-04T16:48:04+00:00"
+            "time": "2022-03-13T20:07:29+00:00"
         },
         {
             "name": "symfony/string",

@@ -36,7 +36,7 @@ class VersionCreatedListener implements InvokeListenerInterface {
    *
    * Note: only sets the latest version if it is stable
    */
-  public function __invoke(EventInterface $event): void {
+  public function __invoke(EventInterface $event, array $attributes = []): void {
     $version = $event->getVersion();
     $this->logger->debug(
       'Version created',

@@ -38,7 +38,7 @@ final class UpdateVersionStatusHandler implements InvokeHandlerInterface {
   /**
    * Updates the version status that requires $dependency
    */
-  public function __invoke(CommandInterface $command): HandlerResultEnum {
+  public function __invoke(CommandInterface $command, array $attributes = []): HandlerResultEnum {
     static $lastDependency = '';
     static $lastTimestamp = 0;
     try {
@@ -53,7 +53,7 @@ final class UpdateVersionStatusHandler implements InvokeHandlerInterface {
         $lastDependency === $dependencyName &&
         time() - $lastTimestamp < 10
       ) {
-        $this->logger->info(
+        $this->logger->debug(
           'Update version status handler: Skipping duplicated job',
           [
             'dependency'    => $dependencyName,
@@ -106,7 +106,7 @@ final class UpdateVersionStatusHandler implements InvokeHandlerInterface {
 
       // update deduplication guards
       $lastDependency = $dependencyName;
-      $lastTimestamp = time();
+      $lastTimestamp  = ($attributes['timestamp'] ?? new DateTimeImmutable())->getTimestamp();
 
       return HandlerResultEnum::Accept;
     } catch (Exception $exception) {
@@ -121,6 +121,11 @@ final class UpdateVersionStatusHandler implements InvokeHandlerInterface {
           ]
         ]
       );
+
+      // reject a command that has been requeued
+      if ($attributes['isRedelivery'] ?? false) {
+        return HandlerResultEnum::Reject;
+      }
 
       return HandlerResultEnum::Requeue;
     }
