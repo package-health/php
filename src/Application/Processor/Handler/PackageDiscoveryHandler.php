@@ -19,6 +19,7 @@ use Courier\Message\CommandInterface;
 use Courier\Processor\Handler\HandlerResultEnum;
 use Courier\Processor\Handler\InvokeHandlerInterface;
 use DateTimeImmutable;
+use DateTimeInterface;
 use Exception;
 use Psr\Log\LoggerInterface;
 
@@ -53,10 +54,30 @@ class PackageDiscoveryHandler implements InvokeHandlerInterface {
    *  - Package statistics
    */
   public function __invoke(CommandInterface $command): HandlerResultEnum {
+    static $lastPackage = '';
+    static $lastTimestamp = 0;
     try {
       $package = $command->getPackage();
 
       $packageName = $package->getName();
+
+      // check for job duplication
+      if (
+        $command->forceExecution() === false &&
+        $lastPackage === $packageName &&
+        time() - $lastTimestamp < 10
+      ) {
+        $this->logger->info(
+          'Package discovery handler: Skipping duplicated job',
+          [
+            'package'       => $packageName,
+            'lastTimestamp' => (new DateTimeImmutable)->setTimestamp($lastTimestamp)->format(DateTimeInterface::ATOM)
+          ]
+        );
+
+        // shoud just accept so that it doesn't show as churn?
+        return HandlerResultEnum::Reject;
+      }
 
       $this->logger->info(
         'Package discovery handler',
@@ -238,6 +259,10 @@ class PackageDiscoveryHandler implements InvokeHandlerInterface {
           }
         }
       }
+
+      // update deduplication guards
+      $lastPackage = $packageName;
+      $lastTimestamp = time();
 
       return HandlerResultEnum::Accept;
     } catch (Exception $exception) {

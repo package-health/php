@@ -11,6 +11,8 @@ use Courier\Client\Producer\ProducerInterface;
 use Courier\Message\CommandInterface;
 use Courier\Processor\Handler\HandlerResultEnum;
 use Courier\Processor\Handler\InvokeHandlerInterface;
+use DateTimeImmutable;
+use DateTimeInterface;
 use Psr\Log\LoggerInterface;
 
 class UpdateDependencyStatusHandler implements InvokeHandlerInterface {
@@ -32,45 +34,88 @@ class UpdateDependencyStatusHandler implements InvokeHandlerInterface {
    * Updates all dependency references that "require" or "require-dev" $package
    */
   public function __invoke(CommandInterface $command): HandlerResultEnum {
-    $package = $command->getPackage();
-    $this->logger->info(
-      'Update dependency status handler',
-      [
-        'package' => $package->getName(),
-        'version' => $package->getLatestVersion()
-      ]
-    );
+    static $lastPackage = '';
+    static $lastTimestamp = 0;
+    try {
+      $package = $command->getPackage();
 
-    if ($package->getLatestVersion() === '') {
-      return HandlerResultEnum::Reject;
-    }
+      $packageName = $package->getName();
 
-    $dependencyCol = $this->dependencyRepository->find(
-      [
-        'name' => $package->getName()
-      ]
-    );
+      // check for job duplication
+      if (
+        $command->forceExecution() === false &&
+        $lastPackage === $packageName &&
+        time() - $lastTimestamp < 10
+      ) {
+        $this->logger->info(
+          'Update dependency status handler: Skipping duplicated job',
+          [
+            'package'       => $packageName,
+            'lastTimestamp' => (new DateTimeImmutable)->setTimestamp($lastTimestamp)->format(DateTimeInterface::ATOM)
+          ]
+        );
 
-    foreach ($dependencyCol as $dependency) {
-      if ($dependency->getConstraint() === 'self.version') {
-        // need to find out how to handle this
-        continue;
+        // shoud just accept so that it doesn't show as churn?
+        return HandlerResultEnum::Reject;
       }
 
-      $dependency = $dependency->withStatus(
-        Semver::satisfies($package->getLatestVersion(), $dependency->getConstraint()) ?
-          DependencyStatusEnum::UpToDate :
-          DependencyStatusEnum::Outdated
+      $this->logger->info(
+        'Update dependency status handler',
+        [
+          'package' => $packageName,
+          'version' => $package->getLatestVersion()
+        ]
       );
 
-      if ($dependency->isDirty()) {
-        $dependency = $this->dependencyRepository->update($dependency);
-        $this->producer->sendEvent(
-          new DependencyUpdatedEvent($dependency)
-        );
+      if ($package->getLatestVersion() === '') {
+        return HandlerResultEnum::Reject;
       }
-    }
 
-    return HandlerResultEnum::Accept;
+      $dependencyCol = $this->dependencyRepository->find(
+        [
+          'name' => $packageName
+        ]
+      );
+
+      foreach ($dependencyCol as $dependency) {
+        if ($dependency->getConstraint() === 'self.version') {
+          // need to find out how to handle this
+          continue;
+        }
+
+        $dependency = $dependency->withStatus(
+          Semver::satisfies($package->getLatestVersion(), $dependency->getConstraint()) ?
+            DependencyStatusEnum::UpToDate :
+            DependencyStatusEnum::Outdated
+        );
+
+        if ($dependency->isDirty()) {
+          $dependency = $this->dependencyRepository->update($dependency);
+          $this->producer->sendEvent(
+            new DependencyUpdatedEvent($dependency)
+          );
+        }
+      }
+
+      // update deduplication guards
+      $lastPackage = $packageName;
+      $lastTimestamp = time();
+
+      return HandlerResultEnum::Accept;
+    } catch (Exception $exception) {
+      $this->logger->error(
+        $exception->getMessage(),
+        [
+          'package'   => $packageName,
+          'exception' => [
+            'file'  => $exception->getFile(),
+            'line'  => $exception->getLine(),
+            'trace' => $exception->getTrace()
+          ]
+        ]
+      );
+
+      return HandlerResultEnum::Requeue;
+    }
   }
 }
