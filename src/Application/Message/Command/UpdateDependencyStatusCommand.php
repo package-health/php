@@ -8,19 +8,31 @@ use Courier\Message\CommandInterface;
 
 final class UpdateDependencyStatusCommand implements CommandInterface {
   private Package $package;
+  /**
+   * Force command execution (ie. skips command deduplication guards)
+   */
+  private bool $force;
 
-  public function __construct(Package $package) {
+  public function __construct(Package $package, bool $force = false) {
     $this->package = $package;
+    $this->force   = $force;
   }
 
   public function getPackage(): Package {
     return $this->package;
   }
 
+  public function forceExecution(): bool {
+    return $this->force;
+  }
+
   /**
-   * @return array{0: \App\Domain\Package\Package}
+   * @return array{
+   *   0: \App\Domain\Package\Package,
+   *   1: bool
+   * }
    */
   public function toArray(): array {
-    return [$this->package];
+    return [$this->package, $this->force];
   }
 }
