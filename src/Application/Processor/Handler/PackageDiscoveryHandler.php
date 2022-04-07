@@ -4,6 +4,7 @@ declare(strict_types = 1);
 namespace App\Application\Processor\Handler;
 
 use App\Application\Handler\DependencyUpdatedEvent;
+use App\Application\Message\Command\PackageDiscoveryCommand;
 use App\Application\Message\Event\Dependency\DependencyCreatedEvent;
 use App\Application\Message\Event\Package\PackageUpdatedEvent;
 use App\Application\Message\Event\Version\VersionCreatedEvent;
@@ -51,26 +52,53 @@ class PackageDiscoveryHandler implements InvokeHandlerInterface {
    * Retrieves package metadata from packagist.org
    *  - List of avaialble versions
    *  - List of required dependencies per version
-   *  - Package statistics
+   *
+   * @param array{
+   *   appId?: string,
+   *   correlationId?: string,
+   *   expiration?: string,
+   *   headers?: array<string, mixed>,
+   *   isRedelivery?: bool,
+   *   messageId?: string,
+   *   priority?: \Courier\Message\EnvelopePriorityEnum,
+   *   replyTo?: string,
+   *   timestamp?: \DateTimeImmutable|null,
+   *   type?: string,
+   *   userId?: string
+   * } $attributes
    */
   public function __invoke(CommandInterface $command, array $attributes = []): HandlerResultEnum {
-    static $lastPackage = '';
+    static $lastUniqueId  = '';
     static $lastTimestamp = 0;
+
+    if (($command instanceof PackageDiscoveryCommand) === false) {
+      $this->logger->critical(
+        sprintf(
+          'Invalid command argument for PackageDiscoveryHandler: "%s"',
+          $command::class
+        )
+      );
+
+      return HandlerResultEnum::Reject;
+    }
+
     try {
       $package = $command->getPackage();
 
       $packageName = $package->getName();
 
       // check for job duplication
+      $uniqueId  = $packageName;
+      $timestamp = ($attributes['timestamp'] ?? new DateTimeImmutable())->getTimestamp();
       if (
         $command->forceExecution() === false &&
-        $lastPackage === $packageName &&
-        time() - $lastTimestamp < 10
+        $lastUniqueId === $uniqueId &&
+        $timestamp - $lastTimestamp < 10
       ) {
         $this->logger->debug(
           'Package discovery handler: Skipping duplicated job',
           [
-            'package'       => $packageName,
+            'lastUniqueId'  => $lastUniqueId,
             'lastTimestamp' => (new DateTimeImmutable)->setTimestamp($lastTimestamp)->format(DateTimeInterface::ATOM)
           ]
         );
@@ -261,8 +289,8 @@ class PackageDiscoveryHandler implements InvokeHandlerInterface {
       }
 
       // update deduplication guards
-      $lastPackage   = $packageName;
-      $lastTimestamp = ($attributes['timestamp'] ?? new DateTimeImmutable())->getTimestamp();
+      $lastUniqueId  = $uniqueId;
+      $lastTimestamp = $timestamp;
 
       return HandlerResultEnum::Accept;
     } catch (Exception $exception) {

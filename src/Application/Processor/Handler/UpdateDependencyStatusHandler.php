@@ -3,6 +3,7 @@ declare(strict_types = 1);
 
 namespace App\Application\Processor\Handler;
 
+use App\Application\Message\Command\UpdateDependencyStatusCommand;
 use App\Application\Message\Event\Dependency\DependencyUpdatedEvent;
 use App\Domain\Dependency\DependencyRepositoryInterface;
 use App\Domain\Dependency\DependencyStatusEnum;
@@ -13,6 +14,7 @@ use Courier\Processor\Handler\HandlerResultEnum;
 use Courier\Processor\Handler\InvokeHandlerInterface;
 use DateTimeImmutable;
 use DateTimeInterface;
+use Exception;
 use Psr\Log\LoggerInterface;
 
 class UpdateDependencyStatusHandler implements InvokeHandlerInterface {
@@ -32,25 +34,58 @@ class UpdateDependencyStatusHandler implements InvokeHandlerInterface {
 
   /**
    * Updates all dependency references that "require" or "require-dev" $package
+   *
+   * @param array{
+   *   appId?: string,
+   *   correlationId?: string,
+   *   expiration?: string,
+   *   headers?: array<string, mixed>,
+   *   isRedelivery?: bool,
+   *   messageId?: string,
+   *   priority?: \Courier\Message\EnvelopePriorityEnum,
+   *   replyTo?: string,
+   *   timestamp?: \DateTimeImmutable|null,
+   *   type?: string,
+   *   userId?: string
+   * } $attributes
    */
   public function __invoke(CommandInterface $command, array $attributes = []): HandlerResultEnum {
-    static $lastPackage = '';
+    static $lastUniqueId  = '';
     static $lastTimestamp = 0;
+
+    if (($command instanceof UpdateDependencyStatusCommand) === false) {
+      $this->logger->critical(
+        sprintf(
+          'Invalid command argument for UpdateDependencyStatusHandler: "%s"',
+          $command::class
+        )
+      );
+
+      return HandlerResultEnum::Reject;
+    }
+
     try {
       $package = $command->getPackage();
 
       $packageName = $package->getName();
 
       // check for job duplication
+      $uniqueId = sprintf(
+        '%s%s',
+        $packageName,
+        $package->getLatestVersion()
+      );
+      $timestamp = ($attributes['timestamp'] ?? new DateTimeImmutable())->getTimestamp();
       if (
         $command->forceExecution() === false &&
-        $lastPackage === $packageName &&
-        time() - $lastTimestamp < 10
+        $lastUniqueId === $uniqueId &&
+        $timestamp - $lastTimestamp < 10
       ) {
         $this->logger->debug(
           'Update dependency status handler: Skipping duplicated job',
           [
             'package'       => $packageName,
+            'uniqueId'      => $uniqueId,
             'lastTimestamp' => (new DateTimeImmutable)->setTimestamp($lastTimestamp)->format(DateTimeInterface::ATOM)
           ]
         );
@@ -98,8 +133,8 @@ class UpdateDependencyStatusHandler implements InvokeHandlerInterface {
       }
 
       // update deduplication guards
-      $lastPackage   = $packageName;
-      $lastTimestamp = ($attributes['timestamp'] ?? new DateTimeImmutable())->getTimestamp();
+      $lastUniqueId  = $uniqueId;
+      $lastTimestamp = $timestamp;
 
       return HandlerResultEnum::Accept;
     } catch (Exception $exception) {
