@@ -29,7 +29,7 @@ return static function (ContainerBuilder $containerBuilder): void {
             'logger' => [
               'name' => 'slim-app',
               'path' => isset($_ENV['DOCKER']) ? 'php://stdout' : __DIR__ . '/../logs/app.log',
-              'level' => LogLevel::DEBUG,
+              'level' => isset($_ENV['PHP_ENV']) === false || $_ENV['PHP_ENV'] === 'development' ? LogLevel::DEBUG : LogLevel::INFO,
             ]
           ]
         );
