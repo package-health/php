@@ -14,7 +14,7 @@ final class ListPackagesAction extends AbstractPackageAction {
     $packages = $this->packageRepository->findPopular();
     $twig = Twig::fromRequest($this->request);
 
-    $this->logger->info('Packages list was viewed.');
+    $this->logger->debug('Packages list was viewed.');
 
     // if (count($packages)) {
     //   $lastModifiedList = array_map(

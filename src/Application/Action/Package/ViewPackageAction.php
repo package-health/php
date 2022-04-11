@@ -72,7 +72,7 @@ final class ViewPackageAction extends AbstractPackageAction {
       ]
     );
 
-    $this->logger->info("Package '${vendor}/${project}' was viewed.");
+    $this->logger->debug("Package '${vendor}/${project}' was viewed.");
 
     // $lastModified = $package->getUpdatedAt() ?? $package->getCreatedAt();
     // $this->response = $this->cacheProvider->withLastModified(

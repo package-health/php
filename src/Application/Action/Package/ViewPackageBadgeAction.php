@@ -43,7 +43,7 @@ final class ViewPackageBadgeAction extends AbstractPackageAction {
     $version = $this->resolveStringArg('version');
     $package = $this->packageRepository->get("${vendor}/${project}");
 
-    $this->logger->info("Status badge for package '${vendor}/${project}' was viewed.");
+    $this->logger->debug("Status badge for package '${vendor}/${project}' was viewed.");
 
     $versionCol = $this->versionRepository->find(
       [

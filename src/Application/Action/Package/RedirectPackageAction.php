@@ -43,7 +43,7 @@ final class RedirectPackageAction extends AbstractPackageAction {
 
       if (count($versionCol)) {
         $release = $versionCol->last();
-        $this->logger->info(
+        $this->logger->debug(
           sprintf(
             'Package "%s" is being redirected to "%s"',
             $package->getName(),
@@ -94,7 +94,7 @@ final class RedirectPackageAction extends AbstractPackageAction {
       );
     }
 
-    $this->logger->info(
+    $this->logger->debug(
       sprintf(
         'Package "%s" is being redirected to "%s"',
         $package->getName(),

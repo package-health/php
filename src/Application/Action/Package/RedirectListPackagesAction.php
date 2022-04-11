@@ -13,7 +13,7 @@ final class RedirectListPackagesAction extends AbstractPackageAction {
   protected function action(): ResponseInterface {
     $routeParser = RouteContext::fromRequest($this->request)->getRouteParser();
 
-    $this->logger->info('Invalid route /packages is being redirected.');
+    $this->logger->debug('Invalid route /packages is being redirected.');
 
     return $this->respondWithRedirect(
       $routeParser->urlFor('listPackages')
