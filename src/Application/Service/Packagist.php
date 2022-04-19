@@ -12,11 +12,50 @@ use RuntimeException;
 final class Packagist {
   private FileStorageInterface $fileStorage;
   private Browser $browser;
+  private bool $workOffline = false;
+
+  /**
+   * @throws \RuntimeException
+   */
+  private function decompress(string $content): string {
+    $decompressed = gzdecode($content);
+    if ($decompressed === false) {
+      throw new RuntimeException('Failed to decompress content');
+    }
+
+    return $decompressed;
+  }
+
+  /**
+   * @throws \RuntimeException
+   */
+  private function getFileContent(string $file): string {
+    if ($this->fileStorage->exists($file) === false) {
+      throw new RuntimeException(
+        sprintf(
+          'File not found: "%s"',
+          $file
+        )
+      );
+    }
+
+    $content = $this->fileStorage->readContent($file);
+    // handle compressed content
+    if (str_ends_with($file, '.gz')) {
+      $content = $this->decompress($content);
+    }
+
+    return $content;
+  }
 
   /**
    * @throws \RuntimeException
    */
   private function updateFileContent(string $file, string $url): string {
+    if ($this->isOffline()) {
+      return $this->getFileContent($file);
+    }
+
     $headers = [
       'User-Agent' => 'php.package.health (twitter.com/flavioheleno)'
     ];
@@ -55,10 +94,18 @@ final class Packagist {
         $this->fileStorage->setModificationTime($file, $lastModified);
       }
 
+      // handle compressed content
+      if (
+        $response->hasHeader('Content-Type') &&
+        $response->getHeaderLine('Content-Type') === 'application/octet-stream'
+      ) {
+        $content = $this->decompress($content);
+      }
+
       return $content;
     }
 
-    return $this->fileStorage->readContent($file);
+    return $this->getFileContent($file);
   }
 
   public function __construct(
@@ -67,6 +114,22 @@ final class Packagist {
   ) {
     $this->fileStorage = $fileStorage;
     $this->browser     = $browser;
+  }
+
+  public function isOffline(): bool {
+    return $this->workOffline;
+  }
+
+  public function workOffline(): self {
+    $this->workOffline = true;
+
+    return $this;
+  }
+
+  public function workOnline(): self {
+    $this->workOffline = false;
+
+    return $this;
   }
 
   /**
@@ -90,8 +153,9 @@ final class Packagist {
     string $packageName,
     string $mirror = 'https://packagist.org'
   ): array {
+    $prefix = substr($packageName, 0, 1);
     $content = $this->updateFileContent(
-      "packagist/${packageName}-v1.json",
+      "packagist/${prefix}/${packageName}-v1.json",
       "${mirror}/packages/${packageName}.json"
     );
 
@@ -107,9 +171,10 @@ final class Packagist {
     string $packageName,
     string $mirror = 'https://repo.packagist.org'
   ): array {
+    $prefix = substr($packageName, 0, 1);
     $content = $this->updateFileContent(
-      "packagist/${packageName}-v2.json",
-      "${mirror}/p2/${packageName}.json"
+      "packagist/${prefix}/${packageName}-v2.json.gz",
+      "${mirror}/p2/${packageName}.json.gz"
     );
 
     $json = json_decode($content, true, 512, JSON_THROW_ON_ERROR);
@@ -138,9 +203,13 @@ final class Packagist {
     return $json;
   }
 
-  public function getSecurityAdvisories(string $packageName, string $mirror = 'https://packagist.org'): array {
+  public function getSecurityAdvisories(
+    string $packageName,
+    string $mirror = 'https://packagist.org'
+  ): array {
+    $prefix = substr($packageName, 0, 1);
     $content = $this->updateFileContent(
-      "packagist/${packageName}-security-advisories.json",
+      "packagist/${prefix}/${packageName}-security-advisories.json",
       "${mirror}/api/security-advisories/?packages[]=${packageName}"
     );
 
