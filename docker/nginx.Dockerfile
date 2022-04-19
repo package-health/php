@@ -6,6 +6,12 @@ ENV TZ=:/etc/localtime
 # default PHP-FPM upstream
 ENV PHP_FPM=php-fpm
 
+#============================================
+# Force base image upgrade
+#============================================
+RUN apk add --no-cache --upgrade apk-tools && \
+    apk upgrade --available
+
 # nginx settings
 COPY docker/nginx/nginx.conf /etc/nginx/nginx.conf
 COPY docker/nginx/default.conf /etc/nginx/conf.d/default.conf
