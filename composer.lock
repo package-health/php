@@ -480,12 +480,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/courier-php/courier.git",
-                "reference": "57fb58c8cfdbeae2749203bbf37606259c294161"
+                "reference": "b847042c609abce063dd24785b6fe88ec35eab5e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/courier-php/courier/zipball/57fb58c8cfdbeae2749203bbf37606259c294161",
-                "reference": "57fb58c8cfdbeae2749203bbf37606259c294161",
+                "url": "https://api.github.com/repos/courier-php/courier/zipball/b847042c609abce063dd24785b6fe88ec35eab5e",
+                "reference": "b847042c609abce063dd24785b6fe88ec35eab5e",
                 "shasum": ""
             },
             "require": {
@@ -528,7 +528,7 @@
                 "issues": "https://github.com/courier-php/courier/issues",
                 "source": "https://github.com/courier-php/courier/tree/main"
             },
-            "time": "2022-04-05T15:17:21+00:00"
+            "time": "2022-04-20T20:10:50+00:00"
         },
         {
             "name": "courier/locator-container",
@@ -536,12 +536,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/courier-php/locator-container.git",
-                "reference": "16d2a64a48be4518ed93a60cb5f8675accc9481f"
+                "reference": "9f8ef7247cdf6d3636f176ed0f06735976743ca6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/courier-php/locator-container/zipball/16d2a64a48be4518ed93a60cb5f8675accc9481f",
-                "reference": "16d2a64a48be4518ed93a60cb5f8675accc9481f",
+                "url": "https://api.github.com/repos/courier-php/locator-container/zipball/9f8ef7247cdf6d3636f176ed0f06735976743ca6",
+                "reference": "9f8ef7247cdf6d3636f176ed0f06735976743ca6",
                 "shasum": ""
             },
             "require": {
@@ -585,7 +585,7 @@
                 "issues": "https://github.com/courier-php/locator-container/issues",
                 "source": "https://github.com/courier-php/locator-container/tree/main"
             },
-            "time": "2022-04-05T15:19:52+00:00"
+            "time": "2022-04-20T20:12:26+00:00"
         },
         {
             "name": "courier/middleware-envelope-compression",
@@ -650,12 +650,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/courier-php/serializer-igbinary.git",
-                "reference": "a263997ce65aa12d4cc35303814bc7569aff61f8"
+                "reference": "6a89e3f0cb8212210a07e3cc0dc4119211caafe1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/courier-php/serializer-igbinary/zipball/a263997ce65aa12d4cc35303814bc7569aff61f8",
-                "reference": "a263997ce65aa12d4cc35303814bc7569aff61f8",
+                "url": "https://api.github.com/repos/courier-php/serializer-igbinary/zipball/6a89e3f0cb8212210a07e3cc0dc4119211caafe1",
+                "reference": "6a89e3f0cb8212210a07e3cc0dc4119211caafe1",
                 "shasum": ""
             },
             "require": {
@@ -699,7 +699,7 @@
                 "issues": "https://github.com/courier-php/serializer-igbinary/issues",
                 "source": "https://github.com/courier-php/serializer-igbinary/tree/main"
             },
-            "time": "2022-04-03T20:11:01+00:00"
+            "time": "2022-04-20T20:13:10+00:00"
         },
         {
             "name": "courier/transport-amqp",
@@ -707,12 +707,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/courier-php/transport-amqp.git",
-                "reference": "31981b5005c130a7960df5c0e849bdff66b93f5d"
+                "reference": "8d8ac3c2a43149799035489a5a1708dd186a504d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/courier-php/transport-amqp/zipball/31981b5005c130a7960df5c0e849bdff66b93f5d",
-                "reference": "31981b5005c130a7960df5c0e849bdff66b93f5d",
+                "url": "https://api.github.com/repos/courier-php/transport-amqp/zipball/8d8ac3c2a43149799035489a5a1708dd186a504d",
+                "reference": "8d8ac3c2a43149799035489a5a1708dd186a504d",
                 "shasum": ""
             },
             "require": {
@@ -756,7 +756,7 @@
                 "issues": "https://github.com/courier-php/transport-amqp/issues",
                 "source": "https://github.com/courier-php/transport-amqp/tree/main"
             },
-            "time": "2022-04-05T15:18:15+00:00"
+            "time": "2022-04-20T20:12:51+00:00"
         },
         {
             "name": "graham-campbell/result-type",
@@ -4724,16 +4724,16 @@
         },
         {
             "name": "infection/infection",
-            "version": "0.26.6",
+            "version": "0.26.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/infection/infection.git",
-                "reference": "de9b6b92f00ff1cb39decddf95797a4ebec3a1ee"
+                "reference": "658c4567b78fc786ec63863715d711edcc67ccd7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/infection/infection/zipball/de9b6b92f00ff1cb39decddf95797a4ebec3a1ee",
-                "reference": "de9b6b92f00ff1cb39decddf95797a4ebec3a1ee",
+                "url": "https://api.github.com/repos/infection/infection/zipball/658c4567b78fc786ec63863715d711edcc67ccd7",
+                "reference": "658c4567b78fc786ec63863715d711edcc67ccd7",
                 "shasum": ""
             },
             "require": {
@@ -4748,7 +4748,7 @@
                 "justinrainbow/json-schema": "^5.2.10",
                 "nikic/php-parser": "^4.13.2",
                 "ondram/ci-detector": "^4.1.0",
-                "php": "^7.4.7 || ^8.0",
+                "php": "^8.0",
                 "sanmai/later": "^0.1.1",
                 "sanmai/pipeline": "^5.1 || ^6",
                 "sebastian/diff": "^3.0.2 || ^4.0",
@@ -4757,7 +4757,7 @@
                 "symfony/filesystem": "^3.4.29 || ^4.1.19 || ^5.0 || ^6.0",
                 "symfony/finder": "^3.4.29 || ^4.1.19 || ^5.0 || ^6.0",
                 "symfony/process": "^3.4.29 || ^4.1.19 || ^5.0 || ^6.0",
-                "thecodingmachine/safe": "^1.1.3",
+                "thecodingmachine/safe": "^2.1.2",
                 "webmozart/assert": "^1.3",
                 "webmozart/path-util": "^2.3"
             },
@@ -4771,14 +4771,14 @@
                 "helmich/phpunit-json-assert": "^3.0",
                 "phpspec/prophecy-phpunit": "^2.0",
                 "phpstan/extension-installer": "^1.1.0",
-                "phpstan/phpstan": "^1.2.0",
+                "phpstan/phpstan": "^1.3.0",
                 "phpstan/phpstan-phpunit": "^1.0.0",
                 "phpstan/phpstan-strict-rules": "^1.1.0",
                 "phpstan/phpstan-webmozart-assert": "^1.0.2",
                 "phpunit/phpunit": "^9.3.11",
                 "symfony/phpunit-bridge": "^4.4.18 || ^5.1.10",
                 "symfony/yaml": "^5.0",
-                "thecodingmachine/phpstan-safe-rule": "^1.1.0"
+                "thecodingmachine/phpstan-safe-rule": "^1.2.0"
             },
             "bin": [
                 "bin/infection"
@@ -4834,7 +4834,7 @@
             ],
             "support": {
                 "issues": "https://github.com/infection/infection/issues",
-                "source": "https://github.com/infection/infection/tree/0.26.6"
+                "source": "https://github.com/infection/infection/tree/0.26.7"
             },
             "funding": [
                 {
@@ -4846,7 +4846,7 @@
                     "type": "open_collective"
                 }
             ],
-            "time": "2022-03-07T11:40:30+00:00"
+            "time": "2022-04-20T19:25:53+00:00"
         },
         {
             "name": "justinrainbow/json-schema",
@@ -5612,16 +5612,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "1.5.6",
+            "version": "1.5.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "799dd8c2d2c9c704bb55d2078078cb970cf0f6d1"
+                "reference": "7fb7e2e1e9f3d59a26a413b2d3d5e47f0edb75ac"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/799dd8c2d2c9c704bb55d2078078cb970cf0f6d1",
-                "reference": "799dd8c2d2c9c704bb55d2078078cb970cf0f6d1",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/7fb7e2e1e9f3d59a26a413b2d3d5e47f0edb75ac",
+                "reference": "7fb7e2e1e9f3d59a26a413b2d3d5e47f0edb75ac",
                 "shasum": ""
             },
             "require": {
@@ -5647,7 +5647,7 @@
             "description": "PHPStan - PHP Static Analysis Tool",
             "support": {
                 "issues": "https://github.com/phpstan/phpstan/issues",
-                "source": "https://github.com/phpstan/phpstan/tree/1.5.6"
+                "source": "https://github.com/phpstan/phpstan/tree/1.5.7"
             },
             "funding": [
                 {
@@ -5667,7 +5667,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-04-15T11:13:37+00:00"
+            "time": "2022-04-20T12:20:27+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -8010,25 +8010,26 @@
         },
         {
             "name": "thecodingmachine/safe",
-            "version": "v1.3.3",
+            "version": "v2.1.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thecodingmachine/safe.git",
-                "reference": "a8ab0876305a4cdaef31b2350fcb9811b5608dbc"
+                "reference": "c4919cde04a0974e81340c3ed62bd27c1889005b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thecodingmachine/safe/zipball/a8ab0876305a4cdaef31b2350fcb9811b5608dbc",
-                "reference": "a8ab0876305a4cdaef31b2350fcb9811b5608dbc",
+                "url": "https://api.github.com/repos/thecodingmachine/safe/zipball/c4919cde04a0974e81340c3ed62bd27c1889005b",
+                "reference": "c4919cde04a0974e81340c3ed62bd27c1889005b",
                 "shasum": ""
             },
             "require": {
-                "php": ">=7.2"
+                "php": "^8.0"
             },
             "require-dev": {
-                "phpstan/phpstan": "^0.12",
+                "phpstan/phpstan": "^1.5",
+                "phpunit/phpunit": "^9.5",
                 "squizlabs/php_codesniffer": "^3.2",
-                "thecodingmachine/phpstan-strict-rules": "^0.12"
+                "thecodingmachine/phpstan-strict-rules": "^1.0"
             },
             "type": "library",
             "extra": {
@@ -8039,10 +8040,15 @@
             "autoload": {
                 "files": [
                     "deprecated/apc.php",
+                    "deprecated/array.php",
+                    "deprecated/datetime.php",
                     "deprecated/libevent.php",
+                    "deprecated/password.php",
                     "deprecated/mssql.php",
                     "deprecated/stats.php",
+                    "deprecated/strings.php",
                     "lib/special_cases.php",
+                    "deprecated/mysqli.php",
                     "generated/apache.php",
                     "generated/apcu.php",
                     "generated/array.php",
@@ -8063,6 +8069,7 @@
                     "generated/fpm.php",
                     "generated/ftp.php",
                     "generated/funchand.php",
+                    "generated/gettext.php",
                     "generated/gmp.php",
                     "generated/gnupg.php",
                     "generated/hash.php",
@@ -8072,7 +8079,6 @@
                     "generated/image.php",
                     "generated/imap.php",
                     "generated/info.php",
-                    "generated/ingres-ii.php",
                     "generated/inotify.php",
                     "generated/json.php",
                     "generated/ldap.php",
@@ -8081,20 +8087,14 @@
                     "generated/mailparse.php",
                     "generated/mbstring.php",
                     "generated/misc.php",
-                    "generated/msql.php",
                     "generated/mysql.php",
-                    "generated/mysqli.php",
-                    "generated/mysqlndMs.php",
-                    "generated/mysqlndQc.php",
                     "generated/network.php",
                     "generated/oci8.php",
                     "generated/opcache.php",
                     "generated/openssl.php",
                     "generated/outcontrol.php",
-                    "generated/password.php",
                     "generated/pcntl.php",
                     "generated/pcre.php",
-                    "generated/pdf.php",
                     "generated/pgsql.php",
                     "generated/posix.php",
                     "generated/ps.php",
@@ -8105,7 +8105,6 @@
                     "generated/sem.php",
                     "generated/session.php",
                     "generated/shmop.php",
-                    "generated/simplexml.php",
                     "generated/sockets.php",
                     "generated/sodium.php",
                     "generated/solr.php",
@@ -8143,9 +8142,9 @@
             "description": "PHP core functions that throw exceptions instead of returning FALSE on error",
             "support": {
                 "issues": "https://github.com/thecodingmachine/safe/issues",
-                "source": "https://github.com/thecodingmachine/safe/tree/v1.3.3"
+                "source": "https://github.com/thecodingmachine/safe/tree/v2.1.3"
             },
-            "time": "2020-10-28T17:51:34+00:00"
+            "time": "2022-03-30T09:48:08+00:00"
         },
         {
             "name": "theseer/tokenizer",
