@@ -4,8 +4,6 @@ declare(strict_types = 1);
 namespace App\Application\Console\Packagist;
 
 use App\Application\Message\Command\PackageDiscoveryCommand;
-use App\Application\Message\Event\Package\PackageCreatedEvent;
-use App\Application\Message\Event\Package\PackageRemovedEvent;
 use App\Domain\Package\Package;
 use App\Domain\Package\PackageRepositoryInterface;
 use App\Application\Service\Packagist;
@@ -41,10 +39,10 @@ final class GetListCommand extends Command implements SignalableCommandInterface
     $this
       ->setDescription('Get the complete list of packages from a Packagist mirror')
       ->addOption(
-        'resync',
-        'r',
+        'offline',
+        null,
         InputOption::VALUE_NONE,
-        'Resync the list'
+        'Work in offline mode'
       )
       ->addOption(
         'mirror',
@@ -75,6 +73,19 @@ final class GetListCommand extends Command implements SignalableCommandInterface
         )
       );
 
+      $workOffline = (bool)$input->getOption('offline');
+
+      if ($workOffline) {
+        $io->text(
+          sprintf(
+            '[%s] Running in <options=bold;fg=red>offline</> mode',
+            date('H:i:s')
+          )
+        );
+
+        $this->packagist->setOffline();
+      }
+
       $mirror = $input->getOption('mirror');
       if (filter_var($mirror, FILTER_VALIDATE_URL) === false) {
         throw new InvalidArgumentException('Invalid mirror option');
@@ -96,36 +107,6 @@ final class GetListCommand extends Command implements SignalableCommandInterface
           )
         )
       );
-
-      if ((bool)$input->getOption('resync')) {
-        $io->text(
-          sprintf(
-            '[%s] Running in resync mode',
-            date('H:i:s')
-          )
-        );
-
-        foreach ($packageList as $package) {
-          if ($this->packageRepository->exists($package)) {
-            $package = $this->packageRepository->get($package);
-          } else {
-            $package = $this->packageRepository->create($package);
-          }
-
-          $this->producer->sendCommand(
-            new PackageDiscoveryCommand($package)
-          );
-        }
-
-        $io->text(
-          sprintf(
-            '[%s] Done',
-            date('H:i:s')
-          )
-        );
-
-        return Command::SUCCESS;
-      }
 
       $packageCol = $this->packageRepository->all();
       $packages = $packageCol->map(
@@ -162,13 +143,13 @@ final class GetListCommand extends Command implements SignalableCommandInterface
         )
       );
 
-      $removeList = array_diff($packages, $packageList);
+      $remList = array_diff($packages, $packageList);
       $io->text(
         sprintf(
           '[%s] <options=bold;fg=red>%s</> package(s) will be removed',
           date('H:i:s'),
           number_format(
-            count($removeList),
+            count($remList),
             0,
             ',',
             '.'
@@ -177,10 +158,8 @@ final class GetListCommand extends Command implements SignalableCommandInterface
       );
 
       foreach ($addList as $packageName) {
-        $package = $this->packageRepository->create($packageName);
-
-        $this->producer->sendEvent(
-          new PackageCreatedEvent($package)
+        $this->producer->sendCommand(
+          new PackageDiscoveryCommand($packageName, workOffline: $workOffline)
         );
 
         if ($this->mustStop === true) {
@@ -195,13 +174,11 @@ final class GetListCommand extends Command implements SignalableCommandInterface
         }
       }
 
-      foreach ($removeList as $packageName) {
-        // $this->packageRepository->delete($package);
-        //
-        // $this->producer->sendEvent(
-        //   new PackageRemovedEvent($package)
+      foreach ($remList as $packageName) {
+        // $this->producer->sendCommand(
+        //   new PackageRemovalCommand($packageName)
         // );
-        //
+
         // if ($this->mustStop === true) {
         //   $io->text(
         //     sprintf(
@@ -221,17 +198,15 @@ final class GetListCommand extends Command implements SignalableCommandInterface
         )
       );
     } catch (Exception $exception) {
-      if (isset($io) === true) {
-        $io->error(
-          sprintf(
-            '[%s] %s',
-            date('H:i:s'),
-            $exception->getMessage()
-          )
-        );
-        if ($output->isDebug()) {
-          $io->listing(explode(PHP_EOL, $exception->getTraceAsString()));
-        }
+      $io->error(
+        sprintf(
+          '[%s] %s',
+          date('H:i:s'),
+          $exception->getMessage()
+        )
+      );
+      if ($output->isDebug()) {
+        $io->listing(explode(PHP_EOL, $exception->getTraceAsString()));
       }
 
       return Command::FAILURE;

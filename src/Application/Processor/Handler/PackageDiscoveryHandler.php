@@ -3,19 +3,14 @@ declare(strict_types = 1);
 
 namespace App\Application\Processor\Handler;
 
-use App\Application\Handler\DependencyUpdatedEvent;
 use App\Application\Message\Command\PackageDiscoveryCommand;
-use App\Application\Message\Event\Dependency\DependencyCreatedEvent;
-use App\Application\Message\Event\Package\PackageUpdatedEvent;
-use App\Application\Message\Event\Version\VersionCreatedEvent;
-use App\Application\Message\Event\Version\VersionUpdatedEvent;
 use App\Application\Service\Packagist;
 use App\Domain\Dependency\DependencyRepositoryInterface;
 use App\Domain\Dependency\DependencyStatusEnum;
 use App\Domain\Package\PackageRepositoryInterface;
 use App\Domain\Version\VersionRepositoryInterface;
 use App\Domain\Version\VersionStatusEnum;
-use Courier\Client\Producer\ProducerInterface;
+use Composer\Semver\VersionParser;
 use Courier\Message\CommandInterface;
 use Courier\Processor\Handler\HandlerResultEnum;
 use Courier\Processor\Handler\InvokeHandlerInterface;
@@ -28,22 +23,40 @@ class PackageDiscoveryHandler implements InvokeHandlerInterface {
   private DependencyRepositoryInterface $dependencyRepository;
   private PackageRepositoryInterface $packageRepository;
   private VersionRepositoryInterface $versionRepository;
-  private ProducerInterface $producer;
   private Packagist $packagist;
   private LoggerInterface $logger;
+
+  private function findLatestVersion(array $releases): string {
+    foreach ($releases as $release) {
+      if (VersionParser::parseStability($release['version_normalized']) === 'stable') {
+        return $release['version'];
+      }
+    }
+
+    return '';
+  }
+
+  private function filterDeps(array $deps): array {
+    return array_filter(
+      $deps,
+      static function (string $key): bool {
+        return preg_match('/^(php|hhvm|ext-.*|lib-.*|pear-.*)$/', $key) !== 1 &&
+          preg_match('/^[^\/]+\/[^\/]+$/', $key) === 1;
+      },
+      ARRAY_FILTER_USE_KEY
+    );
+  }
 
   public function __construct(
     DependencyRepositoryInterface $dependencyRepository,
     PackageRepositoryInterface $packageRepository,
     VersionRepositoryInterface $versionRepository,
-    ProducerInterface $producer,
     Packagist $packagist,
     LoggerInterface $logger
   ) {
     $this->dependencyRepository = $dependencyRepository;
     $this->packageRepository    = $packageRepository;
     $this->versionRepository    = $versionRepository;
-    $this->producer             = $producer;
     $this->packagist            = $packagist;
     $this->logger               = $logger;
   }
@@ -83,23 +96,32 @@ class PackageDiscoveryHandler implements InvokeHandlerInterface {
     }
 
     try {
-      $package = $command->getPackage();
+      switch ($command->workOffline()) {
+        case true:
+          $this->packagist->workOffline();
+          break;
+        case false:
+          $this->packagist->workOnline();
+          break;
+      }
 
-      $packageName = $package->getName();
+      $packageName = $command->getPackageName();
 
-      // check for job duplication
+      // guard for job duplication
       $uniqueId  = $packageName;
       $timestamp = ($attributes['timestamp'] ?? new DateTimeImmutable())->getTimestamp();
       if (
         $command->forceExecution() === false &&
         $lastUniqueId === $uniqueId &&
+        $lastTimestamp > 0 &&
         $timestamp - $lastTimestamp < 10
       ) {
         $this->logger->debug(
           'Package discovery handler: Skipping duplicated job',
           [
+            'timestamp'     => $timestamp,
             'lastUniqueId'  => $lastUniqueId,
-            'lastTimestamp' => (new DateTimeImmutable)->setTimestamp($lastTimestamp)->format(DateTimeInterface::ATOM)
+            'lastTimestamp' => (new DateTimeImmutable())->setTimestamp($lastTimestamp)->format(DateTimeInterface::ATOM)
           ]
         );
 
@@ -111,6 +133,12 @@ class PackageDiscoveryHandler implements InvokeHandlerInterface {
         'Package discovery handler',
         ['package' => $packageName]
       );
+
+      if ($this->packageRepository->exists($packageName)) {
+        $package = $this->packageRepository->get($packageName);
+      } else {
+        $package = $this->packageRepository->create($packageName);
+      }
 
       $pkgs = [
         // dev versions
@@ -127,16 +155,19 @@ class PackageDiscoveryHandler implements InvokeHandlerInterface {
           continue;
         }
 
-        $package = $package
-          ->withDescription($metadata[0]['description'] ?? '')
-          ->withUrl($metadata[0]['source']['url'] ?? '');
-        if ($package->isDirty()) {
-          $package = $this->packageRepository->update($package);
-
-          $this->producer->sendEvent(
-            new PackageUpdatedEvent($package)
+        // ensure latest tagged version is set when importing a package for the first time
+        if ($pkg === $packageName && $package->getLatestVersion() === '') {
+          $package = $package->withLatestVersion(
+            $this->findLatestVersion($metadata)
           );
         }
+
+        $package = $package
+          ->withDescription($metadata[0]['description'] ?? '')
+          ->withUrl(
+            preg_replace('/\.git$/', '', ($metadata[0]['source']['url'] ?? ''))
+          );
+        $package = $this->packageRepository->update($package);
 
         $this->logger->debug(
           'Processing release list',
@@ -168,30 +199,15 @@ class PackageDiscoveryHandler implements InvokeHandlerInterface {
               VersionStatusEnum::Unknown,
               new DateTimeImmutable($release['time'] ?? 'now')
             );
-
-            $this->producer->sendEvent(
-              new VersionCreatedEvent($version)
-            );
           }
 
           // track "require" dependencies
-          $filteredRequire = array_filter(
-            $release['require'] ?? [],
-            static function (string $key): bool {
-              return preg_match('/^(php|hhvm|ext-.*|lib-.*|pear-.*)$/', $key) !== 1 &&
-                preg_match('/^[^\/]+\/[^\/]+$/', $key) === 1;
-            },
-            ARRAY_FILTER_USE_KEY
-          );
+          $filteredRequire = $this->filterDeps($release['require'] ?? []);
 
           // flag packages without require dependencies with VersionStatusEnum::NoDeps
           if (empty($filteredRequire)) {
             $version = $version->withStatus(VersionStatusEnum::NoDeps);
             $version = $this->versionRepository->update($version);
-
-            $this->producer->sendEvent(
-              new VersionUpdatedEvent($version)
-            );
           }
 
           $this->logger->debug(
@@ -226,23 +242,11 @@ class PackageDiscoveryHandler implements InvokeHandlerInterface {
                 $constraint,
                 false
               );
-
-              $this->producer->sendEvent(
-                new DependencyCreatedEvent($dependency)
-              );
             }
           }
 
           // track "require-dev" dependencies
-          $filteredRequireDev = array_filter(
-            $release['require-dev'] ?? [],
-            static function (string $key): bool {
-              return preg_match('/^(php|hhvm|ext-.*|lib-.*|pear-.*)$/', $key) !== 1 &&
-                preg_match('/^[^\/]+\/[^\/]+$/', $key) === 1;
-            },
-            ARRAY_FILTER_USE_KEY
-          );
-
+          $filteredRequireDev = $this->filterDeps($release['require-dev'] ?? []);
           if (empty($filteredRequireDev)) {
             continue;
           }
@@ -279,10 +283,6 @@ class PackageDiscoveryHandler implements InvokeHandlerInterface {
                 $constraint,
                 true
               );
-
-              $this->producer->sendEvent(
-                new DependencyCreatedEvent($dependency)
-              );
             }
           }
         }
@@ -297,7 +297,7 @@ class PackageDiscoveryHandler implements InvokeHandlerInterface {
       $this->logger->error(
         $exception->getMessage(),
         [
-          'package'   => $packageName,
+          'package'   => $command->getPackageName(),
           'exception' => [
             'file'  => $exception->getFile(),
             'line'  => $exception->getLine(),

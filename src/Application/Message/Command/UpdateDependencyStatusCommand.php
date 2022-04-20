@@ -11,11 +11,11 @@ final class UpdateDependencyStatusCommand implements CommandInterface {
   /**
    * Force command execution (ie. skips command deduplication guards)
    */
-  private bool $force;
+  private bool $forceExecution;
 
-  public function __construct(Package $package, bool $force = false) {
-    $this->package = $package;
-    $this->force   = $force;
+  public function __construct(Package $package, bool $forceExecution = false) {
+    $this->package        = $package;
+    $this->forceExecution = $forceExecution;
   }
 
   public function getPackage(): Package {
@@ -23,7 +23,7 @@ final class UpdateDependencyStatusCommand implements CommandInterface {
   }
 
   public function forceExecution(): bool {
-    return $this->force;
+    return $this->forceExecution;
   }
 
   /**
@@ -33,6 +33,6 @@ final class UpdateDependencyStatusCommand implements CommandInterface {
    * }
    */
   public function toArray(): array {
-    return [$this->package, $this->force];
+    return [$this->package, $this->forceExecution];
   }
 }

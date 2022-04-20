@@ -4,13 +4,11 @@ declare(strict_types = 1);
 namespace App\Application\Processor\Handler;
 
 use App\Application\Message\Command\UpdateVersionStatusCommand;
-use App\Application\Message\Event\Version\VersionUpdatedEvent;
 use App\Domain\Dependency\Dependency;
 use App\Domain\Dependency\DependencyRepositoryInterface;
 use App\Domain\Dependency\DependencyStatusEnum;
 use App\Domain\Version\VersionRepositoryInterface;
 use App\Domain\Version\VersionStatusEnum;
-use Courier\Client\Producer\ProducerInterface;
 use Courier\Message\CommandInterface;
 use Courier\Processor\Handler\HandlerResultEnum;
 use Courier\Processor\Handler\InvokeHandlerInterface;
@@ -22,18 +20,15 @@ use Psr\Log\LoggerInterface;
 final class UpdateVersionStatusHandler implements InvokeHandlerInterface {
   private VersionRepositoryInterface $versionRepository;
   private DependencyRepositoryInterface $dependencyRepository;
-  private ProducerInterface $producer;
   private LoggerInterface $logger;
 
   public function __construct(
     VersionRepositoryInterface $versionRepository,
     DependencyRepositoryInterface $dependencyRepository,
-    ProducerInterface $producer,
     LoggerInterface $logger
   ) {
     $this->versionRepository    = $versionRepository;
     $this->dependencyRepository = $dependencyRepository;
-    $this->producer             = $producer;
     $this->logger               = $logger;
   }
 
@@ -74,9 +69,9 @@ final class UpdateVersionStatusHandler implements InvokeHandlerInterface {
 
       $dependencyName = $dependency->getName();
 
-      // check for job duplication
+      // guard for job duplication
       $uniqueId = sprintf(
-        '%s%d',
+        '%s@%d',
         $dependencyName,
         $dependency->getVersionId()
       );
@@ -84,14 +79,16 @@ final class UpdateVersionStatusHandler implements InvokeHandlerInterface {
       if (
         $command->forceExecution() === false &&
         $lastUniqueId === $uniqueId &&
+        $lastTimestamp > 0 &&
         $timestamp - $lastTimestamp < 10
       ) {
         $this->logger->debug(
           'Update version status handler: Skipping duplicated job',
           [
             'dependency'    => $dependencyName,
+            'timestamp'     => $timestamp,
             'lastUniqueId'  => $lastUniqueId,
-            'lastTimestamp' => (new DateTimeImmutable)->setTimestamp($lastTimestamp)->format(DateTimeInterface::ATOM)
+            'lastTimestamp' => (new DateTimeImmutable())->setTimestamp($lastTimestamp)->format(DateTimeInterface::ATOM)
           ]
         );
 
@@ -101,7 +98,10 @@ final class UpdateVersionStatusHandler implements InvokeHandlerInterface {
 
       $this->logger->info(
         'Update version status handler',
-        ['dependency' => $dependencyName]
+        [
+          'dependency' => $dependencyName,
+          'versionId'  => $dependency->getVersionId()
+        ]
       );
 
       $version = $this->versionRepository->get($dependency->getVersionId());
@@ -130,13 +130,7 @@ final class UpdateVersionStatusHandler implements InvokeHandlerInterface {
         }
       );
 
-      if ($version->isDirty()) {
-        $version = $this->versionRepository->update($version);
-
-        $this->producer->sendEvent(
-          new VersionUpdatedEvent($version)
-        );
-      }
+      $version = $this->versionRepository->update($version);
 
       // update deduplication guards
       $lastUniqueId  = $uniqueId;
@@ -147,7 +141,7 @@ final class UpdateVersionStatusHandler implements InvokeHandlerInterface {
       $this->logger->error(
         $exception->getMessage(),
         [
-          'dependency' => $dependencyName,
+          'dependency' => $command->getDependency()->getName(),
           'exception' => [
             'file'  => $exception->getFile(),
             'line'  => $exception->getLine(),

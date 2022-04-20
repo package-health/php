@@ -3,16 +3,20 @@ declare(strict_types = 1);
 
 namespace App\Infrastructure\Persistence\Package;
 
+use App\Application\Message\Event\Package\PackageCreatedEvent;
+use App\Application\Message\Event\Package\PackageUpdatedEvent;
 use App\Domain\Package\Package;
 use App\Domain\Package\PackageCollection;
 use App\Domain\Package\PackageNotFoundException;
 use App\Domain\Package\PackageRepositoryInterface;
+use Courier\Client\Producer\ProducerInterface;
 use DateTimeImmutable;
 use DateTimeInterface;
 use PDO;
 
 final class PdoPackageRepository implements PackageRepositoryInterface {
   private PDO $pdo;
+  private ProducerInterface $producer;
 
   /**
    * @param array{
@@ -35,8 +39,9 @@ final class PdoPackageRepository implements PackageRepositoryInterface {
     );
   }
 
-  public function __construct(PDO $pdo) {
-    $this->pdo = $pdo;
+  public function __construct(PDO $pdo, ProducerInterface $producer) {
+    $this->pdo      = $pdo;
+    $this->producer = $producer;
   }
 
   public function create(
@@ -224,6 +229,10 @@ final class PdoPackageRepository implements PackageRepositoryInterface {
       ]
     );
 
+    $this->producer->sendEvent(
+      new PackageCreatedEvent($package)
+    );
+
     return $package;
   }
 
@@ -254,7 +263,13 @@ final class PdoPackageRepository implements PackageRepositoryInterface {
         ]
       );
 
-      return $this->get($package->getName());
+      $package = $this->get($package->getName());
+
+      $this->producer->sendEvent(
+        new PackageUpdatedEvent($package)
+      );
+
+      return $package;
     }
 
     return $package;

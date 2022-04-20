@@ -43,7 +43,7 @@ final class ConsumeCommand extends Command implements SignalableCommandInterface
         1
       )
       ->addArgument(
-        'name',
+        'queueName',
         InputArgument::REQUIRED,
         'Name of the bus queue'
       );
@@ -73,7 +73,7 @@ final class ConsumeCommand extends Command implements SignalableCommandInterface
 
       $messageCount = (int)$input->getOption('messageCount');
 
-      $queueName = $input->getArgument('name');
+      $queueName = $input->getArgument('queueName');
 
       if ($output->isVerbose()) {
         $io->text(
@@ -124,17 +124,15 @@ final class ConsumeCommand extends Command implements SignalableCommandInterface
         )
       );
     } catch (Exception $exception) {
-      if (isset($io) === true) {
-        $io->error(
-          sprintf(
-            '[%s] %s',
-            date('H:i:s'),
-            $exception->getMessage()
-          )
-        );
-        if ($output->isDebug()) {
-          $io->listing(explode(PHP_EOL, $exception->getTraceAsString()));
-        }
+      $io->error(
+        sprintf(
+          '[%s] %s',
+          date('H:i:s'),
+          $exception->getMessage()
+        )
+      );
+      if ($output->isDebug()) {
+        $io->listing(explode(PHP_EOL, $exception->getTraceAsString()));
       }
 
       return Command::FAILURE;
@@ -143,9 +141,7 @@ final class ConsumeCommand extends Command implements SignalableCommandInterface
     return Command::SUCCESS;
   }
 
-  public function __construct(
-    Consumer $consumer
-  ) {
+  public function __construct(Consumer $consumer) {
     $this->consumer = $consumer;
 
     parent::__construct();

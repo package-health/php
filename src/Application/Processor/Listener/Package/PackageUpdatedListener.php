@@ -18,7 +18,6 @@ class PackageUpdatedListener implements InvokeListenerInterface {
     $this->logger   = $logger;
   }
 
-
   public function __invoke(EventInterface $event, array $attributes = []): void {
     $package = $event->getPackage();
     $this->logger->debug(
@@ -26,6 +25,7 @@ class PackageUpdatedListener implements InvokeListenerInterface {
       ['package' => $package->getName()]
     );
 
+    // ignore updates with empty latest version as they have no side effects
     if ($package->getLatestVersion() === '') {
       return;
     }

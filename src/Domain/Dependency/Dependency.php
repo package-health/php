@@ -146,7 +146,7 @@ final class Dependency implements JsonSerializable {
       'name'        => $this->name,
       'constraint'  => $this->constraint,
       'development' => $this->development,
-      'status'      => $this->status->value,
+      'status'      => $this->status,
       'createdAt'   => $this->createdAt,
       'updatedAt'   => $this->updatedAt
     ];

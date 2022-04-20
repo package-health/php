@@ -3,17 +3,21 @@ declare(strict_types = 1);
 
 namespace App\Infrastructure\Persistence\Preference;
 
+use App\Application\Message\Event\Preference\PreferenceCreatedEvent;
+use App\Application\Message\Event\Preference\PreferenceUpdatedEvent;
 use App\Domain\Preference\Preference;
 use App\Domain\Preference\PreferenceCollection;
 use App\Domain\Preference\PreferenceNotFoundException;
 use App\Domain\Preference\PreferenceRepositoryInterface;
 use App\Domain\Preference\PreferenceTypeEnum;
+use Courier\Client\Producer\ProducerInterface;
 use DateTimeImmutable;
 use DateTimeInterface;
 use PDO;
 
 final class PdoPreferenceRepository implements PreferenceRepositoryInterface {
   private PDO $pdo;
+  private ProducerInterface $producer;
 
   /**
    * @param array{
@@ -38,8 +42,9 @@ final class PdoPreferenceRepository implements PreferenceRepositoryInterface {
     );
   }
 
-  public function __construct(PDO $pdo) {
-    $this->pdo = $pdo;
+  public function __construct(PDO $pdo, ProducerInterface $producer) {
+    $this->pdo      = $pdo;
+    $this->producer = $producer;
   }
 
   public function create(
@@ -153,7 +158,7 @@ final class PdoPreferenceRepository implements PreferenceRepositoryInterface {
       ]
     );
 
-    return new Preference(
+    $preference = new Preference(
       (int)$this->pdo->lastInsertId('preferences_id_seq'),
       $preference->getCategory(),
       $preference->getProperty(),
@@ -161,6 +166,12 @@ final class PdoPreferenceRepository implements PreferenceRepositoryInterface {
       $preference->getType()->value,
       $preference->getCreatedAt()
     );
+
+    $this->producer->sendEvent(
+      new PreferenceCreatedEvent($preference)
+    );
+
+    return $preference;
   }
 
   public function update(Preference $preference): Preference {
@@ -192,7 +203,13 @@ final class PdoPreferenceRepository implements PreferenceRepositoryInterface {
         ]
       );
 
-      return $this->get($preference->getId());
+      $preference = $this->get($preference->getId());
+
+      $this->producer->sendEvent(
+        new PreferenceUpdatedEvent($preference)
+      );
+
+      return $preference;
     }
 
     return $preference;

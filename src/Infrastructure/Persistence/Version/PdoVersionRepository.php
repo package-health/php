@@ -3,17 +3,21 @@ declare(strict_types = 1);
 
 namespace App\Infrastructure\Persistence\Version;
 
+use App\Application\Message\Event\Version\VersionCreatedEvent;
+use App\Application\Message\Event\Version\VersionUpdatedEvent;
 use App\Domain\Version\Version;
 use App\Domain\Version\VersionCollection;
 use App\Domain\Version\VersionNotFoundException;
 use App\Domain\Version\VersionRepositoryInterface;
 use App\Domain\Version\VersionStatusEnum;
+use Courier\Client\Producer\ProducerInterface;
 use DateTimeImmutable;
 use DateTimeInterface;
 use PDO;
 
 final class PdoVersionRepository implements VersionRepositoryInterface {
   private PDO $pdo;
+  private ProducerInterface $producer;
 
   /**
    * @param array{
@@ -40,8 +44,9 @@ final class PdoVersionRepository implements VersionRepositoryInterface {
     );
   }
 
-  public function __construct(PDO $pdo) {
-    $this->pdo = $pdo;
+  public function __construct(PDO $pdo, ProducerInterface $producer) {
+    $this->pdo      = $pdo;
+    $this->producer = $producer;
   }
 
   public function create(
@@ -169,7 +174,7 @@ final class PdoVersionRepository implements VersionRepositoryInterface {
       ]
     );
 
-    return new Version(
+    $version = new Version(
       (int)$this->pdo->lastInsertId('versions_id_seq'),
       $version->getNumber(),
       $version->getNormalized(),
@@ -178,6 +183,12 @@ final class PdoVersionRepository implements VersionRepositoryInterface {
       $version->getStatus(),
       $version->getCreatedAt()
     );
+
+    $this->producer->sendEvent(
+      new VersionCreatedEvent($version)
+    );
+
+    return $version;
   }
 
   public function update(Version $version): Version {
@@ -211,7 +222,13 @@ final class PdoVersionRepository implements VersionRepositoryInterface {
         ]
       );
 
-      return $this->get($version->getId());
+      $version = $this->get($version->getId());
+
+      $this->producer->sendEvent(
+        new VersionUpdatedEvent($version)
+      );
+
+      return $version;
     }
 
     return $version;

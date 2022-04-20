@@ -3,36 +3,49 @@ declare(strict_types = 1);
 
 namespace App\Application\Message\Command;
 
-use App\Domain\Package\Package;
 use Courier\Message\CommandInterface;
 
 final class PackageDiscoveryCommand implements CommandInterface {
-  private Package $package;
+  private string $packageName;
   /**
    * Force command execution (ie. skips command deduplication guards)
    */
-  private bool $force;
+  private bool $forceExecution;
+  /**
+   * Work in offline mode (ie. avoids connecting to packagist's mirror)
+   */
+  private bool $workOffline;
 
-  public function __construct(Package $package, bool $force = false) {
-    $this->package = $package;
-    $this->force   = $force;
+  public function __construct(
+    string $packageName,
+    bool $forceExecution = false,
+    bool $workOffline = false
+  ) {
+    $this->packageName    = $packageName;
+    $this->forceExecution = $forceExecution;
+    $this->workOffline    = $workOffline;
   }
 
-  public function getPackage(): Package {
-    return $this->package;
+  public function getPackageName(): string {
+    return $this->packageName;
   }
 
   public function forceExecution(): bool {
-    return $this->force;
+    return $this->forceExecution;
+  }
+
+  public function workOffline(): bool {
+    return $this->workOffline;
   }
 
   /**
    * @return array{
-   *   0: \App\Domain\Package\Package,
-   *   1: bool
+   *   0: string,
+   *   1: bool,
+   *   2: bool
    * }
    */
   public function toArray(): array {
-    return [$this->package, $this->force];
+    return [$this->packageName, $this->forceExecution, $this->workOffline];
   }
 }

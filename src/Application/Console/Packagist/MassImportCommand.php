@@ -126,17 +126,15 @@ final class MassImportCommand extends Command {
         )
       );
     } catch (Exception $exception) {
-      if (isset($io) === true) {
-        $io->error(
-          sprintf(
-            '[%s] %s',
-            date('H:i:s'),
-            $exception->getMessage()
-          )
-        );
-        if ($output->isDebug()) {
-          $io->listing(explode(PHP_EOL, $exception->getTraceAsString()));
-        }
+      $io->error(
+        sprintf(
+          '[%s] %s',
+          date('H:i:s'),
+          $exception->getMessage()
+        )
+      );
+      if ($output->isDebug()) {
+        $io->listing(explode(PHP_EOL, $exception->getTraceAsString()));
       }
 
       return Command::FAILURE;
@@ -146,7 +144,7 @@ final class MassImportCommand extends Command {
   }
 
   public function __construct(PackageRepositoryInterface $packageRepository) {
-    $this->packageRepository    = $packageRepository;
+    $this->packageRepository = $packageRepository;
 
     parent::__construct();
   }

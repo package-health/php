@@ -70,17 +70,15 @@ final class ListCommand extends Command {
 
       $table->render();
     } catch (Exception $exception) {
-      if (isset($io) === true) {
-        $io->error(
-          sprintf(
-            '[%s] %s',
-            date('H:i:s'),
-            $exception->getMessage()
-          )
-        );
-        if ($output->isDebug()) {
-          $io->listing(explode(PHP_EOL, $exception->getTraceAsString()));
-        }
+      $io->error(
+        sprintf(
+          '[%s] %s',
+          date('H:i:s'),
+          $exception->getMessage()
+        )
+      );
+      if ($output->isDebug()) {
+        $io->listing(explode(PHP_EOL, $exception->getTraceAsString()));
       }
 
       return Command::FAILURE;
@@ -89,9 +87,7 @@ final class ListCommand extends Command {
     return Command::SUCCESS;
   }
 
-  public function __construct(
-    Bus $bus
-  ) {
+  public function __construct(Bus $bus) {
     $this->bus = $bus;
 
     parent::__construct();

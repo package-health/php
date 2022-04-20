@@ -33,11 +33,6 @@ return static function (ContainerInterface $container): void {
   /* PACKAGE EVENTS */
   $router
     ->addRoute(
-      PackageCreatedEvent::class,
-      PackageCreatedListener::class,
-      'PackageCreated'
-    )
-    ->addRoute(
       PackageUpdatedEvent::class,
       PackageUpdatedListener::class,
       'PackageUpdated'

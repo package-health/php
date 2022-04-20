@@ -4,11 +4,9 @@ declare(strict_types = 1);
 namespace App\Application\Processor\Handler;
 
 use App\Application\Message\Command\UpdateDependencyStatusCommand;
-use App\Application\Message\Event\Dependency\DependencyUpdatedEvent;
 use App\Domain\Dependency\DependencyRepositoryInterface;
 use App\Domain\Dependency\DependencyStatusEnum;
 use Composer\Semver\Semver;
-use Courier\Client\Producer\ProducerInterface;
 use Courier\Message\CommandInterface;
 use Courier\Processor\Handler\HandlerResultEnum;
 use Courier\Processor\Handler\InvokeHandlerInterface;
@@ -19,16 +17,13 @@ use Psr\Log\LoggerInterface;
 
 class UpdateDependencyStatusHandler implements InvokeHandlerInterface {
   private DependencyRepositoryInterface $dependencyRepository;
-  private ProducerInterface $producer;
   private LoggerInterface $logger;
 
   public function __construct(
     DependencyRepositoryInterface $dependencyRepository,
-    ProducerInterface $producer,
     LoggerInterface $logger
   ) {
     $this->dependencyRepository = $dependencyRepository;
-    $this->producer             = $producer;
     $this->logger               = $logger;
   }
 
@@ -69,9 +64,9 @@ class UpdateDependencyStatusHandler implements InvokeHandlerInterface {
 
       $packageName = $package->getName();
 
-      // check for job duplication
+      // guard for job duplication
       $uniqueId = sprintf(
-        '%s%s',
+        '%s@%s',
         $packageName,
         $package->getLatestVersion()
       );
@@ -79,14 +74,16 @@ class UpdateDependencyStatusHandler implements InvokeHandlerInterface {
       if (
         $command->forceExecution() === false &&
         $lastUniqueId === $uniqueId &&
+        $lastTimestamp > 0 &&
         $timestamp - $lastTimestamp < 10
       ) {
         $this->logger->debug(
           'Update dependency status handler: Skipping duplicated job',
           [
             'package'       => $packageName,
+            'timestamp'     => $timestamp,
             'uniqueId'      => $uniqueId,
-            'lastTimestamp' => (new DateTimeImmutable)->setTimestamp($lastTimestamp)->format(DateTimeInterface::ATOM)
+            'lastTimestamp' => (new DateTimeImmutable())->setTimestamp($lastTimestamp)->format(DateTimeInterface::ATOM)
           ]
         );
 
@@ -124,12 +121,7 @@ class UpdateDependencyStatusHandler implements InvokeHandlerInterface {
             DependencyStatusEnum::Outdated
         );
 
-        if ($dependency->isDirty()) {
-          $dependency = $this->dependencyRepository->update($dependency);
-          $this->producer->sendEvent(
-            new DependencyUpdatedEvent($dependency)
-          );
-        }
+        $dependency = $this->dependencyRepository->update($dependency);
       }
 
       // update deduplication guards
@@ -141,7 +133,7 @@ class UpdateDependencyStatusHandler implements InvokeHandlerInterface {
       $this->logger->error(
         $exception->getMessage(),
         [
-          'package'   => $packageName,
+          'package'   => $command->getPackage()->getName(),
           'exception' => [
             'file'  => $exception->getFile(),
             'line'  => $exception->getLine(),

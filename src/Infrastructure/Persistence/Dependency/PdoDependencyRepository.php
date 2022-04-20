@@ -3,17 +3,21 @@ declare(strict_types = 1);
 
 namespace App\Infrastructure\Persistence\Dependency;
 
+use App\Application\Message\Event\Dependency\DependencyCreatedEvent;
+use App\Application\Message\Event\Dependency\DependencyUpdatedEvent;
 use App\Domain\Dependency\Dependency;
 use App\Domain\Dependency\DependencyCollection;
 use App\Domain\Dependency\DependencyNotFoundException;
 use App\Domain\Dependency\DependencyRepositoryInterface;
 use App\Domain\Dependency\DependencyStatusEnum;
+use Courier\Client\Producer\ProducerInterface;
 use DateTimeImmutable;
 use DateTimeInterface;
 use PDO;
 
 final class PdoDependencyRepository implements DependencyRepositoryInterface {
   private PDO $pdo;
+  private ProducerInterface $producer;
 
   /**
    * @param array{
@@ -40,8 +44,9 @@ final class PdoDependencyRepository implements DependencyRepositoryInterface {
     );
   }
 
-  public function __construct(PDO $pdo) {
-    $this->pdo = $pdo;
+  public function __construct(PDO $pdo, ProducerInterface $producer) {
+    $this->pdo      = $pdo;
+    $this->producer = $producer;
   }
 
   public function create(
@@ -170,7 +175,7 @@ final class PdoDependencyRepository implements DependencyRepositoryInterface {
       ]
     );
 
-    return new Dependency(
+    $dependency = new Dependency(
       (int)$this->pdo->lastInsertId('dependencies_id_seq'),
       $dependency->getVersionId(),
       $dependency->getName(),
@@ -179,6 +184,12 @@ final class PdoDependencyRepository implements DependencyRepositoryInterface {
       $dependency->getStatus(),
       $dependency->getCreatedAt()
     );
+
+    $this->producer->sendEvent(
+      new DependencyCreatedEvent($dependency)
+    );
+
+    return $dependency;
   }
 
   public function update(Dependency $dependency): Dependency {
@@ -208,7 +219,13 @@ final class PdoDependencyRepository implements DependencyRepositoryInterface {
         ]
       );
 
-      return $this->get($dependency->getId());
+      $dependency = $this->get($dependency->getId());
+
+      $this->producer->sendEvent(
+        new DependencyUpdatedEvent($dependency)
+      );
+
+      return $dependency;
     }
 
     return $dependency;

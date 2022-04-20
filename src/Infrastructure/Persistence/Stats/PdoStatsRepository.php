@@ -3,16 +3,20 @@ declare(strict_types = 1);
 
 namespace App\Infrastructure\Persistence\Stats;
 
+use App\Application\Message\Event\Stats\StatsCreatedEvent;
+use App\Application\Message\Event\Stats\StatsUpdatedEvent;
 use App\Domain\Stats\Stats;
 use App\Domain\Stats\StatsCollection;
 use App\Domain\Stats\StatsNotFoundException;
 use App\Domain\Stats\StatsRepositoryInterface;
+use Courier\Client\Producer\ProducerInterface;
 use DateTimeImmutable;
 use DateTimeInterface;
 use PDO;
 
 final class PdoStatsRepository implements StatsRepositoryInterface {
   private PDO $pdo;
+  private ProducerInterface $producer;
 
   /**
    * @param array{
@@ -47,8 +51,9 @@ final class PdoStatsRepository implements StatsRepositoryInterface {
     );
   }
 
-  public function __construct(PDO $pdo) {
-    $this->pdo = $pdo;
+  public function __construct(PDO $pdo, ProducerInterface $producer) {
+    $this->pdo      = $pdo;
+    $this->producer = $producer;
   }
 
   public function create(
@@ -220,6 +225,10 @@ final class PdoStatsRepository implements StatsRepositoryInterface {
       ]
     );
 
+    $this->producer->sendEvent(
+      new StatsCreatedEvent($stats)
+    );
+
     return $stats;
   }
 
@@ -262,7 +271,13 @@ final class PdoStatsRepository implements StatsRepositoryInterface {
         ]
       );
 
-      return $this->get($stats->getPackageName());
+      $stats = $this->get($stats->getPackageName());
+
+      $this->producer->sendEvent(
+        new StatsUpdatedEvent($stats)
+      );
+
+      return $stats;
     }
 
     return $stats;
