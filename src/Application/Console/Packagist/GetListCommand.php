@@ -19,11 +19,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 final class GetListCommand extends Command implements SignalableCommandInterface {
-  /**
-   * File cache lifetime (12 hour TTL)
-   */
-  private const FILE_TIMEOUT = 43200;
-
   protected static $defaultName = 'packagist:get-list';
   private PackageRepositoryInterface $packageRepository;
   private ProducerInterface $producer;
@@ -38,6 +33,12 @@ final class GetListCommand extends Command implements SignalableCommandInterface
   protected function configure(): void {
     $this
       ->setDescription('Get the complete list of packages from a Packagist mirror')
+      ->addOption(
+        'resync',
+        'r',
+        InputOption::VALUE_NONE,
+        'Resync the list'
+      )
       ->addOption(
         'offline',
         null,
@@ -73,6 +74,17 @@ final class GetListCommand extends Command implements SignalableCommandInterface
         )
       );
 
+      $resync = (bool)$input->getOption('resync');
+
+      if ($resync) {
+        $io->text(
+          sprintf(
+            '[%s] Running in resync mode',
+            date('H:i:s')
+          )
+        );
+      }
+
       $workOffline = (bool)$input->getOption('offline');
 
       if ($workOffline) {
@@ -83,7 +95,7 @@ final class GetListCommand extends Command implements SignalableCommandInterface
           )
         );
 
-        $this->packagist->setOffline();
+        $this->packagist->workOffline();
       }
 
       $mirror = $input->getOption('mirror');
@@ -108,26 +120,29 @@ final class GetListCommand extends Command implements SignalableCommandInterface
         )
       );
 
-      $packageCol = $this->packageRepository->all();
-      $packages = $packageCol->map(
-        static function (Package $package): string {
-          return $package->getName();
-        }
-      )->toArray();
+      $packages = [];
+      if ($resync === false) {
+        $packageCol = $this->packageRepository->all();
+        $packages = $packageCol->map(
+          static function (Package $package): string {
+            return $package->getName();
+          }
+        )->toArray();
 
-      $storedCount = count($packages);
-      $io->text(
-        sprintf(
-          '[%s] Local storage has <options=bold;fg=cyan>%s</> package(s)',
-          date('H:i:s'),
-          number_format(
-            $storedCount,
-            0,
-            ',',
-            '.'
+        $storedCount = count($packages);
+        $io->text(
+          sprintf(
+            '[%s] Local storage has <options=bold;fg=cyan>%s</> package(s)',
+            date('H:i:s'),
+            number_format(
+              $storedCount,
+              0,
+              ',',
+              '.'
+            )
           )
-        )
-      );
+        );
+      }
 
       $addList = array_diff($packageList, $packages);
       $io->text(
