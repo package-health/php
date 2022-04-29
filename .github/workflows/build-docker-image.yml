@@ -51,7 +51,7 @@ jobs:
           push: true
           build-args:
             "VERSION=${{ steps.prepare-build.outputs.environment }}-${{ steps.prepare-build.outputs.short }}"
-          tags: package-health/nginx:${{ steps.prepare-build.outputs.environment }}-${{ steps.prepare-build.outputs.short }}
+          tags: ghcr.io/package-health/nginx:${{ steps.prepare-build.outputs.environment }}-${{ steps.prepare-build.outputs.short }}
           file: ./docker/nginx.Dockerfile
           context: .
           cache-from: type=gha
@@ -63,7 +63,7 @@ jobs:
           push: true
           build-args:
             "VERSION=${{ steps.prepare-build.outputs.environment }}-${{ steps.prepare-build.outputs.short }}"
-          tags: package-health/php-fpm:${{ steps.prepare-build.outputs.environment }}-${{ steps.prepare-build.outputs.short }}
+          tags: ghcr.io/package-health/php-fpm:${{ steps.prepare-build.outputs.environment }}-${{ steps.prepare-build.outputs.short }}
           file: ./docker/php.Dockerfile
           target: fpm
           context: .
@@ -76,7 +76,7 @@ jobs:
           push: true
           build-args:
             "VERSION=${{ steps.prepare-build.outputs.environment }}-${{ steps.prepare-build.outputs.short }}"
-          tags: package-health/php-cli:${{ steps.prepare-build.outputs.environment }}-${{ steps.prepare-build.outputs.short }}
+          tags: ghcr.io/package-health/php-cli:${{ steps.prepare-build.outputs.environment }}-${{ steps.prepare-build.outputs.short }}
           file: ./docker/php.Dockerfile
           target: cli
           context: .
