@@ -10,7 +10,26 @@ This project relies on the following 3 application images:
 
 Before running, the application images must be available in the docker daemon.
 
-### Download the base images
+### Pull the base images from GitHub container registry
+
+Get the image tags for each image from the [packages page](https://github.com/orgs/package-health/packages?repo_name=php).
+
+**NGINX**
+```shell
+docker pull ghcr.io/package-health/nginx:prod-6a56f91
+```
+
+**PHP-FPM**
+```shell
+docker pull ghcr.io/package-health/php-fpm:prod-6a56f91
+```
+
+**PHP-CLI**
+```shell
+docker pull ghcr.io/package-health/php-cli:prod-6a56f91
+```
+
+### Download the base images (deprecated, old releases only)
 
 Get the latest release links from [https://github.com/package-health/php/releases](https://github.com/package-health/php/releases).
 
