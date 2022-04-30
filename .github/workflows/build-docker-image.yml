@@ -90,3 +90,27 @@ jobs:
           tag_name: "${{ steps.prepare-build.outputs.environment }}@${{ steps.prepare-build.outputs.short }}"
           target_commitish: ${{ github.sha }}
           generate_release_notes: true
+
+  update-infra:
+    needs: docker
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Set up variables
+        id: repo-vars
+        run: |
+          if [[ "${{ github.ref_name }}" == "main" ]]; then
+            echo "::set-output name=environment::prod"
+          else
+            echo "::set-output name=environment::dev"
+          fi
+
+      - name: Send update to infrastructure repository
+        uses: peter-evans/repository-dispatch@11ba7d3f32dc7cc919d1c43f1fec1c05260c26b5
+        # the token is a personal access token with "repo" scope
+        with:
+          token: ${{ secrets.INFRA_REPO_ACCESS_TOKEN }}
+          repository: package-health/infra-service
+          event-type: deploy-new-version
+          client-payload: '{"sha": "${{ github.sha }}", "environment": "${{ steps.repo-vars.outputs.environment }}"}'
