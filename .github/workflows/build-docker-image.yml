@@ -9,6 +9,8 @@ on:
     paths-ignore:
       - '.github/**'
       - '**.md'
+    tags:
+      - 'prod@*'
 
 jobs:
 
@@ -38,9 +40,9 @@ jobs:
         run: |
             echo "::set-output name=short::$(git rev-parse --short HEAD)"
             if [[ "${{ github.ref_name }}" == "main" ]]; then
-              echo "::set-output name=environment::prod";
+              echo "::set-output name=environment::prod"
             else
-              echo "::set-output name=environment::dev";
+              echo "::set-output name=environment::dev"
             fi
 
       # TODO: maybe we can use a build matrix for parallel builds
@@ -85,33 +87,18 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: Create release
+        if: ${{ github.ref_type == 'tag' }}
         uses: softprops/action-gh-release@1e07f4398721186383de40550babbdf2b84acfc5
         with:
           name: "php.package.health ${{ steps.prepare-build.outputs.environment }}-${{ steps.prepare-build.outputs.short }}"
-          tag_name: "${{ steps.prepare-build.outputs.environment }}@${{ steps.prepare-build.outputs.short }}"
-          target_commitish: ${{ github.sha }}
           generate_release_notes: true
 
-  update-infra:
-    needs: docker
-    runs-on: ubuntu-latest
-
-    steps:
-
-      - name: Set up variables
-        id: repo-vars
-        run: |
-          if [[ "${{ github.ref_name }}" == "main" ]]; then
-            echo "::set-output name=environment::prod"
-          else
-            echo "::set-output name=environment::dev"
-          fi
-
       - name: Send update to infrastructure repository
+        if: ${{ github.ref_type == 'tag' }}
         uses: peter-evans/repository-dispatch@11ba7d3f32dc7cc919d1c43f1fec1c05260c26b5
-        # the token is a personal access token with "repo" scope
         with:
+          # personal access token with "repo" scope
           token: ${{ secrets.INFRA_REPO_ACCESS_TOKEN }}
           repository: package-health/infra-service
           event-type: deploy-new-version
-          client-payload: '{"sha": "${{ github.sha }}", "environment": "${{ steps.repo-vars.outputs.environment }}"}'
+          client-payload: '{"sha": "${{ github.sha }}", "environment": "${{ steps.prepare-build.outputs.environment }}"}'
