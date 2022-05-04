@@ -6,7 +6,7 @@
 
 {% block hero_title %}<a href="{{ package.url }}"><span class="icon-text"><span class="icon"><i class="cib-github" alt="GitHub"></i></span>&nbsp;<span>{{ package.name }} {{ version.number }}</span></span></a>{% endblock %}
 
-{% block hero_subtitle %}<img src="{{ url_for('viewPackageBadge', {vendor: package.vendor, project: package.project, version: version.number}) }}" alt="Dependency Badge">{% endblock %}
+{% block hero_subtitle %}<img src="{{ url_for('viewPackageBadge', {vendor: package.vendor, project: package.project, version: version.number}) }}" height="20" alt="Dependency Badge" decoding="async">{% endblock %}
 
 {% block hero_footer %}[![dependency status]({{ full_url_for('viewPackageBadge', {vendor: package.vendor, project: package.project, version: version.number}) }})]({{ full_url_for('viewPackage', {vendor: package.vendor, project: package.project, version: version.number}) }}){% endblock %}
 
