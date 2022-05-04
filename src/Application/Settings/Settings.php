@@ -15,7 +15,7 @@ final class Settings implements SettingsInterface {
    */
   private array $envVar = [];
 
-  private function getPath(string $entry) {
+  private function getPathEntry(string $entry) {
     $path = explode('.', $entry);
     $walk = $this->config;
     while (count($path)) {
@@ -27,11 +27,16 @@ final class Settings implements SettingsInterface {
       $walk = $walk[$item];
     }
 
-    if (is_array($walk)) {
+    return $walk;
+  }
+
+  private function getPathValue(string $entry) {
+    $value = $this->getPathEntry($entry);
+    if ($value === null || is_array($value)) {
       return null;
     }
 
-    return $walk;
+    return $value;
   }
 
   private function normalize(string $entry): string {
@@ -70,8 +75,8 @@ final class Settings implements SettingsInterface {
   }
 
   public function has(string $entry): bool {
-    $value = $this->getPath($entry);
-    if ($value === null) {
+    $entry = $this->getPathEntry($entry);
+    if ($entry === null) {
       $varName = $this->normalize($entry);
 
       return isset($this->envVar[$varName]);
@@ -81,7 +86,7 @@ final class Settings implements SettingsInterface {
   }
 
   public function getString(string $entry, string $default = ''): string {
-    $value = $this->getPath($entry);
+    $value = $this->getPathValue($entry);
     if ($value === null) {
       $varName = $this->normalize($entry);
       if (isset($this->envVar[$varName])) {
@@ -95,7 +100,7 @@ final class Settings implements SettingsInterface {
   }
 
   public function getInt(string $entry, int $default = 0): int {
-    $value = $this->getPath($entry);
+    $value = $this->getPathValue($entry);
     if ($value === null) {
       $varName = $this->normalize($entry);
       if (isset($this->envVar[$varName])) {
@@ -109,7 +114,7 @@ final class Settings implements SettingsInterface {
   }
 
   public function getFloat(string $entry, float $default = 0.0): float {
-    $value = $this->getPath($entry);
+    $value = $this->getPathValue($entry);
     if ($value === null) {
       $varName = $this->normalize($entry);
       if (isset($this->envVar[$varName])) {
@@ -123,7 +128,7 @@ final class Settings implements SettingsInterface {
   }
 
   public function getBool(string $entry, bool $default = false): bool {
-    $value = $this->getPath($entry);
+    $value = $this->getPathValue($entry);
     if ($value === null) {
       $varName = $this->normalize($entry);
       if (isset($this->envVar[$varName])) {
