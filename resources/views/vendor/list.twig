@@ -1,0 +1,30 @@
+{% extends "template.twig" %}
+
+{% block title %}Keep your dependencies up-to-date - PHP.Package.Health{% endblock %}
+
+{% block hero_type %}is-info{% endblock %}
+{% block hero_title %}Keep your dependencies up-to-date{% endblock %}
+
+{% block hero_subtitle %}Package.Health uses semantic versioning to detect outdated or insecure dependencies in your project's <code>composer.json</code>.{% endblock %}
+
+{% block content %}
+  <h2 class="title is-3">Packages from {{ vendor }}</h2>
+  <table class="table is-fullwidth is-striped is-hoverable">
+    <thead>
+      <tr>
+        <th>Package</th>
+        <th></th>
+        <th class="has-text-right">Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for package in packages %}
+        <tr>
+          <td><a href="{{ url_for('redirectPackage', {vendor: package.vendor, project: package.project}) }}">{{ package.name }}</a></td>
+          <td class="has-text-grey">{{ package.description }}</td>
+          <td class="has-text-right"><img src="{{ url_for('redirectPackageBadge', {vendor: package.vendor, project: package.project}) }}" height="20" alt="Dependency Badge" decoding="async"></td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

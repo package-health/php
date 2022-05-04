@@ -8,6 +8,7 @@ use App\Application\Action\Package\RedirectPackageBadgeAction;
 use App\Application\Action\Package\ViewPackageAction;
 use App\Application\Action\Package\ViewPackageBadgeAction;
 use App\Application\Action\System\HealthAction;
+use App\Application\Action\Vendor\ListPackagesAction as ListVendorPackagesAction;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Slim\App;
@@ -33,6 +34,9 @@ return static function (App $app): void {
     function (Group $group) {
       $group
         ->get('', RedirectListPackagesAction::class);
+      $group
+        ->get('/{vendor}', ListVendorPackagesAction::class)
+        ->setName('listVendorPackages');
       $group
         ->get('/{vendor}/{project}/status.svg', RedirectPackageBadgeAction::class)
         ->setName('redirectPackageBadge');
