@@ -47,6 +47,7 @@
     "courier/serializer-igbinary": "dev-main",
     "courier/transport-amqp": "dev-main",
     "kriswallsmith/buzz": "^1.2",
+    "middlewares/minifier": "^2.0",
     "middlewares/trailing-slash": "^2.0",
     "monolog/monolog": "^2.3",
     "nyholm/dsn": "^2.0",
