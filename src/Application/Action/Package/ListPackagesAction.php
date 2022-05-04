@@ -7,9 +7,6 @@ use Psr\Http\Message\ResponseInterface;
 use Slim\Views\Twig;
 
 final class ListPackagesAction extends AbstractPackageAction {
-  /**
-   * {@inheritdoc}
-   */
   protected function action(): ResponseInterface {
     $packages = $this->packageRepository->findPopular();
     $twig = Twig::fromRequest($this->request);

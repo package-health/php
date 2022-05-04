@@ -7,9 +7,6 @@ use Psr\Http\Message\ResponseInterface;
 use Slim\Routing\RouteContext;
 
 final class RedirectListPackagesAction extends AbstractPackageAction {
-  /**
-   * {@inheritdoc}
-   */
   protected function action(): ResponseInterface {
     $routeParser = RouteContext::fromRequest($this->request)->getRouteParser();
 

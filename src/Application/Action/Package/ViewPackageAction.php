@@ -30,9 +30,6 @@ final class ViewPackageAction extends AbstractPackageAction {
     $this->versionRepository    = $versionRepository;
   }
 
-  /**
-   * {@inheritdoc}
-   */
   protected function action(): ResponseInterface {
     $vendor  = $this->resolveStringArg('vendor');
     $project = $this->resolveStringArg('project');

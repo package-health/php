@@ -7,9 +7,6 @@ use Psr\Http\Message\ResponseInterface;
 use Slim\Routing\RouteContext;
 
 final class RedirectPackageBadgeAction extends AbstractPackageAction {
-  /**
-   * {@inheritdoc}
-   */
   protected function action(): ResponseInterface {
     $vendor  = $this->resolveStringArg('vendor');
     $project = $this->resolveStringArg('project');

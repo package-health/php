@@ -34,9 +34,6 @@ final class ViewPackageBadgeAction extends AbstractPackageAction {
     $this->dependencyRepository = $dependencyRepository;
   }
 
-  /**
-   * {@inheritdoc}
-   */
   protected function action(): ResponseInterface {
     $vendor  = $this->resolveStringArg('vendor');
     $project = $this->resolveStringArg('project');
