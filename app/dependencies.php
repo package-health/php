@@ -80,7 +80,8 @@ return static function (ContainerBuilder $containerBuilder): void {
                   'server' => $dsn->getHost() ?? 'localhost',
                   'port'   => $dsn->getPort() ?? 6379
                 ]
-              ]
+              ],
+              'password' => $dsn->getPassword() ?? null,
             ]
           );
         }

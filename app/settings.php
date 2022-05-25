@@ -15,7 +15,7 @@ return static function (ContainerBuilder $containerBuilder): void {
           [
             'cache' => [
               'enabled' => PHP_SAPI !== 'cli',
-              'redis' => "redis://${_ENV['REDIS_HOST']}:${_ENV['REDIS_PORT']}"
+              'redis' => "redis://:${_ENV['REDIS_PASSWORD']}@${_ENV['REDIS_HOST']}:${_ENV['REDIS_PORT']}"
             ],
             'db' => [
               'dsn' => "pgsql://${_ENV['POSTGRES_USER']}:${_ENV['POSTGRES_PASSWORD']}@${_ENV['POSTGRES_HOST']}:${_ENV['POSTGRES_PORT']}/${_ENV['POSTGRES_DB']}"
