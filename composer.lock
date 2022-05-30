@@ -4191,16 +4191,16 @@
         },
         {
             "name": "tedivm/stash",
-            "version": "v0.17.1",
+            "version": "v0.17.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tedious/Stash.git",
-                "reference": "4ebc23775f4309f18dcce8de45b060354d3b0512"
+                "reference": "e6d553452277e0d43d1f6f675fb4f175a82c9641"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tedious/Stash/zipball/4ebc23775f4309f18dcce8de45b060354d3b0512",
-                "reference": "4ebc23775f4309f18dcce8de45b060354d3b0512",
+                "url": "https://api.github.com/repos/tedious/Stash/zipball/e6d553452277e0d43d1f6f675fb4f175a82c9641",
+                "reference": "e6d553452277e0d43d1f6f675fb4f175a82c9641",
                 "shasum": ""
             },
             "require": {
@@ -4251,7 +4251,7 @@
             ],
             "support": {
                 "issues": "https://github.com/tedious/Stash/issues",
-                "source": "https://github.com/tedious/Stash/tree/v0.17.1"
+                "source": "https://github.com/tedious/Stash/tree/v0.17.4"
             },
             "funding": [
                 {
@@ -4263,7 +4263,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-03-21T01:05:02+00:00"
+            "time": "2022-05-28T23:07:43+00:00"
         },
         {
             "name": "thecodingmachine/safe",
