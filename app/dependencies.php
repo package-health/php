@@ -81,7 +81,8 @@ return static function (ContainerBuilder $containerBuilder): void {
                   'port'   => $dsn->getPort() ?? 6379
                 ]
               ],
-              'password' => $dsn->getPassword() ?? null,
+              'username' => $dsn->getUser() ?? null,
+              'password' => $dsn->getPassword() ?? null
             ]
           );
         }
