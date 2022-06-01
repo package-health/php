@@ -95,7 +95,7 @@ FROM php:8.1.6-cli-alpine3.16 as cli
 
 # https://blog.packagecloud.io/eng/2017/02/21/set-environment-variable-save-thousands-of-system-calls/
 ENV TZ=:/etc/localtime
-ENV PHP_ENV=development
+ENV PHP_ENV=dev
 
 #============================================
 # Force base image upgrade
@@ -175,7 +175,7 @@ FROM php:8.1.6-fpm-alpine3.16 as fpm
 
 # https://blog.packagecloud.io/eng/2017/02/21/set-environment-variable-save-thousands-of-system-calls/
 ENV TZ=:/etc/localtime
-ENV PHP_ENV=development
+ENV PHP_ENV=dev
 
 #============================================
 # Force base image upgrade

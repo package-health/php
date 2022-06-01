@@ -23,13 +23,13 @@ return static function (ContainerBuilder $containerBuilder): void {
             'queue' => [
               'dsn' => "amqp://${_ENV['AMQP_USER']}:${_ENV['AMQP_PASS']}@${_ENV['AMQP_HOST']}:${_ENV['AMQP_PORT']}"
             ],
-            'displayErrorDetails' => (isset($_ENV['PHP_ENV']) === false || $_ENV['PHP_ENV'] === 'development'),
+            'displayErrorDetails' => (isset($_ENV['PHP_ENV']) === false || $_ENV['PHP_ENV'] === 'dev'),
             'logError'            => true,
             'logErrorDetails'     => true,
             'logger' => [
               'name' => 'slim-app',
               'path' => isset($_ENV['DOCKER']) ? 'php://stdout' : __DIR__ . '/../logs/app.log',
-              'level' => isset($_ENV['PHP_ENV']) === false || $_ENV['PHP_ENV'] === 'development' ? LogLevel::DEBUG : LogLevel::INFO,
+              'level' => isset($_ENV['PHP_ENV']) === false || $_ENV['PHP_ENV'] === 'dev' ? LogLevel::DEBUG : LogLevel::INFO,
             ]
           ]
         );
