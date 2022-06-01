@@ -177,7 +177,7 @@ return static function (ContainerBuilder $containerBuilder): void {
       VersionParser::class => autowire(VersionParser::class),
       Twig::class => function (ContainerInterface $container): Twig {
         $cache = false;
-        if (isset($_ENV['PHP_ENV']) && $_ENV['PHP_ENV'] === 'production') {
+        if (isset($_ENV['PHP_ENV']) && $_ENV['PHP_ENV'] === 'prod') {
           $cache = __DIR__ . '/../var/cache';
         }
 

@@ -28,7 +28,7 @@ if (is_file(__DIR__ . '/../.env')) {
 // Instantiate PHP-DI ContainerBuilder
 $containerBuilder = new ContainerBuilder();
 
-if (isset($_ENV['PHP_ENV']) && $_ENV['PHP_ENV'] === 'production') {
+if (isset($_ENV['PHP_ENV']) && $_ENV['PHP_ENV'] === 'prod') {
   $containerBuilder->enableCompilation(__DIR__ . '/../var/cache');
 }
 
