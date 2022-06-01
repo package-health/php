@@ -36,6 +36,6 @@
     </whitelist>
   </filter>
   <php>
-    <env name="PHP_ENV" value="testing" />
+    <env name="PHP_ENV" value="test" />
   </php>
 </phpunit>
