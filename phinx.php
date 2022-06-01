@@ -12,14 +12,14 @@ return [
   ],
   'environments' => [
     'default_migration_table' => 'phinxlog',
-    'default_environment' => 'development',
-    'production' => [
+    'default_environment' => 'dev',
+    'prod' => [
       'dsn' => "pgsql://${_ENV['POSTGRES_USER']}:${_ENV['POSTGRES_PASSWORD']}@${_ENV['POSTGRES_HOST']}/${_ENV['POSTGRES_DB']}"
     ],
-    'development' => [
+    'dev' => [
       'dsn' => "pgsql://${_ENV['POSTGRES_USER']}:${_ENV['POSTGRES_PASSWORD']}@${_ENV['POSTGRES_HOST']}/${_ENV['POSTGRES_DB']}"
     ],
-    'testing' => []
+    'test' => []
   ],
   'version_order' => 'creation'
 ];
