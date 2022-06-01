@@ -10,7 +10,7 @@ use Psr\Log\LoggerInterface;
 use Slim\HttpCache\CacheProvider;
 use Slim\Views\Twig;
 
-final class ListPackagesAction extends AbstractAction {
+final class ListVendorPackagesAction extends AbstractAction {
   protected PackageRepositoryInterface $packageRepository;
 
   public function __construct(
@@ -27,7 +27,7 @@ final class ListPackagesAction extends AbstractAction {
     $packages = $this->packageRepository->findMatching(['name' => "$vendor/%"]);
     $twig = Twig::fromRequest($this->request);
 
-    $this->logger->debug('Vendor package list was viewed.');
+    $this->logger->debug("Vendor '{$vendor}' package list was viewed.");
 
     // if (count($packages)) {
     //   $lastModifiedList = array_map(

@@ -19,6 +19,13 @@
             <div class="navbar-brand">
               <a class="navbar-item is-dark has-text-weight-bold is-uppercase" href="https://php.package.health">php.package.health</a>
             </div>
+            {% if show.navbar.menu %}
+              <div class="navbar-menu">
+                <div class="navbar-end">
+                  {% block navbar_menu %}{% endblock %}
+                </div>
+              </div>
+            {% endif %}
           </div>
         </header>
       </div>
@@ -29,11 +36,11 @@
         </div>
       </div>
       {% if show.hero.footer %}
-      <div class="hero-footer">
-        <div class="container">
-          <pre class="is-size-7">{% block hero_footer %}{% endblock %}</pre>
+        <div class="hero-footer">
+          <div class="container">
+            <pre class="is-size-7">{% block hero_footer %}{% endblock %}</pre>
+          </div>
         </div>
-      </div>
       {% endif %}
     </section>
     <section class="section">
@@ -47,7 +54,7 @@
           <p><strong>Package.Health</strong> is <em>heavily</em> inspired in <a href="https://deps.rs">Deps.rs</a>.</p>
           <p>Source code available on <a href="https://github.com/package-health/php"><span class="icon-text"><span class="icon"><i class="cib-github" alt="GitHub"></i></span> GitHub</span></a>.</p>
           {% if app.version is defined %}
-          <p class="is-size-7 is-family-monospace has-text-grey-light">{{ app.version }}</p>
+            <p class="is-size-7 is-family-monospace has-text-grey-light">{{ app.version }}</p>
           {% endif %}
         </div>
       </div>
