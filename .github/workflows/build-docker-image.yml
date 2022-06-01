@@ -94,7 +94,6 @@ jobs:
           generate_release_notes: true
 
       - name: Send update to infrastructure repository
-        if: ${{ github.ref_type == 'tag' }}
         uses: peter-evans/repository-dispatch@11ba7d3f32dc7cc919d1c43f1fec1c05260c26b5
         with:
           # personal access token with "repo" scope
