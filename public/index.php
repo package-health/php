@@ -19,7 +19,7 @@ if (is_file(__DIR__ . '/../.env')) {
 // Instantiate PHP-DI ContainerBuilder
 $containerBuilder = new ContainerBuilder();
 
-if (isset($_ENV['PHP_ENV']) && $_ENV['PHP_ENV'] === 'production') {
+if (isset($_ENV['PHP_ENV']) && $_ENV['PHP_ENV'] === 'prod') {
   $containerBuilder->enableCompilation(__DIR__ . '/../var/cache');
 }
 
@@ -62,7 +62,7 @@ $middleware($app);
 $routes = require __DIR__ . '/../app/routes.php';
 $routes($app);
 
-if (isset($_ENV['PHP_ENV']) && $_ENV['PHP_ENV'] === 'production') {
+if (isset($_ENV['PHP_ENV']) && $_ENV['PHP_ENV'] === 'prod') {
   $routeCollector = $app->getRouteCollector();
   $routeCollector->setCacheFile(__DIR__ . '/../var/cache/routes.cache');
 }

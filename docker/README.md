@@ -90,7 +90,7 @@ POSTGRES_HOST=pph-postgres
 AMQP_USER=<rabbitmq username>
 AMQP_PASS=<rabbitmq password>
 AMQP_HOST=pph-rabbit
-PHP_ENV=development
+PHP_ENV=dev
 DOCKER=true
 ```
 
