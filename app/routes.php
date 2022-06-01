@@ -2,13 +2,14 @@
 declare(strict_types = 1);
 
 use App\Application\Action\Package\ListPackagesAction;
+use App\Application\Action\Package\ListPackageVersionsAction;
 use App\Application\Action\Package\RedirectListPackagesAction;
 use App\Application\Action\Package\RedirectPackageAction;
 use App\Application\Action\Package\RedirectPackageBadgeAction;
 use App\Application\Action\Package\ViewPackageAction;
 use App\Application\Action\Package\ViewPackageBadgeAction;
 use App\Application\Action\System\HealthAction;
-use App\Application\Action\Vendor\ListPackagesAction as ListVendorPackagesAction;
+use App\Application\Action\Vendor\ListVendorPackagesAction;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Slim\App;
@@ -44,7 +45,10 @@ return static function (App $app): void {
         ->get('/{vendor}/{project}/{version}/status.svg', ViewPackageBadgeAction::class)
         ->setName('viewPackageBadge');
       $group
-        ->get('/{vendor}/{project}', RedirectPackageAction::class)
+        ->get('/{vendor}/{project}', ListPackageVersionsAction::class)
+        ->setName('listPackageVersions');
+      $group
+        ->get('/{vendor}/{project}/latest', RedirectPackageAction::class)
         ->setName('redirectPackage');
       $group
         ->get('/{vendor}/{project}/{version}', ViewPackageAction::class)

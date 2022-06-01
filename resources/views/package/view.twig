@@ -10,20 +10,26 @@
 
 {% block hero_footer %}[![dependency status]({{ full_url_for('viewPackageBadge', {vendor: package.vendor, project: package.project, version: version.number}) }})]({{ full_url_for('viewPackage', {vendor: package.vendor, project: package.project, version: version.number}) }}){% endblock %}
 
+{% block navbar_menu %}
+  {% if package.latestVersion == version.number %}
+    <a class="navbar-item" href="{{ url_for('listPackageVersions', {vendor: package.vendor, project: package.project}) }}">View other package releases</a>
+  {% else %}
+    <a class="navbar-item" href="{{ url_for('redirectPackage', {vendor: package.vendor, project: package.project}) }}">View the latest package release</a>
+  {% endif %}
+{% endblock %}
+
 {% block content %}
   {% if notification is defined %}
     <div class="notification {{ notification.type }}">
       <p>{{ notification.message }}</p>
     </div>
   {% endif %}
+  <h3 class="title is-4">Requires</h3>
   {% if requiredDeps|length == 0 %}
-    <h3 class="title is-4">Requires</h3>
     <p class="subtitle is-5">No required dependencies.</p>
     <table class="table is-fullwidth is-striped is-hoverable">
     </table>
-  {% endif %}
-  {% if requiredDeps|length > 0 %}
-    <h3 class="title is-4">Requires</h3>
+  {% else %}
     <p class="subtitle is-5">{{ requiredDeps|length }} total, {{ requiredDepsSubtitle }}</p>
     <table class="table is-fullwidth is-striped is-hoverable">
       <thead>
@@ -52,14 +58,12 @@
       </tbody>
     </table>
   {% endif %}
+  <h3 class="title is-4">Requires (dev)</h3>
   {% if requiredDevDeps|length == 0 %}
-    <h3 class="title is-4">Requires (dev)</h3>
     <p class="subtitle is-5">No required development dependencies.</p>
     <table class="table is-fullwidth is-striped is-hoverable">
     </table>
-  {% endif %}
-  {% if requiredDevDeps|length > 0 %}
-    <h3 class="title is-4">Requires (dev)</h3>
+  {% else %}
     <p class="subtitle is-5">{{ requiredDevDeps|length }} total, {{ requiredDevDepsSubtitle }}</p>
     <table class="table is-fullwidth is-striped is-hoverable">
       <thead>

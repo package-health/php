@@ -69,7 +69,7 @@ final class ViewPackageAction extends AbstractPackageAction {
       ]
     );
 
-    $this->logger->debug("Package '${vendor}/${project}' was viewed.");
+    $this->logger->debug("Package '${vendor}/${project}:${version}' was viewed.");
 
     // $lastModified = $package->getUpdatedAt() ?? $package->getCreatedAt();
     // $this->response = $this->cacheProvider->withLastModified(
@@ -94,6 +94,9 @@ final class ViewPackageAction extends AbstractPackageAction {
       'show' => [
         'hero' => [
           'footer' => true,
+        ],
+        'navbar' => [
+          'menu' => true
         ]
       ],
       'app' => [
@@ -220,7 +223,7 @@ final class ViewPackageAction extends AbstractPackageAction {
 
     return $this->respondWithHtml(
       $twig->fetch(
-        'package.twig',
+        'package/view.twig',
         $data
       )
     );
