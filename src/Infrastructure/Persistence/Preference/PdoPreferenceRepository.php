@@ -97,7 +97,7 @@ final class PdoPreferenceRepository implements PreferenceRepositoryInterface {
 
     $stmt->execute(['id' => $id]);
     if ($stmt->rowCount() === 0) {
-      throw new PreferenceNotFoundException("Preference '${id}' not found");
+      throw new PreferenceNotFoundException("Preference '{$id}' not found");
     }
 
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -120,7 +120,7 @@ final class PdoPreferenceRepository implements PreferenceRepositoryInterface {
       <<<SQL
         SELECT *
         FROM "preferences"
-        WHERE ${where}
+        WHERE {$where}
         ORDER BY "category" ASC, "property" ASC
       SQL
     );

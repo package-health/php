@@ -47,7 +47,7 @@ final class CachedPackageRepository implements PackageRepositoryInterface {
   }
 
   public function findPopular(int $limit = 10): PackageCollection {
-    $item = $this->cacheItemPool->getItem("/package/popular/${limit}");
+    $item = $this->cacheItemPool->getItem("/package/popular/{$limit}");
     $packageCol = $item->get();
     if ($item->isHit() === false) {
       $packageCol = $this->packageRepository->findPopular($limit);
@@ -62,7 +62,7 @@ final class CachedPackageRepository implements PackageRepositoryInterface {
   }
 
   public function exists(string $name): bool {
-    $item = $this->cacheItemPool->getItem("/package/${name}/exists");
+    $item = $this->cacheItemPool->getItem("/package/{$name}/exists");
     $exists = $item->get();
     if ($item->isHit() === false) {
       $exists = $this->packageRepository->exists($name);
@@ -80,7 +80,7 @@ final class CachedPackageRepository implements PackageRepositoryInterface {
    * @throws \App\Domain\Package\PackageNotFoundException
    */
   public function get(string $name): Package {
-    $item = $this->cacheItemPool->getItem("/package/${name}");
+    $item = $this->cacheItemPool->getItem("/package/{$name}");
     $package = $item->get();
     if ($item->isHit() === false) {
       $package = $this->packageRepository->get($name);

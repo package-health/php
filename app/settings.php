@@ -15,13 +15,13 @@ return static function (ContainerBuilder $containerBuilder): void {
           [
             'cache' => [
               'enabled' => PHP_SAPI !== 'cli',
-              'redis' => "redis://${_ENV['REDIS_USERNAME']}:${_ENV['REDIS_PASSWORD']}@${_ENV['REDIS_HOST']}:${_ENV['REDIS_PORT']}"
+              'redis' => "redis://{$_ENV['REDIS_USERNAME']}:{$_ENV['REDIS_PASSWORD']}@{$_ENV['REDIS_HOST']}:{$_ENV['REDIS_PORT']}"
             ],
             'db' => [
-              'dsn' => "pgsql://${_ENV['POSTGRES_USER']}:${_ENV['POSTGRES_PASSWORD']}@${_ENV['POSTGRES_HOST']}:${_ENV['POSTGRES_PORT']}/${_ENV['POSTGRES_DB']}"
+              'dsn' => "pgsql://{$_ENV['POSTGRES_USER']}:{$_ENV['POSTGRES_PASSWORD']}@{$_ENV['POSTGRES_HOST']}:{$_ENV['POSTGRES_PORT']}/{$_ENV['POSTGRES_DB']}"
             ],
             'queue' => [
-              'dsn' => "amqp://${_ENV['AMQP_USER']}:${_ENV['AMQP_PASS']}@${_ENV['AMQP_HOST']}:${_ENV['AMQP_PORT']}"
+              'dsn' => "amqp://{$_ENV['AMQP_USER']}:{$_ENV['AMQP_PASS']}@{$_ENV['AMQP_HOST']}:{$_ENV['AMQP_PORT']}"
             ],
             'displayErrorDetails' => (isset($_ENV['PHP_ENV']) === false || $_ENV['PHP_ENV'] === 'dev'),
             'logError'            => true,
@@ -29,7 +29,7 @@ return static function (ContainerBuilder $containerBuilder): void {
             'logger' => [
               'name' => 'slim-app',
               'path' => isset($_ENV['DOCKER']) ? 'php://stdout' : __DIR__ . '/../logs/app.log',
-              'level' => isset($_ENV['PHP_ENV']) === false || $_ENV['PHP_ENV'] === 'dev' ? LogLevel::DEBUG : LogLevel::INFO,
+              'level' => isset($_ENV['PHP_ENV']) === false || $_ENV['PHP_ENV'] === 'dev' ? LogLevel::DEBUG : LogLevel::INFO
             ]
           ]
         );

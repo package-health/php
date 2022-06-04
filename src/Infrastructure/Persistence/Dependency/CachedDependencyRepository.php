@@ -59,7 +59,7 @@ final class CachedDependencyRepository implements DependencyRepositoryInterface 
    * @throws \App\Domain\Dependency\DependencyNotFoundException
    */
   public function get(int $id): Dependency {
-    $item = $this->cacheItemPool->getItem("/dependency/${id}");
+    $item = $this->cacheItemPool->getItem("/dependency/{$id}");
     $dependency = $item->get();
     if ($item->isHit() === false) {
       $dependency = $this->dependencyRepository->get($id);

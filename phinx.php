@@ -1,4 +1,5 @@
 <?php
+declare(strict_types = 1);
 
 if (is_file(__DIR__ . '/.env')) {
   $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
@@ -14,10 +15,10 @@ return [
     'default_migration_table' => 'phinxlog',
     'default_environment' => 'dev',
     'prod' => [
-      'dsn' => "pgsql://${_ENV['POSTGRES_USER']}:${_ENV['POSTGRES_PASSWORD']}@${_ENV['POSTGRES_HOST']}/${_ENV['POSTGRES_DB']}"
+      'dsn' => "pgsql://{$_ENV['POSTGRES_USER']}:{$_ENV['POSTGRES_PASSWORD']}@{$_ENV['POSTGRES_HOST']}/{$_ENV['POSTGRES_DB']}"
     ],
     'dev' => [
-      'dsn' => "pgsql://${_ENV['POSTGRES_USER']}:${_ENV['POSTGRES_PASSWORD']}@${_ENV['POSTGRES_HOST']}/${_ENV['POSTGRES_DB']}"
+      'dsn' => "pgsql://{$_ENV['POSTGRES_USER']}:{$_ENV['POSTGRES_PASSWORD']}@{$_ENV['POSTGRES_HOST']}/{$_ENV['POSTGRES_DB']}"
     ],
     'test' => []
   ],

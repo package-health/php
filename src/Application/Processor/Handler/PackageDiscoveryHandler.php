@@ -149,7 +149,7 @@ class PackageDiscoveryHandler implements InvokeHandlerInterface {
 
       $pkgs = [
         // dev versions
-        "${packageName}~dev",
+        "{$packageName}~dev",
         // tagged releses
         $packageName
       ];

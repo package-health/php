@@ -38,9 +38,9 @@ final class ViewPackageBadgeAction extends AbstractPackageAction {
     $vendor  = $this->resolveStringArg('vendor');
     $project = $this->resolveStringArg('project');
     $version = $this->resolveStringArg('version');
-    $package = $this->packageRepository->get("${vendor}/${project}");
+    $package = $this->packageRepository->get("{$vendor}/{$project}");
 
-    $this->logger->debug("Status badge for package '${vendor}/${project}' was viewed.");
+    $this->logger->debug("Status badge for package '{$vendor}/{$project}' was viewed.");
 
     $versionCol = $this->versionRepository->find(
       [
@@ -96,7 +96,7 @@ final class ViewPackageBadgeAction extends AbstractPackageAction {
         $total = $dependencyCol->count();
 
         $status = [
-          'text'  => "${outdated} of ${total} outdated",
+          'text'  => "{$outdated} of {$total} outdated",
           'color' => 'yellow'
         ];
         break;

@@ -57,7 +57,7 @@ final class CachedPreferenceRepository implements PreferenceRepositoryInterface 
    * @throws \App\Domain\Preference\PreferenceNotFoundException
    */
   public function get(int $id): Preference {
-    $item = $this->cacheItemPool->getItem("/preference/${id}");
+    $item = $this->cacheItemPool->getItem("/preference/{$id}");
     $preference = $item->get();
     if ($item->isHit() === false ) {
       $preference = $this->preferenceRepository->get($id);

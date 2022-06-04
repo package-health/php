@@ -27,7 +27,7 @@ final class RedirectPackageAction extends AbstractPackageAction {
   protected function action(): ResponseInterface {
     $vendor  = $this->resolveStringArg('vendor');
     $project = $this->resolveStringArg('project');
-    $package = $this->packageRepository->get("${vendor}/${project}");
+    $package = $this->packageRepository->get("{$vendor}/{$project}");
 
     $routeParser = RouteContext::fromRequest($this->request)->getRouteParser();
 

@@ -80,7 +80,7 @@ final class CachedStatsRepository implements StatsRepositoryInterface {
   }
 
   public function exists(string $packageName): bool {
-    $item = $this->cacheItemPool->getItem("/stats/${packageName}/exists");
+    $item = $this->cacheItemPool->getItem("/stats/{$packageName}/exists");
     $exists = $item->get();
     if ($item->isHit() === false) {
       $exists = $this->statsRepository->exists($packageName);
@@ -98,7 +98,7 @@ final class CachedStatsRepository implements StatsRepositoryInterface {
    * @throws \App\Domain\Stats\StatsNotFoundException
    */
   public function get(string $packageName): Stats {
-    $item = $this->cacheItemPool->getItem("/stats/${packageName}");
+    $item = $this->cacheItemPool->getItem("/stats/{$packageName}");
     $stats = $item->get();
     if ($item->isHit() === false) {
       $stats = $this->statsRepository->get($packageName);

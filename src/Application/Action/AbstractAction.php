@@ -65,7 +65,7 @@ abstract class AbstractAction {
    */
   protected function resolveStringArg(string $name): string {
     if (isset($this->args[$name]) === false) {
-      throw new HttpBadRequestException($this->request, "Could not resolve argument '${name}'.");
+      throw new HttpBadRequestException($this->request, "Could not resolve argument '{$name}'.");
     }
 
     return (string)$this->args[$name];
@@ -76,7 +76,7 @@ abstract class AbstractAction {
    */
   protected function resolveIntArg(string $name): int {
     if (isset($this->args[$name]) === false) {
-      throw new HttpBadRequestException($this->request, "Could not resolve argument '${name}'.");
+      throw new HttpBadRequestException($this->request, "Could not resolve argument '{$name}'.");
     }
 
     return (int)$this->args[$name];
@@ -87,7 +87,7 @@ abstract class AbstractAction {
    */
   protected function resolveFloatArg(string $name): float {
     if (isset($this->args[$name]) === false) {
-      throw new HttpBadRequestException($this->request, "Could not resolve argument '${name}'.");
+      throw new HttpBadRequestException($this->request, "Could not resolve argument '{$name}'.");
     }
 
     return (float)$this->args[$name];
@@ -98,7 +98,7 @@ abstract class AbstractAction {
    */
   protected function resolveBoolArg(string $name): bool {
     if (isset($this->args[$name]) === false) {
-      throw new HttpBadRequestException($this->request, "Could not resolve argument '${name}'.");
+      throw new HttpBadRequestException($this->request, "Could not resolve argument '{$name}'.");
     }
 
     return (bool)$this->args[$name];

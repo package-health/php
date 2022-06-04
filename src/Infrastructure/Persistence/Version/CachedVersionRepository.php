@@ -59,7 +59,7 @@ final class CachedVersionRepository implements VersionRepositoryInterface {
    * @throws \App\Domain\Version\VersionNotFoundException
    */
   public function get(int $id): Version {
-    $item = $this->cacheItemPool->getItem("/version/${id}");
+    $item = $this->cacheItemPool->getItem("/version/{$id}");
     $version = $item->get();
     if ($item->isHit() === false ) {
       $version = $this->versionRepository->get($id);

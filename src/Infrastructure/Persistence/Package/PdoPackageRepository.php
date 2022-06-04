@@ -138,7 +138,7 @@ final class PdoPackageRepository implements PackageRepositoryInterface {
 
     $stmt->execute(['name' => $name]);
     if ($stmt->rowCount() === 0) {
-      throw new PackageNotFoundException("Package '${name}' not found");
+      throw new PackageNotFoundException("Package '{$name}' not found");
     }
 
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -161,7 +161,7 @@ final class PdoPackageRepository implements PackageRepositoryInterface {
       <<<SQL
         SELECT *
         FROM "packages"
-        WHERE ${where}
+        WHERE {$where}
         ORDER BY "name" ASC
       SQL
     );
@@ -191,7 +191,7 @@ final class PdoPackageRepository implements PackageRepositoryInterface {
       <<<SQL
         SELECT *
         FROM "packages"
-        WHERE ${where}
+        WHERE {$where}
         ORDER BY "name" ASC
       SQL
     );

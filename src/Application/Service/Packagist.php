@@ -138,7 +138,7 @@ final class Packagist {
   public function getPackageList(string $mirror = 'https://packagist.org'): array {
     $content = $this->updateFileContent(
       'packagist/list.json',
-      "${mirror}/packages/list.json"
+      "{$mirror}/packages/list.json"
     );
 
     $json = json_decode($content, true, 512, JSON_THROW_ON_ERROR);
@@ -155,8 +155,8 @@ final class Packagist {
   ): array {
     $prefix = substr($packageName, 0, 1);
     $content = $this->updateFileContent(
-      "packagist/${prefix}/${packageName}-v1.json",
-      "${mirror}/packages/${packageName}.json"
+      "packagist/{$prefix}/{$packageName}-v1.json",
+      "{$mirror}/packages/{$packageName}.json"
     );
 
     $json = json_decode($content, true, 512, JSON_THROW_ON_ERROR);
@@ -173,8 +173,8 @@ final class Packagist {
   ): array {
     $prefix = substr($packageName, 0, 1);
     $content = $this->updateFileContent(
-      "packagist/${prefix}/${packageName}-v2.json.gz",
-      "${mirror}/p2/${packageName}.json.gz"
+      "packagist/{$prefix}/{$packageName}-v2.json.gz",
+      "{$mirror}/p2/{$packageName}.json.gz"
     );
 
     $json = json_decode($content, true, 512, JSON_THROW_ON_ERROR);
@@ -192,7 +192,7 @@ final class Packagist {
   public function getPackageUpdates(int $since, string $mirror = 'https://packagist.org'): array {
     $content = $this->updateFileContent(
       'packagist/updates.json',
-      "${mirror}/metadata/changes.json?since=${since}"
+      "{$mirror}/metadata/changes.json?since={$since}"
     );
 
     $json = json_decode($content, true, 512, JSON_THROW_ON_ERROR);
@@ -209,8 +209,8 @@ final class Packagist {
   ): array {
     $prefix = substr($packageName, 0, 1);
     $content = $this->updateFileContent(
-      "packagist/${prefix}/${packageName}-security-advisories.json",
-      "${mirror}/api/security-advisories/?packages[]=${packageName}"
+      "packagist/{$prefix}/{$packageName}-security-advisories.json",
+      "{$mirror}/api/security-advisories/?packages[]={$packageName}"
     );
 
     $json = json_decode($content, true, 512, JSON_THROW_ON_ERROR);

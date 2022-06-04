@@ -28,10 +28,10 @@ final class ListPackageVersionsAction extends AbstractPackageAction {
   protected function action(): ResponseInterface {
     $vendor  = $this->resolveStringArg('vendor');
     $project = $this->resolveStringArg('project');
-    $package = $this->packageRepository->get("${vendor}/${project}");
+    $package = $this->packageRepository->get("{$vendor}/{$project}");
     $twig = Twig::fromRequest($this->request);
 
-    $this->logger->debug("Package '${vendor}/${project}' version list was viewed.");
+    $this->logger->debug("Package '{$vendor}/{$project}' version list was viewed.");
 
     $taggedCol = $this->versionRepository->find(
       [

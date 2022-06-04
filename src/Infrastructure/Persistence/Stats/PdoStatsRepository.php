@@ -157,7 +157,7 @@ final class PdoStatsRepository implements StatsRepositoryInterface {
 
     $stmt->execute(['package_name' => $packageName]);
     if ($stmt->rowCount() === 0) {
-      throw new StatsNotFoundException("Stats '${packageName}' not found");
+      throw new StatsNotFoundException("Stats '{$packageName}' not found");
     }
 
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -180,7 +180,7 @@ final class PdoStatsRepository implements StatsRepositoryInterface {
       <<<SQL
         SELECT *
         FROM "stats"
-        WHERE ${where}
+        WHERE {$where}
       SQL
     );
 

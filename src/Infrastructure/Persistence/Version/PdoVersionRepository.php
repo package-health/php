@@ -101,7 +101,7 @@ final class PdoVersionRepository implements VersionRepositoryInterface {
 
     $stmt->execute(['id' => $id]);
     if ($stmt->rowCount() === 0) {
-      throw new VersionNotFoundException("Version '${id}' not found");
+      throw new VersionNotFoundException("Version '{$id}' not found");
     }
 
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -136,7 +136,7 @@ final class PdoVersionRepository implements VersionRepositoryInterface {
       <<<SQL
         SELECT *
         FROM "versions"
-        WHERE ${where}
+        WHERE {$where}
       SQL
     );
 

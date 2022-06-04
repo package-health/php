@@ -101,7 +101,7 @@ final class PdoDependencyRepository implements DependencyRepositoryInterface {
 
     $stmt->execute(['id' => $id]);
     if ($stmt->rowCount() === 0) {
-      throw new DependencyNotFoundException("Dependency '${id}' not found");
+      throw new DependencyNotFoundException("Dependency '{$id}' not found");
     }
 
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -136,7 +136,7 @@ final class PdoDependencyRepository implements DependencyRepositoryInterface {
       <<<SQL
         SELECT *
         FROM "dependencies"
-        WHERE ${where}
+        WHERE {$where}
         ORDER BY "name" ASC
       SQL
     );
