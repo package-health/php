@@ -23,7 +23,7 @@ final class GetListCommand extends Command implements SignalableCommandInterface
   private PackageRepositoryInterface $packageRepository;
   private ProducerInterface $producer;
   private Packagist $packagist;
-  private bool $mustStop = false;
+  private bool $stopDaemon = false;
 
   /**
    * Command configuration.
@@ -177,7 +177,7 @@ final class GetListCommand extends Command implements SignalableCommandInterface
           new PackageDiscoveryCommand($packageName, workOffline: $workOffline)
         );
 
-        if ($this->mustStop === true) {
+        if ($this->stopDaemon === true) {
           $io->text(
             sprintf(
               '[%s] Interrupted, leaving',
@@ -194,7 +194,7 @@ final class GetListCommand extends Command implements SignalableCommandInterface
         //   new PackageRemovalCommand($packageName)
         // );
 
-        // if ($this->mustStop === true) {
+        // if ($this->stopDaemon === true) {
         //   $io->text(
         //     sprintf(
         //       '[%s] Interrupted, leaving',
@@ -247,6 +247,6 @@ final class GetListCommand extends Command implements SignalableCommandInterface
   }
 
   public function handleSignal(int $signal): void {
-    $this->mustStop = true;
+    $this->stopDaemon = true;
   }
 }
