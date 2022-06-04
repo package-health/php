@@ -163,7 +163,7 @@ final class PdoPreferenceRepository implements PreferenceRepositoryInterface {
       $preference->getCategory(),
       $preference->getProperty(),
       $preference->getValueAsString(),
-      $preference->getType()->value,
+      $preference->getType(),
       $preference->getCreatedAt()
     );
 
