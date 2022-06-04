@@ -13,6 +13,8 @@ use Courier\Client\Producer\ProducerInterface;
 use Courier\Inflector\InterfaceInflector;
 use Courier\Locator\ContainerLocator;
 use Courier\Middleware\EnvelopeCompressionMiddleware;
+use Courier\Middleware\EnvelopeTimestampMiddleware;
+use Courier\Middleware\PersistentDeliveryMiddleware;
 use Courier\Router\SimpleRouter;
 use Courier\Serializer\IgBinarySerializer;
 use Courier\Transport\AmqpTransport;
@@ -167,7 +169,10 @@ return static function (ContainerBuilder $containerBuilder): void {
           )
         );
 
-        $producer->addMiddleware(new EnvelopeCompressionMiddleware());
+        $producer
+          ->addMiddleware(new EnvelopeTimestampMiddleware())
+          ->addMiddleware(new EnvelopeCompressionMiddleware())
+          ->addMiddleware(new PersistentDeliveryMiddleware());
 
         return $producer;
       },
