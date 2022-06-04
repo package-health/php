@@ -19,6 +19,14 @@ use DateTimeInterface;
 use Exception;
 use Psr\Log\LoggerInterface;
 
+/**
+ * Retrieves package metadata from packagist.org
+ *  - List of avaialble versions (tagged releases and development branches);
+ *  - List of required dependencies (runtime and dev) per version.
+ *
+ * @see App\Application\Console\Packagist\GetListCommand
+ * @see App\Application\Console\Packagist\GetUpdatesCommand
+ */
 class PackageDiscoveryHandler implements InvokeHandlerInterface {
   private DependencyRepositoryInterface $dependencyRepository;
   private PackageRepositoryInterface $packageRepository;
@@ -62,10 +70,6 @@ class PackageDiscoveryHandler implements InvokeHandlerInterface {
   }
 
   /**
-   * Retrieves package metadata from packagist.org
-   *  - List of avaialble versions
-   *  - List of required dependencies per version
-   *
    * @param array{
    *   appId?: string,
    *   correlationId?: string,
@@ -129,16 +133,19 @@ class PackageDiscoveryHandler implements InvokeHandlerInterface {
         return HandlerResultEnum::Reject;
       }
 
+      // update deduplication guards
+      $lastUniqueId  = $uniqueId;
+      $lastTimestamp = $timestamp;
+
       $this->logger->info(
         'Package discovery handler',
         ['package' => $packageName]
       );
 
-      if ($this->packageRepository->exists($packageName)) {
-        $package = $this->packageRepository->get($packageName);
-      } else {
-        $package = $this->packageRepository->create($packageName);
-      }
+      $package = match ($this->packageRepository->exists($packageName)) {
+         true  => $this->packageRepository->get($packageName),
+         false => $this->packageRepository->create($packageName)
+      };
 
       $pkgs = [
         // dev versions
@@ -163,9 +170,15 @@ class PackageDiscoveryHandler implements InvokeHandlerInterface {
         }
 
         $package = $package
-          ->withDescription($metadata[0]['description'] ?? '')
+          ->withDescription(
+            $metadata[0]['description'] ?? $package->getDescription()
+          )
           ->withUrl(
-            preg_replace('/\.git$/', '', ($metadata[0]['source']['url'] ?? ''))
+            preg_replace(
+              '/\.git$/',
+              '',
+              $metadata[0]['source']['url'] ?? $package->getUrl()
+            )
           );
         $package = $this->packageRepository->update($package);
 
@@ -287,10 +300,6 @@ class PackageDiscoveryHandler implements InvokeHandlerInterface {
           }
         }
       }
-
-      // update deduplication guards
-      $lastUniqueId  = $uniqueId;
-      $lastTimestamp = $timestamp;
 
       return HandlerResultEnum::Accept;
     } catch (Exception $exception) {

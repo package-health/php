@@ -17,6 +17,11 @@ use DateTimeInterface;
 use Exception;
 use Psr\Log\LoggerInterface;
 
+/**
+ * Updates the version status that requires $dependency
+ *
+ * @see App\Application\Processor\Listener\Dependency\DependencyUpdatedListener
+ */
 final class UpdateVersionStatusHandler implements InvokeHandlerInterface {
   private VersionRepositoryInterface $versionRepository;
   private DependencyRepositoryInterface $dependencyRepository;
@@ -33,8 +38,6 @@ final class UpdateVersionStatusHandler implements InvokeHandlerInterface {
   }
 
   /**
-   * Updates the version status that requires $dependency
-   *
    * @param array{
    *   appId?: string,
    *   correlationId?: string,
@@ -96,6 +99,10 @@ final class UpdateVersionStatusHandler implements InvokeHandlerInterface {
         return HandlerResultEnum::Reject;
       }
 
+      // update deduplication guards
+      $lastUniqueId  = $uniqueId;
+      $lastTimestamp = $timestamp;
+
       $this->logger->info(
         'Update version status handler',
         [
@@ -131,10 +138,6 @@ final class UpdateVersionStatusHandler implements InvokeHandlerInterface {
       );
 
       $version = $this->versionRepository->update($version);
-
-      // update deduplication guards
-      $lastUniqueId  = $uniqueId;
-      $lastTimestamp = $timestamp;
 
       return HandlerResultEnum::Accept;
     } catch (Exception $exception) {

@@ -114,8 +114,15 @@ final class ConsumeCommand extends Command implements SignalableCommandInterface
               $duration->asMilliseconds()
             )
           );
+          $io->text(
+            sprintf(
+              '[%s] Rate: <options=bold;fg=green>%.2f</> messages per second',
+              date('H:i:s'),
+              $consumed / $duration->asSeconds()
+            )
+          );
         }
-      } while ($consumed === $messageCount && $daemonize && $this->stopDaemon === false);
+      } while ($daemonize && $this->stopDaemon === false);
 
       $io->text(
         sprintf(
@@ -153,5 +160,6 @@ final class ConsumeCommand extends Command implements SignalableCommandInterface
 
   public function handleSignal(int $signal): void {
     $this->stopDaemon = true;
+    echo 'Waiting to stop daemon..', PHP_EOL;
   }
 }

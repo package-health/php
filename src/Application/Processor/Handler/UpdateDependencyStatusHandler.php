@@ -15,6 +15,11 @@ use DateTimeInterface;
 use Exception;
 use Psr\Log\LoggerInterface;
 
+/**
+ * Updates all dependencies that "require" or "require-dev" $package
+ *
+ * @see App\Application\Processor\Listener\Package\PackageUpdatedListener
+ */
 class UpdateDependencyStatusHandler implements InvokeHandlerInterface {
   private DependencyRepositoryInterface $dependencyRepository;
   private LoggerInterface $logger;
@@ -28,8 +33,6 @@ class UpdateDependencyStatusHandler implements InvokeHandlerInterface {
   }
 
   /**
-   * Updates all dependency references that "require" or "require-dev" $package
-   *
    * @param array{
    *   appId?: string,
    *   correlationId?: string,
@@ -91,6 +94,10 @@ class UpdateDependencyStatusHandler implements InvokeHandlerInterface {
         return HandlerResultEnum::Reject;
       }
 
+      // update deduplication guards
+      $lastUniqueId  = $uniqueId;
+      $lastTimestamp = $timestamp;
+
       $this->logger->info(
         'Update dependency status handler',
         [
@@ -123,10 +130,6 @@ class UpdateDependencyStatusHandler implements InvokeHandlerInterface {
 
         $dependency = $this->dependencyRepository->update($dependency);
       }
-
-      // update deduplication guards
-      $lastUniqueId  = $uniqueId;
-      $lastTimestamp = $timestamp;
 
       return HandlerResultEnum::Accept;
     } catch (Exception $exception) {
