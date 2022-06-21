@@ -38,14 +38,14 @@
     <div class="column">
       {% if develop|length == 0 %}
         <h3 class="title is-4">Development</h3>
-        <p class="subtitle is-5">No development releases.</p>
+        <p class="subtitle is-5">No development branches.</p>
       {% else %}
-        <h3 class="title is-4">Development ({{ develop|length }} releases)</h3>
+        <h3 class="title is-4">Development ({{ develop|length }} branches)</h3>
         <table class="table is-fullwidth is-striped is-hoverable">
           <thead>
             <tr>
-              <th>Version</th>
-              <th class="has-text-right">Release date</th>
+              <th>Name</th>
+              <th class="has-text-right">Creation date</th>
             </tr>
           </thead>
           <tbody>
