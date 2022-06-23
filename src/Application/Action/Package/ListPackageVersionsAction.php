@@ -61,7 +61,10 @@ final class ListPackageVersionsAction extends AbstractPackageAction {
         [
           'package' => $package,
           'tagged' => $taggedCol,
-          'develop' => $developCol
+          'develop' => $developCol,
+          'app' => [
+            'version' => $_ENV['VERSION']
+          ]
         ]
       )
     );
