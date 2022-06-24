@@ -199,7 +199,8 @@ class PackageDiscoveryHandler implements InvokeHandlerInterface {
             [
               'number'       => $release['version'],
               'package_name' => $packageName
-            ]
+            ],
+            1
           );
 
           $version = $versionCol[0] ?? null;
@@ -244,7 +245,8 @@ class PackageDiscoveryHandler implements InvokeHandlerInterface {
                 'version_id'  => $version->getId(),
                 'name'        => $dependencyName,
                 'development' => false
-              ]
+              ],
+              1
             );
 
             $dependency = $dependencyCol[0] ?? null;
@@ -285,7 +287,8 @@ class PackageDiscoveryHandler implements InvokeHandlerInterface {
                 'version_id'  => $version->getId(),
                 'name'        => $dependencyName,
                 'development' => true
-              ]
+              ],
+              1
             );
 
             $dependency = $dependencyCol[0] ?? null;

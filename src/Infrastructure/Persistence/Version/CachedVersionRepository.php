@@ -73,12 +73,12 @@ final class CachedVersionRepository implements VersionRepositoryInterface {
     return $version;
   }
 
-  public function find(array $query): VersionCollection {
+  public function find(array $query, int $limit = -1, int $offset = 0): VersionCollection {
     $key = http_build_query($query);
-    $item = $this->cacheItemPool->getItem("/version/find/{$key}");
+    $item = $this->cacheItemPool->getItem("/version/find/{$key}/{$limit}/{$offset}");
     $versionCol = $item->get();
     if ($item->isHit() === false) {
-      $versionCol = $this->versionRepository->find($query);
+      $versionCol = $this->versionRepository->find($query, $limit, $offset);
 
       $item->set($versionCol);
       $item->expiresAfter(3600);

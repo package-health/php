@@ -151,6 +151,7 @@ final class PdoStatsRepository implements StatsRepositoryInterface {
           SELECT *
           FROM "stats"
           WHERE "package_name" = :package_name
+          LIMIT 1
         SQL
       );
     }
@@ -165,7 +166,7 @@ final class PdoStatsRepository implements StatsRepositoryInterface {
     return $this->hydrate($row);
   }
 
-  public function find(array $query): StatsCollection {
+  public function find(array $query, int $limit = -1, int $offset = 0): StatsCollection {
     $where = [];
     foreach (array_keys($query) as $col) {
       $where[] = sprintf(
@@ -176,11 +177,17 @@ final class PdoStatsRepository implements StatsRepositoryInterface {
 
     $where = implode(' AND ', $where);
 
+    if ($limit === -1) {
+      $limit = 'ALL';
+    }
+
     $stmt = $this->pdo->prepare(
       <<<SQL
         SELECT *
         FROM "stats"
         WHERE {$where}
+        LIMIT {$limit}
+        OFFSET {$offset}
       SQL
     );
 

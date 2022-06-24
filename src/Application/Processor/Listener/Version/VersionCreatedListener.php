@@ -10,7 +10,7 @@ use Courier\Message\EventInterface;
 use Courier\Processor\Listener\InvokeListenerInterface;
 use Psr\Log\LoggerInterface;
 
-class VersionCreatedListener implements InvokeListenerInterface {
+final class VersionCreatedListener implements InvokeListenerInterface {
   private PackageRepositoryInterface $packageRepository;
   private VersionParser $versionParser;
   private LoggerInterface $logger;
@@ -32,6 +32,17 @@ class VersionCreatedListener implements InvokeListenerInterface {
    * Note: only sets the latest version if it is stable
    */
   public function __invoke(EventInterface $event, array $attributes = []): void {
+    if (($event instanceof VersionCreatedEvent) === false) {
+      $this->logger->critical(
+        sprintf(
+          'Invalid event argument for VersionCreatedListener: "%s"',
+          $event::class
+        )
+      );
+
+      return;
+    }
+
     $version = $event->getVersion();
     $this->logger->debug(
       'Version created',
@@ -57,7 +68,7 @@ class VersionCreatedListener implements InvokeListenerInterface {
 
     if (Comparator::greaterThan($version->getNormalized(), $latestVersionNormalized)) {
       $package = $package->withLatestVersion($version->getNumber());
-      $package = $this->packageRepository->update($package);
+      $this->packageRepository->update($package);
     }
   }
 }

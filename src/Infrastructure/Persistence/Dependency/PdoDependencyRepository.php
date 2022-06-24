@@ -95,6 +95,7 @@ final class PdoDependencyRepository implements DependencyRepositoryInterface {
           SELECT *
           FROM "dependencies"
           WHERE "id" = :id
+          LIMIT 1
         SQL
       );
     }
@@ -109,7 +110,7 @@ final class PdoDependencyRepository implements DependencyRepositoryInterface {
     return $this->hydrate($row);
   }
 
-  public function find(array $query): DependencyCollection {
+  public function find(array $query, int $limit = -1, int $offset = 0): DependencyCollection {
     $where = [];
     $cols = array_keys($query);
 
@@ -132,12 +133,18 @@ final class PdoDependencyRepository implements DependencyRepositoryInterface {
 
     $where = implode(' AND ', $where);
 
+    if ($limit === -1) {
+      $limit = 'ALL';
+    }
+
     $stmt = $this->pdo->prepare(
       <<<SQL
         SELECT *
         FROM "dependencies"
         WHERE {$where}
         ORDER BY "name" ASC
+        LIMIT {$limit}
+        OFFSET {$offset}
       SQL
     );
 

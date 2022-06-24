@@ -22,7 +22,7 @@ interface VersionRepositoryInterface {
    */
   public function get(int $id): Version;
 
-  public function find(array $query): VersionCollection;
+  public function find(array $query, int $limit = -1, int $offset = 0): VersionCollection;
 
   public function save(Version $version): Version;
 

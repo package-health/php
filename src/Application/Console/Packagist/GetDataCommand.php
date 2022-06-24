@@ -101,12 +101,7 @@ final class GetDataCommand extends Command {
       $package = $package
         ->withDescription($metadata['description'] ?? '')
         ->withUrl($metadata['repository'] ?? '');
-      if ($package->isDirty()) {
-        $package = $this->packageRepository->update($package);
-        $this->producer->sendEvent(
-          new PackageUpdatedEvent($package)
-        );
-      }
+      $package = $this->packageRepository->update($package);
 
       // current latest version to check for updates
       $latestVersion           = $package->getLatestVersion();
@@ -125,12 +120,7 @@ final class GetDataCommand extends Command {
           ->withMonthlyDownloads($metadata['downloads']['monthly'] ?? 0)
           ->withDailyDownloads($metadata['downloads']['daily'] ?? 0);
 
-        if ($stats->isDirty()) {
-          $stats = $this->statsRepository->update($stats);
-          $this->producer->sendEvent(
-            new StatsUpdatedEvent($stats)
-          );
-        }
+        $stats = $this->statsRepository->update($stats);
       } else {
         $stats = $this->statsRepository->create(
           $packageName,
@@ -143,10 +133,6 @@ final class GetDataCommand extends Command {
           $metadata['downloads']['total'] ?? 0,
           $metadata['downloads']['monthly'] ?? 0,
           $metadata['downloads']['daily'] ?? 0
-        );
-
-        $this->producer->sendEvent(
-          new StatsCreatedEvent($stats)
         );
       }
 
@@ -174,7 +160,8 @@ final class GetDataCommand extends Command {
             'normalized'   => $release['version_normalized'],
             'package_name' => $packageName,
             'release'      => $isBranch === false
-          ]
+          ],
+          1
         );
 
         $version = $versionCol[0] ?? null;
@@ -196,9 +183,6 @@ final class GetDataCommand extends Command {
             $packageName,
             $isBranch === false,
             VersionStatusEnum::Unknown
-          );
-          $this->producer->sendEvent(
-            new VersionCreatedEvent($version)
           );
         }
 
@@ -233,9 +217,6 @@ final class GetDataCommand extends Command {
 
           $version = $version->withStatus(VersionStatusEnum::NoDeps);
           $version = $this->versionRepository->update($version);
-          $this->producer->sendEvent(
-            new VersionUpdatedEvent($version)
-          );
         }
 
         foreach ($filteredRequire as $dependencyName => $constraint) {
@@ -256,7 +237,8 @@ final class GetDataCommand extends Command {
               'version_id'  => $version->getId(),
               'name'        => $dependencyName,
               'development' => false
-            ]
+            ],
+            1
           );
 
           if ($dependencyCol->isEmpty() === false) {
@@ -272,12 +254,7 @@ final class GetDataCommand extends Command {
                   DependencyStatusEnum::Outdated
                 )
               );
-            if ($dependency->isDirty()) {
-              $dependency = $this->dependencyRepository->update($dependency);
-              $this->producer->sendEvent(
-                new DependencyUpdatedEvent($dependency)
-              );
-            }
+            $dependency = $this->dependencyRepository->update($dependency);
 
             continue;
           }
@@ -294,9 +271,6 @@ final class GetDataCommand extends Command {
               DependencyStatusEnum::UpToDate :
               DependencyStatusEnum::Outdated
             )
-          );
-          $this->producer->sendEvent(
-            new DependencyCreatedEvent($dependency)
           );
         }
 
@@ -339,7 +313,8 @@ final class GetDataCommand extends Command {
               'version_id'  => $version->getId(),
               'name'        => $dependencyName,
               'development' => true
-            ]
+            ],
+            1
           );
 
           if ($dependencyCol->isEmpty() === false) {
@@ -355,12 +330,7 @@ final class GetDataCommand extends Command {
                   DependencyStatusEnum::Outdated
                 )
               );
-            if ($dependency->isDirty()) {
-              $dependency = $this->dependencyRepository->update($dependency);
-              $this->producer->sendEvent(
-                new DependencyUpdatedEvent($dependency)
-              );
-            }
+            $dependency = $this->dependencyRepository->update($dependency);
 
             continue;
           }
@@ -377,9 +347,6 @@ final class GetDataCommand extends Command {
               DependencyStatusEnum::UpToDate :
               DependencyStatusEnum::Outdated
             )
-          );
-          $this->producer->sendEvent(
-            new DependencyCreatedEvent($dependency)
           );
         }
       }
@@ -398,9 +365,6 @@ final class GetDataCommand extends Command {
         }
 
         $package = $this->packageRepository->update($package);
-        $this->producer->sendEvent(
-          new PackageUpdatedEvent($package)
-        );
       }
 
       $io->text(

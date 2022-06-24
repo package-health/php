@@ -95,6 +95,7 @@ final class PdoVersionRepository implements VersionRepositoryInterface {
           SELECT *
           FROM "versions"
           WHERE "id" = :id
+          LIMIT 1
         SQL
       );
     }
@@ -109,7 +110,7 @@ final class PdoVersionRepository implements VersionRepositoryInterface {
     return $this->hydrate($row);
   }
 
-  public function find(array $query): VersionCollection {
+  public function find(array $query, int $limit = -1, int $offset = 0): VersionCollection {
     $where = [];
     $cols = array_keys($query);
 
@@ -132,11 +133,17 @@ final class PdoVersionRepository implements VersionRepositoryInterface {
 
     $where = implode(' AND ', $where);
 
+    if ($limit === -1) {
+      $limit = 'ALL';
+    }
+
     $stmt = $this->pdo->prepare(
       <<<SQL
         SELECT *
         FROM "versions"
         WHERE {$where}
+        LIMIT {$limit}
+        OFFSET {$offset}
       SQL
     );
 

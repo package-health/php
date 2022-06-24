@@ -137,7 +137,7 @@ final class UpdateVersionStatusHandler implements InvokeHandlerInterface {
         }
       );
 
-      $version = $this->versionRepository->update($version);
+      $this->versionRepository->update($version);
 
       return HandlerResultEnum::Accept;
     } catch (Exception $exception) {

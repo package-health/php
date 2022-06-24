@@ -71,12 +71,12 @@ final class CachedPreferenceRepository implements PreferenceRepositoryInterface 
     return $preference;
   }
 
-  public function find(array $query): PreferenceCollection {
+  public function find(array $query, int $limit = -1, int $offset = 0): PreferenceCollection {
     $key = http_build_query($query);
-    $item = $this->cacheItemPool->getItem("/preference/find/{$key}");
+    $item = $this->cacheItemPool->getItem("/preference/find/{$key}/{$limit}/{$offset}");
     $preferenceCol = $item->get();
     if ($item->isHit() === false) {
-      $preferenceCol = $this->preferenceRepository->find($query);
+      $preferenceCol = $this->preferenceRepository->find($query, $limit, $offset);
 
       $item->set($preferenceCol);
       $item->expiresAfter(3600);

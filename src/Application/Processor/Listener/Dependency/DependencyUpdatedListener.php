@@ -9,7 +9,7 @@ use Courier\Message\EventInterface;
 use Courier\Processor\Listener\InvokeListenerInterface;
 use Psr\Log\LoggerInterface;
 
-class DependencyUpdatedListener implements InvokeListenerInterface {
+final class DependencyUpdatedListener implements InvokeListenerInterface {
   private ProducerInterface $producer;
   private LoggerInterface $logger;
 
@@ -19,9 +19,20 @@ class DependencyUpdatedListener implements InvokeListenerInterface {
   }
 
   /**
-   * update the version status that requires $dependency
+   * update the version's status that requires $dependency
    */
   public function __invoke(EventInterface $event, array $attributes = []): void {
+    if (($event instanceof DependencyUpdatedEvent) === false) {
+      $this->logger->critical(
+        sprintf(
+          'Invalid event argument for DependencyUpdateListener: "%s"',
+          $event::class
+        )
+      );
+
+      return;
+    }
+
     $dependency = $event->getDependency();
     $this->logger->debug(
       'Dependency updated',

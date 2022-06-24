@@ -91,12 +91,13 @@ final class PdoPackageRepository implements PackageRepositoryInterface {
           WHERE "packages"."latest_version" != '' AND "versions"."release" IS TRUE
           GROUP BY "dependencies"."name"
           ORDER BY "total" DESC
+          LIMIT {$limit}
         SQL
       );
     }
 
     $packageCol = new PackageCollection();
-    while (($row = $stmt->fetch(PDO::FETCH_ASSOC)) && $packageCol->count() < $limit) {
+    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
       if ($this->exists($row['name']) === false) {
         continue;
       }
@@ -115,6 +116,7 @@ final class PdoPackageRepository implements PackageRepositoryInterface {
           SELECT *
           FROM "packages"
           WHERE "name" = :name
+          LIMIT 1
         SQL
       );
     }
@@ -132,6 +134,7 @@ final class PdoPackageRepository implements PackageRepositoryInterface {
           SELECT *
           FROM "packages"
           WHERE "name" = :name
+          LIMIT 1
         SQL
       );
     }
@@ -146,7 +149,7 @@ final class PdoPackageRepository implements PackageRepositoryInterface {
     return $this->hydrate($row);
   }
 
-  public function find(array $query): PackageCollection {
+  public function find(array $query, int $limit = -1, int $offset = 0): PackageCollection {
     $where = [];
     foreach (array_keys($query) as $col) {
       $where[] = sprintf(
@@ -157,12 +160,18 @@ final class PdoPackageRepository implements PackageRepositoryInterface {
 
     $where = implode(' AND ', $where);
 
+    if ($limit === -1) {
+      $limit = 'ALL';
+    }
+
     $stmt = $this->pdo->prepare(
       <<<SQL
         SELECT *
         FROM "packages"
         WHERE {$where}
         ORDER BY "name" ASC
+        LIMIT {$limit}
+        OFFSET {$offset}
       SQL
     );
 

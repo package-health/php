@@ -77,7 +77,8 @@ final class GetUpdatesCommand extends Command {
         [
           'category' => 'packagist',
           'property' => 'timestamp'
-        ]
+        ],
+        1
       );
 
       $preference = $preferenceCol[0] ?? null;

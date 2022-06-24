@@ -22,7 +22,7 @@ interface PreferenceRepositoryInterface {
    */
   public function get(int $id): Preference;
 
-  public function find(array $query): PreferenceCollection;
+  public function find(array $query, int $limit = -1, int $offset = 0): PreferenceCollection;
 
   public function save(Preference $preference): Preference;
 

@@ -22,7 +22,7 @@ interface DependencyRepositoryInterface {
    */
   public function get(int $id): Dependency;
 
-  public function find(array $query): DependencyCollection;
+  public function find(array $query, int $limit = -1, int $offset = 0): DependencyCollection;
 
   public function save(Dependency $dependency): Dependency;
 

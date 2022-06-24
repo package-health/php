@@ -22,7 +22,7 @@ interface PackageRepositoryInterface {
    */
   public function get(string $name): Package;
 
-  public function find(array $query): PackageCollection;
+  public function find(array $query, int $limit = -1, int $offset = 0): PackageCollection;
 
   public function findMatching(array $query): PackageCollection;
 

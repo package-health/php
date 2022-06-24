@@ -112,12 +112,12 @@ final class CachedStatsRepository implements StatsRepositoryInterface {
     return $stats;
   }
 
-  public function find(array $query): StatsCollection {
+  public function find(array $query, int $limit = -1, int $offset = 0): StatsCollection {
     $key = http_build_query($query);
-    $item = $this->cacheItemPool->getItem("/stats/find/{$key}");
+    $item = $this->cacheItemPool->getItem("/stats/find/{$key}/{$limit}/{$offset}");
     $statsCol = $item->get();
     if ($item->isHit() === false) {
-      $statsCol = $this->statsRepository->find($query);
+      $statsCol = $this->statsRepository->find($query, $limit, $offset);
 
       $item->set($statsCol);
       $item->expiresAfter(3600);

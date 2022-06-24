@@ -73,12 +73,12 @@ final class CachedDependencyRepository implements DependencyRepositoryInterface 
     return $dependency;
   }
 
-  public function find(array $query): DependencyCollection {
+  public function find(array $query, int $limit = -1, int $offset = 0): DependencyCollection {
     $key = http_build_query($query);
-    $item = $this->cacheItemPool->getItem("/dependency/find/{$key}");
+    $item = $this->cacheItemPool->getItem("/dependency/find/{$key}/{$limit}/{$offset}");
     $dependencyCol = $item->get();
     if ($item->isHit() === false) {
-      $dependencyCol = $this->dependencyRepository->find($query);
+      $dependencyCol = $this->dependencyRepository->find($query, $limit, $offset);
 
       $item->set($dependencyCol);
       $item->expiresAfter(3600);

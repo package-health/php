@@ -9,7 +9,7 @@ use Courier\Message\EventInterface;
 use Courier\Processor\Listener\InvokeListenerInterface;
 use Psr\Log\LoggerInterface;
 
-class PackageUpdatedListener implements InvokeListenerInterface {
+final class PackageUpdatedListener implements InvokeListenerInterface {
   private ProducerInterface $producer;
   private LoggerInterface $logger;
 
@@ -19,6 +19,17 @@ class PackageUpdatedListener implements InvokeListenerInterface {
   }
 
   public function __invoke(EventInterface $event, array $attributes = []): void {
+    if (($event instanceof PackageUpdatedEvent) === false) {
+      $this->logger->critical(
+        sprintf(
+          'Invalid event argument for PackageUpdatedListener: "%s"',
+          $event::class
+        )
+      );
+
+      return;
+    }
+
     $package = $event->getPackage();
     $this->logger->debug(
       'Package updated',

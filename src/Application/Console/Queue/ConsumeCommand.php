@@ -114,13 +114,25 @@ final class ConsumeCommand extends Command implements SignalableCommandInterface
               $duration->asMilliseconds()
             )
           );
+          if ($consumed > 1) {
+            $io->text(
+              sprintf(
+                '[%s] Rate: <options=bold;fg=green>%.2f</> messages per second',
+                date('H:i:s'),
+                $consumed / $duration->asSeconds()
+              )
+            );
+          }
+        }
+
+        if ($this->stopDaemon === true) {
           $io->text(
             sprintf(
-              '[%s] Rate: <options=bold;fg=green>%.2f</> messages per second',
-              date('H:i:s'),
-              $consumed / $duration->asSeconds()
+              '[%s] Interrupted, leaving',
+              date('H:i:s')
             )
           );
+          return Command::SUCCESS;
         }
       } while ($daemonize && $this->stopDaemon === false);
 

@@ -41,7 +41,8 @@ final class ViewPackageAction extends AbstractPackageAction {
       [
         'number' => $version,
         'package_name' => $package->getName()
-      ]
+      ],
+      1
     );
 
     if ($versionCol->isEmpty()) {

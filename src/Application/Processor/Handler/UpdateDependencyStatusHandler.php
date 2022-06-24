@@ -128,7 +128,7 @@ class UpdateDependencyStatusHandler implements InvokeHandlerInterface {
             DependencyStatusEnum::Outdated
         );
 
-        $dependency = $this->dependencyRepository->update($dependency);
+        $this->dependencyRepository->update($dependency);
       }
 
       return HandlerResultEnum::Accept;

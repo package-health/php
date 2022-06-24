@@ -94,12 +94,12 @@ final class CachedPackageRepository implements PackageRepositoryInterface {
     return $package;
   }
 
-  public function find(array $query): PackageCollection {
+  public function find(array $query, int $limit = -1, int $offset = 0): PackageCollection {
     $key = http_build_query($query);
-    $item = $this->cacheItemPool->getItem("/package/find/{$key}");
+    $item = $this->cacheItemPool->getItem("/package/find/{$key}/{$limit}/{$offset}");
     $packageCol = $item->get();
     if ($item->isHit() === false) {
-      $packageCol = $this->packageRepository->find($query);
+      $packageCol = $this->packageRepository->find($query, $limit, $offset);
 
       $item->set($packageCol);
       $item->expiresAfter(3600);

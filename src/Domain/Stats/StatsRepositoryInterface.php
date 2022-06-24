@@ -31,7 +31,7 @@ interface StatsRepositoryInterface {
    */
   public function get(string $packageName): Stats;
 
-  public function find(array $query): StatsCollection;
+  public function find(array $query, int $limit = -1, int $offset = 0): StatsCollection;
 
   public function save(Stats $stats): Stats;
 

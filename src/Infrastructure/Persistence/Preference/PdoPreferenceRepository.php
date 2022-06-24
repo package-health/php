@@ -91,6 +91,7 @@ final class PdoPreferenceRepository implements PreferenceRepositoryInterface {
           SELECT *
           FROM "preferences"
           WHERE "id" = :id
+          LIMIT 1
         SQL
       );
     }
@@ -105,7 +106,7 @@ final class PdoPreferenceRepository implements PreferenceRepositoryInterface {
     return $this->hydrate($row);
   }
 
-  public function find(array $query): PreferenceCollection {
+  public function find(array $query, int $limit = -1, int $offset = 0): PreferenceCollection {
     $where = [];
     foreach (array_keys($query) as $col) {
       $where[] = sprintf(
@@ -116,12 +117,18 @@ final class PdoPreferenceRepository implements PreferenceRepositoryInterface {
 
     $where = implode(' AND ', $where);
 
+    if ($limit === -1) {
+      $limit = 'ALL';
+    }
+
     $stmt = $this->pdo->prepare(
       <<<SQL
         SELECT *
         FROM "preferences"
         WHERE {$where}
         ORDER BY "category" ASC, "property" ASC
+        LIMIT {$limit}
+        OFFSET {$offset}
       SQL
     );
 
