@@ -36,7 +36,6 @@ use Slim\Views\Twig;
 use Stash\Driver\BlackHole;
 use Stash\Driver\Composite;
 use Stash\Driver\Ephemeral;
-use Stash\Driver\FileSystem;
 use Stash\Driver\Redis;
 use Stash\Pool;
 use function DI\autowire;
@@ -88,12 +87,6 @@ return static function (ContainerBuilder $containerBuilder): void {
             ]
           );
         }
-
-        $drivers[] = new FileSystem(
-          [
-            'path' => __DIR__ . '/../var/cache'
-          ]
-        );
 
         return new Pool(
           new Composite(
