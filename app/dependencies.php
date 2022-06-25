@@ -154,11 +154,9 @@ return static function (ContainerBuilder $containerBuilder): void {
         );
       },
       ProducerInterface::class => function (ContainerInterface $container): ProducerInterface {
-        $producer = new BufferedProducer(
-          new Producer(
-            $container->get(Bus::class),
-            new IgBinarySerializer()
-          )
+        $producer = new Producer(
+          $container->get(Bus::class),
+          new IgBinarySerializer()
         );
 
         $producer
