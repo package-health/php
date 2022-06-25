@@ -24,8 +24,8 @@ use Psr\Log\LoggerInterface;
  *  - List of avaialble versions (tagged releases and development branches);
  *  - List of required dependencies (runtime and dev) per version.
  *
- * @see App\Application\Console\Packagist\GetListCommand
- * @see App\Application\Console\Packagist\GetUpdatesCommand
+ * @see PackageHealth\PHP\Application\Console\Packagist\GetListCommand
+ * @see PackageHealth\PHP\Application\Console\Packagist\GetUpdatesCommand
  */
 class PackageDiscoveryHandler implements InvokeHandlerInterface {
   private DependencyRepositoryInterface $dependencyRepository;

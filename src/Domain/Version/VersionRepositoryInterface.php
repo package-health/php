@@ -18,7 +18,7 @@ interface VersionRepositoryInterface {
   public function all(): VersionCollection;
 
   /**
-   * @throws \App\Domain\Version\VersionNotFoundException
+   * @throws \PackageHealth\PHP\Domain\Version\VersionNotFoundException
    */
   public function get(int $id): Version;
 

@@ -95,7 +95,7 @@ final class CachedStatsRepository implements StatsRepositoryInterface {
   }
 
   /**
-   * @throws \App\Domain\Stats\StatsNotFoundException
+   * @throws \PackageHealth\PHP\Domain\Stats\StatsNotFoundException
    */
   public function get(string $packageName): Stats {
     $item = $this->cacheItemPool->getItem("/stats/{$packageName}");

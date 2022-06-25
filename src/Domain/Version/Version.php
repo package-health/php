@@ -150,7 +150,7 @@ final class Version implements JsonSerializable {
    *   number: string,
    *   packageName: string,
    *   release: bool,
-   *   status: \App\Domain\Version\VersionStatusEnum,
+   *   status: \PackageHealth\PHP\Domain\Version\VersionStatusEnum,
    *   createdAt: \DateTimeImmutable,
    *   updatedAt: \DateTimeImmutable|null
    * }

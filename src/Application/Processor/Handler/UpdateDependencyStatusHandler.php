@@ -18,7 +18,7 @@ use Psr\Log\LoggerInterface;
 /**
  * Updates all dependencies that "require" or "require-dev" $package
  *
- * @see App\Application\Processor\Listener\Package\PackageUpdatedListener
+ * @see PackageHealth\PHP\Application\Processor\Listener\Package\PackageUpdatedListener
  */
 class UpdateDependencyStatusHandler implements InvokeHandlerInterface {
   private DependencyRepositoryInterface $dependencyRepository;

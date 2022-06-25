@@ -46,7 +46,7 @@ class ActionPayload implements JsonSerializable {
    *   status: bool,
    *   list?: array<mixed>,
    *   data?: array|object,
-   *   error?: \App\Application\Action\ActionError
+   *   error?: \PackageHealth\PHP\Application\Action\ActionError
    * }
    */
   #[ReturnTypeWillChange]

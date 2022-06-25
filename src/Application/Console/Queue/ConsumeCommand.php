@@ -55,7 +55,7 @@ final class ConsumeCommand extends Command implements SignalableCommandInterface
    * @param \Symfony\Component\Console\Input\InputInterface   $input
    * @param \Symfony\Component\Console\Output\OutputInterface $output
    *
-   * @return int|null
+   * @return int
    */
   protected function execute(InputInterface $input, OutputInterface $output): int {
     try {
@@ -114,6 +114,7 @@ final class ConsumeCommand extends Command implements SignalableCommandInterface
               $duration->asMilliseconds()
             )
           );
+
           if ($consumed > 1) {
             $io->text(
               sprintf(
@@ -132,6 +133,7 @@ final class ConsumeCommand extends Command implements SignalableCommandInterface
               date('H:i:s')
             )
           );
+
           return Command::SUCCESS;
         }
       } while ($daemonize && $this->stopDaemon === false);

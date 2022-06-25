@@ -77,7 +77,7 @@ final class CachedPackageRepository implements PackageRepositoryInterface {
   }
 
   /**
-   * @throws \App\Domain\Package\PackageNotFoundException
+   * @throws \PackageHealth\PHP\Domain\Package\PackageNotFoundException
    */
   public function get(string $name): Package {
     $item = $this->cacheItemPool->getItem("/package/{$name}");

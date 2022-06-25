@@ -18,7 +18,7 @@ abstract class AbstractStatsEvent implements EventInterface {
   }
 
   /**
-   * @return array{0: \App\Domain\Stats\Stats}
+   * @return array{0: \PackageHealth\PHP\Domain\Stats\Stats}
    */
   public function toArray(): array {
     return [$this->stats];

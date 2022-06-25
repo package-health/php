@@ -18,7 +18,7 @@ abstract class AbstractPreferenceEvent implements EventInterface {
   }
 
   /**
-   * @return array{0: \App\Domain\Preference\Preference}
+   * @return array{0: \PackageHealth\PHP\Domain\Preference\Preference}
    */
   public function toArray(): array {
     return [$this->preference];

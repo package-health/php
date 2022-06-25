@@ -28,7 +28,7 @@ final class UpdateVersionStatusCommand implements CommandInterface {
 
   /**
    * @return array{
-   *   0: \App\Domain\Dependency\Dependency,
+   *   0: \PackageHealth\PHP\Domain\Dependency\Dependency,
    *   1: bool
    * }
    */

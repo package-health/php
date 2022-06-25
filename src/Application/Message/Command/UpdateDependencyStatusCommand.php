@@ -28,7 +28,7 @@ final class UpdateDependencyStatusCommand implements CommandInterface {
 
   /**
    * @return array{
-   *   0: \App\Domain\Package\Package,
+   *   0: \PackageHealth\PHP\Domain\Package\Package,
    *   1: bool
    * }
    */

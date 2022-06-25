@@ -18,7 +18,7 @@ interface PackageRepositoryInterface {
   public function exists(string $name): bool;
 
   /**
-   * @throws \App\Domain\Package\PackageNotFoundException
+   * @throws \PackageHealth\PHP\Domain\Package\PackageNotFoundException
    */
   public function get(string $name): Package;
 

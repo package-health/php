@@ -6,7 +6,7 @@ namespace PackageHealth\PHP\Domain\Version;
 use Ramsey\Collection\AbstractCollection;
 
 /**
- * @extends \Ramsey\Collection\AbstractCollection<\App\Domain\Version\Version>
+ * @extends \Ramsey\Collection\AbstractCollection<\PackageHealth\PHP\Domain\Version\Version>
  */
 final class VersionCollection extends AbstractCollection {
   public function getType(): string {

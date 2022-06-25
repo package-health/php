@@ -18,7 +18,7 @@ interface DependencyRepositoryInterface {
   public function all(): DependencyCollection;
 
   /**
-   * @throws \App\Domain\Dependency\DependencyNotFoundException
+   * @throws \PackageHealth\PHP\Domain\Dependency\DependencyNotFoundException
    */
   public function get(int $id): Dependency;
 

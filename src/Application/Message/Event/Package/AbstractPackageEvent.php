@@ -18,7 +18,7 @@ abstract class AbstractPackageEvent implements EventInterface {
   }
 
   /**
-   * @return array{0: \App\Domain\Package\Package}
+   * @return array{0: \PackageHealth\PHP\Domain\Package\Package}
    */
   public function toArray(): array {
     return [$this->package];

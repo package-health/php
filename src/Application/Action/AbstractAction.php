@@ -48,7 +48,7 @@ abstract class AbstractAction {
   }
 
   /**
-   * @throws \App\Domain\DomainException\DomainRecordNotFoundException
+   * @throws \PackageHealth\PHP\Domain\DomainException\DomainRecordNotFoundException
    * @throws \Slim\Exception\HttpBadRequestException
    */
   abstract protected function action(): ResponseInterface;

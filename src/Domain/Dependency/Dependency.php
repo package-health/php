@@ -133,7 +133,7 @@ final class Dependency implements JsonSerializable {
    *   name: string,
    *   constraint: string,
    *   development: bool,
-   *   status: \App\Domain\Dependency\DependencyStatusEnum,
+   *   status: \PackageHealth\PHP\Domain\Dependency\DependencyStatusEnum,
    *   createdAt: \DateTimeImmutable,
    *   updatedAt: \DateTimeImmutable|null
    * }

@@ -6,7 +6,7 @@ namespace PackageHealth\PHP\Domain\Package;
 use Ramsey\Collection\AbstractCollection;
 
 /**
- * @extends \Ramsey\Collection\AbstractCollection<\App\Domain\Package\Package>
+ * @extends \Ramsey\Collection\AbstractCollection<\PackageHealth\PHP\Domain\Package\Package>
  */
 final class PackageCollection extends AbstractCollection {
   public function getType(): string {

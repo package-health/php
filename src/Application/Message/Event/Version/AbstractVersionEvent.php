@@ -18,7 +18,7 @@ abstract class AbstractVersionEvent implements EventInterface {
   }
 
   /**
-   * @return array{0: \App\Domain\Version\Version}
+   * @return array{0: \PackageHealth\PHP\Domain\Version\Version}
    */
   public function toArray(): array {
     return [$this->version];

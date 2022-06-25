@@ -18,7 +18,7 @@ abstract class AbstractDependencyEvent implements EventInterface {
   }
 
   /**
-   * @return array{0: \App\Domain\Dependency\Dependency}
+   * @return array{0: \PackageHealth\PHP\Domain\Dependency\Dependency}
    */
   public function toArray(): array {
     return [$this->dependency];

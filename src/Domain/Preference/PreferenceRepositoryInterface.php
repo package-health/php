@@ -18,7 +18,7 @@ interface PreferenceRepositoryInterface {
   public function all(): PreferenceCollection;
 
   /**
-   * @throws \App\Domain\Preference\PreferenceNotFoundException
+   * @throws \PackageHealth\PHP\Domain\Preference\PreferenceNotFoundException
    */
   public function get(int $id): Preference;
 

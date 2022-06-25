@@ -27,7 +27,7 @@ interface StatsRepositoryInterface {
   public function exists(string $packageName): bool;
 
   /**
-   * @throws \App\Domain\Stats\StatsNotFoundException
+   * @throws \PackageHealth\PHP\Domain\Stats\StatsNotFoundException
    */
   public function get(string $packageName): Stats;
 

@@ -20,7 +20,7 @@ use Psr\Log\LoggerInterface;
 /**
  * Updates the version status that requires $dependency
  *
- * @see App\Application\Processor\Listener\Dependency\DependencyUpdatedListener
+ * @see PackageHealth\PHP\Application\Processor\Listener\Dependency\DependencyUpdatedListener
  */
 final class UpdateVersionStatusHandler implements InvokeHandlerInterface {
   private VersionRepositoryInterface $versionRepository;
