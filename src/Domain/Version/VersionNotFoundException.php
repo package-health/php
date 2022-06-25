@@ -1,9 +1,9 @@
 <?php
 declare(strict_types = 1);
 
-namespace App\Domain\Version;
+namespace PackageHealth\PHP\Domain\Version;
 
-use App\Domain\Exception\DomainRecordNotFoundException;
+use PackageHealth\PHP\Domain\Exception\DomainRecordNotFoundException;
 
 class VersionNotFoundException extends DomainRecordNotFoundException {
   /**

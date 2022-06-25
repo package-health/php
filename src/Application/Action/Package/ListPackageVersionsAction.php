@@ -1,12 +1,12 @@
 <?php
 declare(strict_types = 1);
 
-namespace App\Application\Action\Package;
+namespace PackageHealth\PHP\Application\Action\Package;
 
-use App\Domain\Package\PackageRepositoryInterface;
-use App\Domain\Version\VersionNotFoundException;
-use App\Domain\Version\VersionRepositoryInterface;
-use App\Domain\Version\VersionCollection;
+use PackageHealth\PHP\Domain\Package\PackageRepositoryInterface;
+use PackageHealth\PHP\Domain\Version\VersionNotFoundException;
+use PackageHealth\PHP\Domain\Version\VersionRepositoryInterface;
+use PackageHealth\PHP\Domain\Version\VersionCollection;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
 use Slim\HttpCache\CacheProvider;

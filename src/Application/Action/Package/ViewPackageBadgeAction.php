@@ -1,14 +1,14 @@
 <?php
 declare(strict_types = 1);
 
-namespace App\Application\Action\Package;
+namespace PackageHealth\PHP\Application\Action\Package;
 
-use App\Domain\Dependency\Dependency;
-use App\Domain\Dependency\DependencyRepositoryInterface;
-use App\Domain\Dependency\DependencyStatusEnum;
-use App\Domain\Package\PackageRepositoryInterface;
-use App\Domain\Version\VersionRepositoryInterface;
-use App\Domain\Version\VersionStatusEnum;
+use PackageHealth\PHP\Domain\Dependency\Dependency;
+use PackageHealth\PHP\Domain\Dependency\DependencyRepositoryInterface;
+use PackageHealth\PHP\Domain\Dependency\DependencyStatusEnum;
+use PackageHealth\PHP\Domain\Package\PackageRepositoryInterface;
+use PackageHealth\PHP\Domain\Version\VersionRepositoryInterface;
+use PackageHealth\PHP\Domain\Version\VersionStatusEnum;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
 use PUGX\Poser\Poser;

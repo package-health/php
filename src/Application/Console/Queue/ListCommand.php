@@ -1,7 +1,7 @@
 <?php
 declare(strict_types = 1);
 
-namespace App\Application\Console\Queue;
+namespace PackageHealth\PHP\Application\Console\Queue;
 
 use Courier\Bus;
 use Exception;

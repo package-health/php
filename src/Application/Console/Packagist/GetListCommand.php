@@ -1,15 +1,15 @@
 <?php
 declare(strict_types = 1);
 
-namespace App\Application\Console\Packagist;
+namespace PackageHealth\PHP\Application\Console\Packagist;
 
-use App\Application\Message\Command\PackageDiscoveryCommand;
-use App\Domain\Package\Package;
-use App\Domain\Package\PackageRepositoryInterface;
-use App\Application\Service\Packagist;
 use Courier\Client\Producer\ProducerInterface;
 use Exception;
 use InvalidArgumentException;
+use PackageHealth\PHP\Application\Message\Command\PackageDiscoveryCommand;
+use PackageHealth\PHP\Application\Service\Packagist;
+use PackageHealth\PHP\Domain\Package\Package;
+use PackageHealth\PHP\Domain\Package\PackageRepositoryInterface;
 use RuntimeException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Command\SignalableCommandInterface;

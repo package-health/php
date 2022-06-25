@@ -1,15 +1,15 @@
 <?php
 declare(strict_types = 1);
 
-use App\Application\Action\Package\ListPackagesAction;
-use App\Application\Action\Package\ListPackageVersionsAction;
-use App\Application\Action\Package\RedirectListPackagesAction;
-use App\Application\Action\Package\RedirectPackageAction;
-use App\Application\Action\Package\RedirectPackageBadgeAction;
-use App\Application\Action\Package\ViewPackageAction;
-use App\Application\Action\Package\ViewPackageBadgeAction;
-use App\Application\Action\System\HealthAction;
-use App\Application\Action\Vendor\ListVendorPackagesAction;
+use PackageHealth\PHP\Application\Action\Package\ListPackagesAction;
+use PackageHealth\PHP\Application\Action\Package\ListPackageVersionsAction;
+use PackageHealth\PHP\Application\Action\Package\RedirectListPackagesAction;
+use PackageHealth\PHP\Application\Action\Package\RedirectPackageAction;
+use PackageHealth\PHP\Application\Action\Package\RedirectPackageBadgeAction;
+use PackageHealth\PHP\Application\Action\Package\ViewPackageAction;
+use PackageHealth\PHP\Application\Action\Package\ViewPackageBadgeAction;
+use PackageHealth\PHP\Application\Action\System\HealthAction;
+use PackageHealth\PHP\Application\Action\Vendor\ListVendorPackagesAction;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Slim\App;

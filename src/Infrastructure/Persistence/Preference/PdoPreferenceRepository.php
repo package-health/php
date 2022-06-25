@@ -1,18 +1,18 @@
 <?php
 declare(strict_types = 1);
 
-namespace App\Infrastructure\Persistence\Preference;
+namespace PackageHealth\PHP\Infrastructure\Persistence\Preference;
 
-use App\Application\Message\Event\Preference\PreferenceCreatedEvent;
-use App\Application\Message\Event\Preference\PreferenceUpdatedEvent;
-use App\Domain\Preference\Preference;
-use App\Domain\Preference\PreferenceCollection;
-use App\Domain\Preference\PreferenceNotFoundException;
-use App\Domain\Preference\PreferenceRepositoryInterface;
-use App\Domain\Preference\PreferenceTypeEnum;
 use Courier\Client\Producer\ProducerInterface;
 use DateTimeImmutable;
 use DateTimeInterface;
+use PackageHealth\PHP\Application\Message\Event\Preference\PreferenceCreatedEvent;
+use PackageHealth\PHP\Application\Message\Event\Preference\PreferenceUpdatedEvent;
+use PackageHealth\PHP\Domain\Preference\Preference;
+use PackageHealth\PHP\Domain\Preference\PreferenceCollection;
+use PackageHealth\PHP\Domain\Preference\PreferenceNotFoundException;
+use PackageHealth\PHP\Domain\Preference\PreferenceRepositoryInterface;
+use PackageHealth\PHP\Domain\Preference\PreferenceTypeEnum;
 use PDO;
 
 final class PdoPreferenceRepository implements PreferenceRepositoryInterface {

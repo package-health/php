@@ -1,10 +1,10 @@
 <?php
 declare(strict_types = 1);
 
-namespace App\Application\Message\Command;
+namespace PackageHealth\PHP\Application\Message\Command;
 
-use App\Domain\Package\Package;
 use Courier\Message\CommandInterface;
+use PackageHealth\PHP\Domain\Package\Package;
 
 final class UpdateDependencyStatusCommand implements CommandInterface {
   private Package $package;

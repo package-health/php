@@ -1,7 +1,7 @@
 <?php
 declare(strict_types = 1);
 
-namespace App\Domain\Package;
+namespace PackageHealth\PHP\Domain\Package;
 
 enum VcsBrandEnum: string {
   case Unknown = 'cib-git';

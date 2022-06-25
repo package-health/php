@@ -1,11 +1,11 @@
 <?php
 declare(strict_types = 1);
 
-namespace App\Application\Service;
+namespace PackageHealth\PHP\Application\Service;
 
-use App\Application\Service\Storage\FileStorageInterface;
 use Buzz\Browser;
 use Composer\MetadataMinifier\MetadataMinifier;
+use PackageHealth\PHP\Application\Service\Storage\FileStorageInterface;
 use Psr\Http\Message\ResponseInterface;
 use RuntimeException;
 

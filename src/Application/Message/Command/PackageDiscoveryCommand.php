@@ -1,7 +1,7 @@
 <?php
 declare(strict_types = 1);
 
-namespace App\Application\Message\Command;
+namespace PackageHealth\PHP\Application\Message\Command;
 
 use Courier\Message\CommandInterface;
 

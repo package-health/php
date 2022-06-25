@@ -1,7 +1,7 @@
 <?php
 declare(strict_types = 1);
 
-namespace App\Application\Settings;
+namespace PackageHealth\PHP\Application\Settings;
 
 interface SettingsInterface {
   public function has(string $entry): bool;

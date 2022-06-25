@@ -1,7 +1,7 @@
 <?php
 declare(strict_types = 1);
 
-namespace App\Application\Action\Package;
+namespace PackageHealth\PHP\Application\Action\Package;
 
 use Psr\Http\Message\ResponseInterface;
 use Slim\Views\Twig;

@@ -1,9 +1,9 @@
 <?php
 declare(strict_types = 1);
 
-namespace App\Application\Action;
+namespace PackageHealth\PHP\Application\Action;
 
-use App\Domain\Exception\DomainRecordNotFoundException;
+use PackageHealth\PHP\Domain\Exception\DomainRecordNotFoundException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;

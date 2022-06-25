@@ -11,12 +11,12 @@
   ],
   "autoload": {
     "psr-4": {
-      "App\\": "src/"
+      "PackageHealth\\PHP\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "App\\Test\\": "tests"
+      "PackageHealth\\PHP\\Test\\": "tests"
     }
   },
   "config": {

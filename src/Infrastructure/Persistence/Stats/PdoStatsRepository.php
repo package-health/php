@@ -1,17 +1,17 @@
 <?php
 declare(strict_types = 1);
 
-namespace App\Infrastructure\Persistence\Stats;
+namespace PackageHealth\PHP\Infrastructure\Persistence\Stats;
 
-use App\Application\Message\Event\Stats\StatsCreatedEvent;
-use App\Application\Message\Event\Stats\StatsUpdatedEvent;
-use App\Domain\Stats\Stats;
-use App\Domain\Stats\StatsCollection;
-use App\Domain\Stats\StatsNotFoundException;
-use App\Domain\Stats\StatsRepositoryInterface;
 use Courier\Client\Producer\ProducerInterface;
 use DateTimeImmutable;
 use DateTimeInterface;
+use PackageHealth\PHP\Application\Message\Event\Stats\StatsCreatedEvent;
+use PackageHealth\PHP\Application\Message\Event\Stats\StatsUpdatedEvent;
+use PackageHealth\PHP\Domain\Stats\Stats;
+use PackageHealth\PHP\Domain\Stats\StatsCollection;
+use PackageHealth\PHP\Domain\Stats\StatsNotFoundException;
+use PackageHealth\PHP\Domain\Stats\StatsRepositoryInterface;
 use PDO;
 
 final class PdoStatsRepository implements StatsRepositoryInterface {

@@ -1,7 +1,7 @@
 <?php
 declare(strict_types = 1);
 
-namespace App\Application\Action;
+namespace PackageHealth\PHP\Application\Action;
 
 use JsonSerializable;
 use ReturnTypeWillChange;

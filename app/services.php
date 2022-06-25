@@ -1,10 +1,10 @@
 <?php
 declare(strict_types = 1);
 
-use App\Application\Service\Packagist;
-use App\Application\Service\Storage\FileStorageInterface;
-use App\Infrastructure\Storage\LocalFileStorage;
 use DI\ContainerBuilder;
+use PackageHealth\PHP\Application\Service\Packagist;
+use PackageHealth\PHP\Application\Service\Storage\FileStorageInterface;
+use PackageHealth\PHP\Infrastructure\Storage\LocalFileStorage;
 use Psr\Container\ContainerInterface;
 use function DI\autowire;
 

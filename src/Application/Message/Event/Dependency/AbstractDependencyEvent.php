@@ -1,10 +1,10 @@
 <?php
 declare(strict_types = 1);
 
-namespace App\Application\Message\Event\Dependency;
+namespace PackageHealth\PHP\Application\Message\Event\Dependency;
 
-use App\Domain\Dependency\Dependency;
 use Courier\Message\EventInterface;
+use PackageHealth\PHP\Domain\Dependency\Dependency;
 
 abstract class AbstractDependencyEvent implements EventInterface {
   protected Dependency $dependency;

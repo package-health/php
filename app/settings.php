@@ -1,9 +1,9 @@
 <?php
 declare(strict_types = 1);
 
-use App\Application\Settings\Settings;
-use App\Application\Settings\SettingsInterface;
 use DI\ContainerBuilder;
+use PackageHealth\PHP\Application\Settings\Settings;
+use PackageHealth\PHP\Application\Settings\SettingsInterface;
 use Psr\Log\LogLevel;
 
 return static function (ContainerBuilder $containerBuilder): void {

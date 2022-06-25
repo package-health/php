@@ -1,12 +1,13 @@
 <?php
 declare(strict_types = 1);
 
-namespace App\Application\Processor\Listener\Package;
+namespace PackageHealth\PHP\Application\Processor\Listener\Package;
 
-use App\Application\Message\Command\UpdateDependencyStatusCommand;
 use Courier\Client\Producer\ProducerInterface;
 use Courier\Message\EventInterface;
 use Courier\Processor\Listener\InvokeListenerInterface;
+use PackageHealth\PHP\Application\Message\Event\Package\PackageUpdatedEvent;
+use PackageHealth\PHP\Application\Message\Command\UpdateDependencyStatusCommand;
 use Psr\Log\LoggerInterface;
 
 final class PackageUpdatedListener implements InvokeListenerInterface {

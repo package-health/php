@@ -1,11 +1,11 @@
 <?php
 declare(strict_types = 1);
 
-namespace App\Application\Console\Packagist;
+namespace PackageHealth\PHP\Application\Console\Packagist;
 
-use App\Domain\Package\PackageRepositoryInterface;
 use Exception;
 use InvalidArgumentException;
+use PackageHealth\PHP\Domain\Package\PackageRepositoryInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;

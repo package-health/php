@@ -1,10 +1,10 @@
 <?php
 declare(strict_types = 1);
 
-namespace App\Application\Message\Event\Package;
+namespace PackageHealth\PHP\Application\Message\Event\Package;
 
-use App\Domain\Package\Package;
 use Courier\Message\EventInterface;
+use PackageHealth\PHP\Domain\Package\Package;
 
 abstract class AbstractPackageEvent implements EventInterface {
   protected Package $package;

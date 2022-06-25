@@ -1,15 +1,8 @@
 <?php
 declare(strict_types = 1);
 
-namespace App\Application\Processor\Handler;
+namespace PackageHealth\PHP\Application\Processor\Handler;
 
-use App\Application\Message\Command\PackageDiscoveryCommand;
-use App\Application\Service\Packagist;
-use App\Domain\Dependency\DependencyRepositoryInterface;
-use App\Domain\Dependency\DependencyStatusEnum;
-use App\Domain\Package\PackageRepositoryInterface;
-use App\Domain\Version\VersionRepositoryInterface;
-use App\Domain\Version\VersionStatusEnum;
 use Composer\Semver\VersionParser;
 use Courier\Message\CommandInterface;
 use Courier\Processor\Handler\HandlerResultEnum;
@@ -17,6 +10,13 @@ use Courier\Processor\Handler\InvokeHandlerInterface;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Exception;
+use PackageHealth\PHP\Application\Message\Command\PackageDiscoveryCommand;
+use PackageHealth\PHP\Application\Service\Packagist;
+use PackageHealth\PHP\Domain\Dependency\DependencyRepositoryInterface;
+use PackageHealth\PHP\Domain\Dependency\DependencyStatusEnum;
+use PackageHealth\PHP\Domain\Package\PackageRepositoryInterface;
+use PackageHealth\PHP\Domain\Version\VersionRepositoryInterface;
+use PackageHealth\PHP\Domain\Version\VersionStatusEnum;
 use Psr\Log\LoggerInterface;
 
 /**

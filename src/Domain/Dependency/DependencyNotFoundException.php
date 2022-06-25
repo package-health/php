@@ -1,9 +1,9 @@
 <?php
 declare(strict_types = 1);
 
-namespace App\Domain\Dependency;
+namespace PackageHealth\PHP\Domain\Dependency;
 
-use App\Domain\Exception\DomainRecordNotFoundException;
+use PackageHealth\PHP\Domain\Exception\DomainRecordNotFoundException;
 
 class DependencyNotFoundException extends DomainRecordNotFoundException {
   protected $message = 'Dependency not found';

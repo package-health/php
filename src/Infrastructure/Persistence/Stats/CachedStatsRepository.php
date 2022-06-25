@@ -1,12 +1,12 @@
 <?php
 declare(strict_types = 1);
 
-namespace App\Infrastructure\Persistence\Stats;
+namespace PackageHealth\PHP\Infrastructure\Persistence\Stats;
 
-use App\Domain\Stats\Stats;
-use App\Domain\Stats\StatsCollection;
-use App\Domain\Stats\StatsRepositoryInterface;
 use DateTimeImmutable;
+use PackageHealth\PHP\Domain\Stats\Stats;
+use PackageHealth\PHP\Domain\Stats\StatsCollection;
+use PackageHealth\PHP\Domain\Stats\StatsRepositoryInterface;
 use Psr\Cache\CacheItemPoolInterface;
 
 final class CachedStatsRepository implements StatsRepositoryInterface {

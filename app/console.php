@@ -1,13 +1,13 @@
 <?php
 declare(strict_types = 1);
 
-use App\Application\Console\Packagist\GetDataCommand;
-use App\Application\Console\Packagist\GetListCommand;
-use App\Application\Console\Packagist\GetUpdatesCommand;
-use App\Application\Console\Packagist\MassImportCommand;
-use App\Application\Console\Queue\ConsumeCommand;
-use App\Application\Console\Queue\ListCommand;
 use DI\ContainerBuilder;
+use PackageHealth\PHP\Application\Console\Packagist\GetDataCommand;
+use PackageHealth\PHP\Application\Console\Packagist\GetListCommand;
+use PackageHealth\PHP\Application\Console\Packagist\GetUpdatesCommand;
+use PackageHealth\PHP\Application\Console\Packagist\MassImportCommand;
+use PackageHealth\PHP\Application\Console\Queue\ConsumeCommand;
+use PackageHealth\PHP\Application\Console\Queue\ListCommand;
 use function DI\autowire;
 
 return static function (ContainerBuilder $containerBuilder): void {

@@ -1,10 +1,10 @@
 <?php
 declare(strict_types = 1);
 
-namespace App\Application\Message\Event\Version;
+namespace PackageHealth\PHP\Application\Message\Event\Version;
 
-use App\Domain\Version\Version;
 use Courier\Message\EventInterface;
+use PackageHealth\PHP\Domain\Version\Version;
 
 abstract class AbstractVersionEvent implements EventInterface {
   protected Version $version;

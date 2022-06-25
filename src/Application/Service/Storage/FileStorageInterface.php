@@ -1,7 +1,7 @@
 <?php
 declare(strict_types = 1);
 
-namespace App\Application\Service\Storage;
+namespace PackageHealth\PHP\Application\Service\Storage;
 
 interface FileStorageInterface {
   public function exists(string $file): bool;

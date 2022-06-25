@@ -1,13 +1,14 @@
 <?php
 declare(strict_types = 1);
 
-namespace App\Application\Processor\Listener\Version;
+namespace PackageHealth\PHP\Application\Processor\Listener\Version;
 
-use App\Domain\Package\PackageRepositoryInterface;
 use Composer\Semver\Comparator;
 use Composer\Semver\VersionParser;
 use Courier\Message\EventInterface;
 use Courier\Processor\Listener\InvokeListenerInterface;
+use PackageHealth\PHP\Application\Message\Event\Version\VersionCreatedEvent;
+use PackageHealth\PHP\Domain\Package\PackageRepositoryInterface;
 use Psr\Log\LoggerInterface;
 
 final class VersionCreatedListener implements InvokeListenerInterface {

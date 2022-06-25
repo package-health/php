@@ -1,10 +1,10 @@
 <?php
 declare(strict_types = 1);
 
-namespace App\Application\Message\Event\Stats;
+namespace PackageHealth\PHP\Application\Message\Event\Stats;
 
-use App\Domain\Stats\Stats;
 use Courier\Message\EventInterface;
+use PackageHealth\PHP\Domain\Stats\Stats;
 
 abstract class AbstractStatsEvent implements EventInterface {
   protected Stats $stats;

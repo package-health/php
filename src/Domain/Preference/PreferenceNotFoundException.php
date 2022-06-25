@@ -1,9 +1,9 @@
 <?php
 declare(strict_types = 1);
 
-namespace App\Domain\Preference;
+namespace PackageHealth\PHP\Domain\Preference;
 
-use App\Domain\Exception\DomainRecordNotFoundException;
+use PackageHealth\PHP\Domain\Exception\DomainRecordNotFoundException;
 
 class PreferenceNotFoundException extends DomainRecordNotFoundException {
   /**

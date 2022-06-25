@@ -1,11 +1,8 @@
 <?php
 declare(strict_types = 1);
 
-namespace App\Application\Processor\Handler;
+namespace PackageHealth\PHP\Application\Processor\Handler;
 
-use App\Application\Message\Command\UpdateDependencyStatusCommand;
-use App\Domain\Dependency\DependencyRepositoryInterface;
-use App\Domain\Dependency\DependencyStatusEnum;
 use Composer\Semver\Semver;
 use Courier\Message\CommandInterface;
 use Courier\Processor\Handler\HandlerResultEnum;
@@ -13,6 +10,9 @@ use Courier\Processor\Handler\InvokeHandlerInterface;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Exception;
+use PackageHealth\PHP\Application\Message\Command\UpdateDependencyStatusCommand;
+use PackageHealth\PHP\Domain\Dependency\DependencyRepositoryInterface;
+use PackageHealth\PHP\Domain\Dependency\DependencyStatusEnum;
 use Psr\Log\LoggerInterface;
 
 /**

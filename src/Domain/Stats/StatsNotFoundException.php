@@ -1,9 +1,9 @@
 <?php
 declare(strict_types = 1);
 
-namespace App\Domain\Stats;
+namespace PackageHealth\PHP\Domain\Stats;
 
-use App\Domain\Exception\DomainRecordNotFoundException;
+use PackageHealth\PHP\Domain\Exception\DomainRecordNotFoundException;
 
 class StatsNotFoundException extends DomainRecordNotFoundException {
   /**

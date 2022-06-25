@@ -1,7 +1,7 @@
 <?php
 declare(strict_types = 1);
 
-namespace App\Domain\Version;
+namespace PackageHealth\PHP\Domain\Version;
 
 use Composer\Semver\VersionParser;
 use DateTimeImmutable;

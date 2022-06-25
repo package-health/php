@@ -1,13 +1,13 @@
 <?php
 declare(strict_types = 1);
 
-namespace App\Infrastructure\Persistence\Version;
+namespace PackageHealth\PHP\Infrastructure\Persistence\Version;
 
-use App\Domain\Version\Version;
-use App\Domain\Version\VersionCollection;
-use App\Domain\Version\VersionRepositoryInterface;
-use App\Domain\Version\VersionStatusEnum;
 use DateTimeImmutable;
+use PackageHealth\PHP\Domain\Version\Version;
+use PackageHealth\PHP\Domain\Version\VersionCollection;
+use PackageHealth\PHP\Domain\Version\VersionRepositoryInterface;
+use PackageHealth\PHP\Domain\Version\VersionStatusEnum;
 use Psr\Cache\CacheItemPoolInterface;
 
 final class CachedVersionRepository implements VersionRepositoryInterface {

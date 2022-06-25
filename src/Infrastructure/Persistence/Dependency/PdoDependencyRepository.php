@@ -1,18 +1,18 @@
 <?php
 declare(strict_types = 1);
 
-namespace App\Infrastructure\Persistence\Dependency;
+namespace PackageHealth\PHP\Infrastructure\Persistence\Dependency;
 
-use App\Application\Message\Event\Dependency\DependencyCreatedEvent;
-use App\Application\Message\Event\Dependency\DependencyUpdatedEvent;
-use App\Domain\Dependency\Dependency;
-use App\Domain\Dependency\DependencyCollection;
-use App\Domain\Dependency\DependencyNotFoundException;
-use App\Domain\Dependency\DependencyRepositoryInterface;
-use App\Domain\Dependency\DependencyStatusEnum;
 use Courier\Client\Producer\ProducerInterface;
 use DateTimeImmutable;
 use DateTimeInterface;
+use PackageHealth\PHP\Application\Message\Event\Dependency\DependencyCreatedEvent;
+use PackageHealth\PHP\Application\Message\Event\Dependency\DependencyUpdatedEvent;
+use PackageHealth\PHP\Domain\Dependency\Dependency;
+use PackageHealth\PHP\Domain\Dependency\DependencyCollection;
+use PackageHealth\PHP\Domain\Dependency\DependencyNotFoundException;
+use PackageHealth\PHP\Domain\Dependency\DependencyRepositoryInterface;
+use PackageHealth\PHP\Domain\Dependency\DependencyStatusEnum;
 use PDO;
 
 final class PdoDependencyRepository implements DependencyRepositoryInterface {

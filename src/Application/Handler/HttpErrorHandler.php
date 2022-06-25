@@ -1,10 +1,10 @@
 <?php
 declare(strict_types = 1);
 
-namespace App\Application\Handler;
+namespace PackageHealth\PHP\Application\Handler;
 
-use App\Application\Action\ActionError;
-use App\Application\Action\ActionPayload;
+use PackageHealth\PHP\Application\Action\ActionError;
+use PackageHealth\PHP\Application\Action\ActionPayload;
 use Psr\Http\Message\ResponseInterface;
 use Slim\Exception\HttpBadRequestException;
 use Slim\Exception\HttpException;

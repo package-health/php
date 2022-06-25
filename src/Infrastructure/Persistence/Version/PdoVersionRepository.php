@@ -1,18 +1,18 @@
 <?php
 declare(strict_types = 1);
 
-namespace App\Infrastructure\Persistence\Version;
+namespace PackageHealth\PHP\Infrastructure\Persistence\Version;
 
-use App\Application\Message\Event\Version\VersionCreatedEvent;
-use App\Application\Message\Event\Version\VersionUpdatedEvent;
-use App\Domain\Version\Version;
-use App\Domain\Version\VersionCollection;
-use App\Domain\Version\VersionNotFoundException;
-use App\Domain\Version\VersionRepositoryInterface;
-use App\Domain\Version\VersionStatusEnum;
 use Courier\Client\Producer\ProducerInterface;
 use DateTimeImmutable;
 use DateTimeInterface;
+use PackageHealth\PHP\Application\Message\Event\Version\VersionCreatedEvent;
+use PackageHealth\PHP\Application\Message\Event\Version\VersionUpdatedEvent;
+use PackageHealth\PHP\Domain\Version\Version;
+use PackageHealth\PHP\Domain\Version\VersionCollection;
+use PackageHealth\PHP\Domain\Version\VersionNotFoundException;
+use PackageHealth\PHP\Domain\Version\VersionRepositoryInterface;
+use PackageHealth\PHP\Domain\Version\VersionStatusEnum;
 use PDO;
 
 final class PdoVersionRepository implements VersionRepositoryInterface {

@@ -1,28 +1,28 @@
 <?php
 declare(strict_types = 1);
 
-namespace App\Application\Console\Packagist;
+namespace PackageHealth\PHP\Application\Console\Packagist;
 
-use App\Application\Message\Event\Dependency\DependencyCreatedEvent;
-use App\Application\Message\Event\Dependency\DependencyUpdatedEvent;
-use App\Application\Message\Event\Package\PackageUpdatedEvent;
-use App\Application\Message\Event\Stats\StatsCreatedEvent;
-use App\Application\Message\Event\Stats\StatsUpdatedEvent;
-use App\Application\Message\Event\Version\VersionCreatedEvent;
-use App\Application\Message\Event\Version\VersionUpdatedEvent;
-use App\Application\Service\Packagist;
-use App\Domain\Dependency\DependencyRepositoryInterface;
-use App\Domain\Dependency\DependencyStatusEnum;
-use App\Domain\Package\PackageRepositoryInterface;
-use App\Domain\Stats\StatsRepositoryInterface;
-use App\Domain\Version\VersionRepositoryInterface;
-use App\Domain\Version\VersionStatusEnum;
 use Composer\Semver\Comparator;
 use Composer\Semver\Semver;
 use Composer\Semver\VersionParser;
 use Courier\Client\Producer\ProducerInterface;
 use Exception;
 use InvalidArgumentException;
+use PackageHealth\PHP\Application\Message\Event\Dependency\DependencyCreatedEvent;
+use PackageHealth\PHP\Application\Message\Event\Dependency\DependencyUpdatedEvent;
+use PackageHealth\PHP\Application\Message\Event\Package\PackageUpdatedEvent;
+use PackageHealth\PHP\Application\Message\Event\Stats\StatsCreatedEvent;
+use PackageHealth\PHP\Application\Message\Event\Stats\StatsUpdatedEvent;
+use PackageHealth\PHP\Application\Message\Event\Version\VersionCreatedEvent;
+use PackageHealth\PHP\Application\Message\Event\Version\VersionUpdatedEvent;
+use PackageHealth\PHP\Application\Service\Packagist;
+use PackageHealth\PHP\Domain\Dependency\DependencyRepositoryInterface;
+use PackageHealth\PHP\Domain\Dependency\DependencyStatusEnum;
+use PackageHealth\PHP\Domain\Package\PackageRepositoryInterface;
+use PackageHealth\PHP\Domain\Stats\StatsRepositoryInterface;
+use PackageHealth\PHP\Domain\Version\VersionRepositoryInterface;
+use PackageHealth\PHP\Domain\Version\VersionStatusEnum;
 use RuntimeException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;

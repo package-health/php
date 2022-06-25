@@ -1,17 +1,17 @@
 <?php
 declare(strict_types = 1);
 
-namespace App\Infrastructure\Persistence\Package;
+namespace PackageHealth\PHP\Infrastructure\Persistence\Package;
 
-use App\Application\Message\Event\Package\PackageCreatedEvent;
-use App\Application\Message\Event\Package\PackageUpdatedEvent;
-use App\Domain\Package\Package;
-use App\Domain\Package\PackageCollection;
-use App\Domain\Package\PackageNotFoundException;
-use App\Domain\Package\PackageRepositoryInterface;
 use Courier\Client\Producer\ProducerInterface;
 use DateTimeImmutable;
 use DateTimeInterface;
+use PackageHealth\PHP\Application\Message\Event\Package\PackageCreatedEvent;
+use PackageHealth\PHP\Application\Message\Event\Package\PackageUpdatedEvent;
+use PackageHealth\PHP\Domain\Package\Package;
+use PackageHealth\PHP\Domain\Package\PackageCollection;
+use PackageHealth\PHP\Domain\Package\PackageNotFoundException;
+use PackageHealth\PHP\Domain\Package\PackageRepositoryInterface;
 use PDO;
 
 final class PdoPackageRepository implements PackageRepositoryInterface {

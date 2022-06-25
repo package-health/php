@@ -1,12 +1,12 @@
 <?php
 declare(strict_types = 1);
 
-namespace App\Infrastructure\Persistence\Package;
+namespace PackageHealth\PHP\Infrastructure\Persistence\Package;
 
-use App\Domain\Package\Package;
-use App\Domain\Package\PackageCollection;
-use App\Domain\Package\PackageRepositoryInterface;
 use DateTimeImmutable;
+use PackageHealth\PHP\Domain\Package\Package;
+use PackageHealth\PHP\Domain\Package\PackageCollection;
+use PackageHealth\PHP\Domain\Package\PackageRepositoryInterface;
 use Psr\Cache\CacheItemPoolInterface;
 
 final class CachedPackageRepository implements PackageRepositoryInterface {

@@ -1,10 +1,10 @@
 <?php
 declare(strict_types = 1);
 
-namespace App\Infrastructure\Storage;
+namespace PackageHealth\PHP\Infrastructure\Storage;
 
-use App\Application\Service\Storage\FileStorageInterface;
 use InvalidArgumentException;
+use PackageHealth\PHP\Application\Service\Storage\FileStorageInterface;
 use RuntimeException;
 
 final class LocalFileStorage implements FileStorageInterface {

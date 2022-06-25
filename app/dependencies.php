@@ -1,13 +1,11 @@
 <?php
 declare(strict_types = 1);
 
-use App\Application\Settings\SettingsInterface;
 use Buzz\Browser;
 use Buzz\Client\Curl;
 use Composer\Semver\VersionParser;
 use Courier\Bus;
 use Courier\Client\Consumer;
-use Courier\Client\Producer\BufferedProducer;
 use Courier\Client\Producer\Producer;
 use Courier\Client\Producer\ProducerInterface;
 use Courier\Inflector\InterfaceInflector;
@@ -24,6 +22,7 @@ use Monolog\Logger;
 use Monolog\Processor\UidProcessor;
 use Nyholm\Dsn\DsnParser;
 use Nyholm\Psr7\Factory\Psr17Factory;
+use PackageHealth\PHP\Application\Settings\SettingsInterface;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;

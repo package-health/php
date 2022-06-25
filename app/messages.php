@@ -1,21 +1,21 @@
 <?php
 declare(strict_types = 1);
 
-use App\Application\Message\Command\PackageDiscoveryCommand;
-use App\Application\Message\Command\UpdateDependencyStatusCommand;
-use App\Application\Message\Command\UpdateVersionStatusCommand;
-use App\Application\Message\Event\Dependency\DependencyUpdatedEvent;
-use App\Application\Message\Event\Package\PackageCreatedEvent;
-use App\Application\Message\Event\Package\PackageUpdatedEvent;
-use App\Application\Message\Event\Version\VersionCreatedEvent;
-use App\Application\Processor\Handler\PackageDiscoveryHandler;
-use App\Application\Processor\Handler\UpdateDependencyStatusHandler;
-use App\Application\Processor\Handler\UpdateVersionStatusHandler;
-use App\Application\Processor\Listener\Dependency\DependencyUpdatedListener;
-use App\Application\Processor\Listener\Package\PackageCreatedListener;
-use App\Application\Processor\Listener\Package\PackageUpdatedListener;
-use App\Application\Processor\Listener\Version\VersionCreatedListener;
 use Courier\Bus;
+use PackageHealth\PHP\Application\Message\Command\PackageDiscoveryCommand;
+use PackageHealth\PHP\Application\Message\Command\UpdateDependencyStatusCommand;
+use PackageHealth\PHP\Application\Message\Command\UpdateVersionStatusCommand;
+use PackageHealth\PHP\Application\Message\Event\Dependency\DependencyUpdatedEvent;
+use PackageHealth\PHP\Application\Message\Event\Package\PackageCreatedEvent;
+use PackageHealth\PHP\Application\Message\Event\Package\PackageUpdatedEvent;
+use PackageHealth\PHP\Application\Message\Event\Version\VersionCreatedEvent;
+use PackageHealth\PHP\Application\Processor\Handler\PackageDiscoveryHandler;
+use PackageHealth\PHP\Application\Processor\Handler\UpdateDependencyStatusHandler;
+use PackageHealth\PHP\Application\Processor\Handler\UpdateVersionStatusHandler;
+use PackageHealth\PHP\Application\Processor\Listener\Dependency\DependencyUpdatedListener;
+use PackageHealth\PHP\Application\Processor\Listener\Package\PackageCreatedListener;
+use PackageHealth\PHP\Application\Processor\Listener\Package\PackageUpdatedListener;
+use PackageHealth\PHP\Application\Processor\Listener\Version\VersionCreatedListener;
 use Psr\Container\ContainerInterface;
 
 return static function (ContainerInterface $container): void {

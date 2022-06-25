@@ -1,20 +1,20 @@
 <?php
 declare(strict_types = 1);
 
-namespace App\Application\Processor\Handler;
+namespace PackageHealth\PHP\Application\Processor\Handler;
 
-use App\Application\Message\Command\UpdateVersionStatusCommand;
-use App\Domain\Dependency\Dependency;
-use App\Domain\Dependency\DependencyRepositoryInterface;
-use App\Domain\Dependency\DependencyStatusEnum;
-use App\Domain\Version\VersionRepositoryInterface;
-use App\Domain\Version\VersionStatusEnum;
 use Courier\Message\CommandInterface;
 use Courier\Processor\Handler\HandlerResultEnum;
 use Courier\Processor\Handler\InvokeHandlerInterface;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Exception;
+use PackageHealth\PHP\Application\Message\Command\UpdateVersionStatusCommand;
+use PackageHealth\PHP\Domain\Dependency\Dependency;
+use PackageHealth\PHP\Domain\Dependency\DependencyRepositoryInterface;
+use PackageHealth\PHP\Domain\Dependency\DependencyStatusEnum;
+use PackageHealth\PHP\Domain\Version\VersionRepositoryInterface;
+use PackageHealth\PHP\Domain\Version\VersionStatusEnum;
 use Psr\Log\LoggerInterface;
 
 /**

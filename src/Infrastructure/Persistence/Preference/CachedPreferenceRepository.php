@@ -1,13 +1,13 @@
 <?php
 declare(strict_types = 1);
 
-namespace App\Infrastructure\Persistence\Preference;
+namespace PackageHealth\PHP\Infrastructure\Persistence\Preference;
 
-use App\Domain\Preference\Preference;
-use App\Domain\Preference\PreferenceCollection;
-use App\Domain\Preference\PreferenceRepositoryInterface;
-use App\Domain\Preference\PreferenceTypeEnum;
 use DateTimeImmutable;
+use PackageHealth\PHP\Domain\Preference\Preference;
+use PackageHealth\PHP\Domain\Preference\PreferenceCollection;
+use PackageHealth\PHP\Domain\Preference\PreferenceRepositoryInterface;
+use PackageHealth\PHP\Domain\Preference\PreferenceTypeEnum;
 use Psr\Cache\CacheItemPoolInterface;
 
 final class CachedPreferenceRepository implements PreferenceRepositoryInterface {

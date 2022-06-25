@@ -1,10 +1,10 @@
 <?php
 declare(strict_types = 1);
 
-namespace App\Application\Action\Vendor;
+namespace PackageHealth\PHP\Application\Action\Vendor;
 
-use App\Application\Action\AbstractAction;
-use App\Domain\Package\PackageRepositoryInterface;
+use PackageHealth\PHP\Application\Action\AbstractAction;
+use PackageHealth\PHP\Domain\Package\PackageRepositoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
 use Slim\HttpCache\CacheProvider;

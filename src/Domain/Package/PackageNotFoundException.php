@@ -1,9 +1,9 @@
 <?php
 declare(strict_types = 1);
 
-namespace App\Domain\Package;
+namespace PackageHealth\PHP\Domain\Package;
 
-use App\Domain\Exception\DomainRecordNotFoundException;
+use PackageHealth\PHP\Domain\Exception\DomainRecordNotFoundException;
 
 class PackageNotFoundException extends DomainRecordNotFoundException {
   /**
