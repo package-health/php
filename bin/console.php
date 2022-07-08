@@ -17,6 +17,8 @@ use PackageHealth\PHP\Application\Console\Packagist\GetUpdatesCommand;
 use PackageHealth\PHP\Application\Console\Packagist\MassImportCommand;
 use PackageHealth\PHP\Application\Console\Queue\ConsumeCommand;
 use PackageHealth\PHP\Application\Console\Queue\ListCommand;
+use PackageHealth\PHP\Application\Console\Queue\SendCommandCommand;
+use PackageHealth\PHP\Application\Console\Queue\SendEventCommand;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\CommandLoader\FactoryCommandLoader;
 
@@ -84,6 +86,12 @@ $app->setCommandLoader(
       },
       ListCommand::getDefaultName() => static function () use ($container): ListCommand {
         return $container->get(ListCommand::class);
+      },
+      SendCommandCommand::getDefaultName() => static function () use ($container): SendCommandCommand {
+        return $container->get(SendCommandCommand::class);
+      },
+      SendEventCommand::getDefaultName() => static function () use ($container): SendEventCommand {
+        return $container->get(SendEventCommand::class);
       }
     ]
   )
