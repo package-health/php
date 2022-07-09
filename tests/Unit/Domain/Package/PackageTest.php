@@ -41,94 +41,132 @@ final class PackageTest extends TestCase {
     $this->assertSame('An awesome package description', $this->package->getDescription());
   }
 
-  public function testDescriptionHasBeenUpdated(): void {
+  public function testObjectIsInItsInitialState(): void {
     $this->assertInstanceOf(DateTimeImmutable::class, $this->package->getCreatedAt());
     $this->assertFalse($this->package->isDirty());
     $this->assertNull($this->package->getUpdatedAt());
-
-    $this->package = $this->package->withDescription('Even awesomer description');
-
-    $this->assertTrue($this->package->isDirty());
-    $this->assertSame('Even awesomer description', $this->package->getDescription());
-    $this->assertSame($this->createdAt, $this->package->getCreatedAt());
-    $this->assertInstanceOf(DateTimeImmutable::class, $this->package->getUpdatedAt());
   }
 
-  public function testDescriptionDoesNotUpdateWhenItsTheSame(): void {
-    $this->assertInstanceOf(DateTimeImmutable::class, $this->package->getCreatedAt());
-    $this->assertFalse($this->package->isDirty());
-    $this->assertNull($this->package->getUpdatedAt());
+  /**
+   * @depends testObjectIsInItsInitialState
+   */
+  public function testDescriptionHasBeenUpdated(): array {
+    $package = $this->package->withDescription('Even awesomer description');
 
-    $this->package = $this->package->withDescription('An awesome package description');
+    $this->assertSame('Even awesomer description', $package->getDescription());
 
-    $this->assertFalse($this->package->isDirty());
-    $this->assertSame('An awesome package description', $this->package->getDescription());
-    $this->assertSame($this->createdAt, $this->package->getCreatedAt());
-    $this->assertNull($this->package->getUpdatedAt());
+    return [$package, $this->createdAt];
+  }
+
+  /**
+   * @depends testObjectIsInItsInitialState
+   */
+  public function testDescriptionDoesNotUpdateWhenItsTheSame(): array {
+    $package = $this->package->withDescription('An awesome package description');
+
+    $this->assertSame('An awesome package description', $package->getDescription());
+
+    return [$package, $this->createdAt];
   }
 
   public function testLatestVersion(): void {
     $this->assertSame('1.0', $this->package->getLatestVersion());
   }
 
-  public function testLatestVersionHasBeenUpdated(): void {
-    $this->assertInstanceOf(DateTimeImmutable::class, $this->package->getCreatedAt());
-    $this->assertFalse($this->package->isDirty());
-    $this->assertNull($this->package->getUpdatedAt());
+  /**
+   * @depends testObjectIsInItsInitialState
+   */
+  public function testLatestVersionHasBeenUpdated(): array {
+    $package = $this->package->withLatestVersion('1.0.1');
 
-    $this->package = $this->package->withLatestVersion('1.0.1');
+    $this->assertSame('1.0.1', $package->getLatestVersion());
 
-    $this->assertTrue($this->package->isDirty());
-    $this->assertSame('1.0.1', $this->package->getLatestVersion());
-    $this->assertSame($this->createdAt, $this->package->getCreatedAt());
-    $this->assertInstanceOf(DateTimeImmutable::class, $this->package->getUpdatedAt());
+    return [$package, $this->createdAt];
   }
 
-  public function testLatestVersionDoesNotUpdateWhenItsTheSame(): void {
-    $this->assertInstanceOf(DateTimeImmutable::class, $this->package->getCreatedAt());
-    $this->assertFalse($this->package->isDirty());
-    $this->assertNull($this->package->getUpdatedAt());
+  /**
+   * @depends testObjectIsInItsInitialState
+   */
+  public function testLatestVersionDoesNotUpdateWhenItsTheSame(): array {
+    $package = $this->package->withLatestVersion('1.0');
 
-    $this->package = $this->package->withLatestVersion('1.0');
+    $this->assertSame('1.0', $package->getLatestVersion());
 
-    $this->assertFalse($this->package->isDirty());
-    $this->assertSame('1.0', $this->package->getLatestVersion());
-    $this->assertSame($this->createdAt, $this->package->getCreatedAt());
-    $this->assertNull($this->package->getUpdatedAt());
+    return [$package, $this->createdAt];
   }
 
   public function testUrl(): void {
     $this->assertSame('http://', $this->package->getUrl());
   }
 
-  public function testUrlHasBeenUpdated(): void {
-    $this->assertInstanceOf(DateTimeImmutable::class, $this->package->getCreatedAt());
-    $this->assertFalse($this->package->isDirty());
-    $this->assertNull($this->package->getUpdatedAt());
+  /**
+   * @depends testObjectIsInItsInitialState
+   */
+  public function testUrlHasBeenUpdated(): array {
+    $package = $this->package->withUrl('https://');
 
-    $this->package = $this->package->withUrl('https://');
+    $this->assertSame('https://', $package->getUrl());
 
-    $this->assertTrue($this->package->isDirty());
-    $this->assertSame('https://', $this->package->getUrl());
-    $this->assertSame($this->createdAt, $this->package->getCreatedAt());
-    $this->assertInstanceOf(DateTimeImmutable::class, $this->package->getUpdatedAt());
+    return [$package, $this->createdAt];
   }
 
-  public function testUrlDoesNotUpdateWhenItsTheSame(): void {
-    $this->assertInstanceOf(DateTimeImmutable::class, $this->package->getCreatedAt());
-    $this->assertFalse($this->package->isDirty());
-    $this->assertNull($this->package->getUpdatedAt());
+  /**
+   * @depends testObjectIsInItsInitialState
+   */
+  public function testUrlDoesNotUpdateWhenItsTheSame(): array {
+    $package = $this->package->withUrl('http://');
 
-    $this->package = $this->package->withUrl('http://');
+    $this->assertSame('http://', $package->getUrl());
 
-    $this->assertFalse($this->package->isDirty());
-    $this->assertSame('http://', $this->package->getUrl());
-    $this->assertSame($this->createdAt, $this->package->getCreatedAt());
-    $this->assertNull($this->package->getUpdatedAt());
+    return [$package, $this->createdAt];
+  }
+
+  /**
+   * @depends testDescriptionHasBeenUpdated
+   * @depends testLatestVersionHasBeenUpdated
+   * @depends testUrlHasBeenUpdated
+   */
+  public function testIsDirty(array $testData): void {
+    [$package, $createdAt] = $testData;
+
+    $this->assertTrue($package->isDirty());
+  }
+
+  /**
+   * @depends testDescriptionHasBeenUpdated
+   * @depends testLatestVersionHasBeenUpdated
+   * @depends testUrlHasBeenUpdated
+   */
+  public function testSameCreatedAt(array $testData): void {
+    [$package, $createdAt] = $testData;
+
+    $this->assertSame($createdAt, $package->getCreatedAt());
+  }
+
+  /**
+   * @depends testDescriptionHasBeenUpdated
+   * @depends testLatestVersionHasBeenUpdated
+   * @depends testUrlHasBeenUpdated
+   */
+  public function testUpdatedAt(array $testData): void {
+    [$package, $createdAt] = $testData;
+
+    $this->assertInstanceOf(DateTimeImmutable::class, $package->getUpdatedAt());
+  }
+
+  /**
+   * @depends testDescriptionDoesNotUpdateWhenItsTheSame
+   * @depends testLatestVersionDoesNotUpdateWhenItsTheSame
+   * @depends testUrlDoesNotUpdateWhenItsTheSame
+   */
+  public function testUpdatedAtIsNull(array $testData): void {
+    [$package, $createdAt] = $testData;
+
+    $this->assertNull($package->getUpdatedAt());
   }
 
   public function testJsonSerializeWhenPackageWasNotUpdated() {
-    $packageWasNotUpdated = array_merge(
+    $packageAttributes = array_merge(
       $this->packageAttributes,
       [
         'createdAt' => $this->createdAt,
@@ -136,23 +174,36 @@ final class PackageTest extends TestCase {
       ]
     );
 
-    $this->assertIsArray($this->package->jsonSerialize());
-    $this->assertSame($packageWasNotUpdated, $this->package->jsonSerialize());
+    $this->assertNull($this->package->getUpdatedAt());
+
+    return [$this->package, $packageAttributes];
   }
 
-  public function testJsonSerializeWhenPackageWasUpdated(): void {
-    $this->package = $this->package->withLatestVersion('1.0.1');
+  public function testJsonSerializeWhenPackageWasUpdated(): array {
+    $package = $this->package->withLatestVersion('1.0.1');
 
-    $packageWasUpdated = array_merge(
+    $packageAttributes = array_merge(
       $this->packageAttributes,
       [
         'latestVersion' => '1.0.1',
         'createdAt' => $this->createdAt,
-        'updatedAt' => $this->package->getUpdatedAt()
+        'updatedAt' => $package->getUpdatedAt()
       ]
     );
 
-    $this->assertIsArray($this->package->jsonSerialize());
-    $this->assertSame($packageWasUpdated, $this->package->jsonSerialize());
+    $this->assertInstanceOf(DateTimeImmutable::class, $package->getUpdatedAt());
+
+    return [$package, $packageAttributes];
+  }
+
+  /**
+   * @depends testJsonSerializeWhenPackageWasNotUpdated
+   * @depends testJsonSerializeWhenPackageWasUpdated
+   */
+  public function testObjectSerializedValuesMatch(array $testData): void {
+    [$preference, $preferenceAttributes] = $testData;
+
+    $this->assertIsArray($preference->jsonSerialize());
+    $this->assertSame($preferenceAttributes, $preference->jsonSerialize());
   }
 }
