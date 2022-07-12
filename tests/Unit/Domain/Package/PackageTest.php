@@ -127,7 +127,7 @@ final class PackageTest extends TestCase {
    * @depends testUrlHasBeenUpdated
    */
   public function testIsDirty(array $testData): void {
-    [$package, $createdAt] = $testData;
+    [$package,] = $testData;
 
     $this->assertTrue($package->isDirty());
   }
@@ -149,7 +149,7 @@ final class PackageTest extends TestCase {
    * @depends testUrlHasBeenUpdated
    */
   public function testUpdatedAt(array $testData): void {
-    [$package, $createdAt] = $testData;
+    [$package,] = $testData;
 
     $this->assertInstanceOf(DateTimeImmutable::class, $package->getUpdatedAt());
   }
@@ -160,7 +160,7 @@ final class PackageTest extends TestCase {
    * @depends testUrlDoesNotUpdateWhenItsTheSame
    */
   public function testUpdatedAtIsNull(array $testData): void {
-    [$package, $createdAt] = $testData;
+    [$package,] = $testData;
 
     $this->assertNull($package->getUpdatedAt());
   }
