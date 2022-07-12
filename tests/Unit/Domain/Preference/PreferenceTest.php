@@ -27,7 +27,6 @@ final class PreferenceTest extends TestCase {
 
   public function testIdNotGiven(): void {
     $this->assertNull($this->preference->getId());
-    $this->assertSame(null, $this->preference->getId());
   }
 
   public function testIdGiven(): void {
@@ -118,7 +117,7 @@ final class PreferenceTest extends TestCase {
    * @depends testValueAsBool
    */
   public function testAsString(array $testData): void {
-    [$preference, $createdAt] = $testData;
+    [$preference,] = $testData;
 
     $this->assertIsString($preference->getValueAsString());
   }
@@ -130,7 +129,7 @@ final class PreferenceTest extends TestCase {
    * @depends testValueAsBool
    */
   public function testAsInteger(array $testData): void {
-    [$preference, $createdAt] = $testData;
+    [$preference,] = $testData;
 
     $this->assertIsInt($preference->getValueAsInteger());
   }
@@ -142,7 +141,7 @@ final class PreferenceTest extends TestCase {
    * @depends testValueAsBool
    */
   public function testAsFloat(array $testData): void {
-    [$preference, $createdAt] = $testData;
+    [$preference,] = $testData;
 
     $this->assertIsFloat($preference->getValueAsFloat());
   }
@@ -154,7 +153,7 @@ final class PreferenceTest extends TestCase {
    * @depends testValueAsBool
    */
   public function testAsBool(array $test): void {
-    [$preference, $createdAt] = $test;
+    [$preference,] = $test;
 
     $this->assertIsBool($preference->getValueAsBool());
   }
