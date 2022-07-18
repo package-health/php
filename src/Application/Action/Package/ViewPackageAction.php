@@ -72,15 +72,15 @@ final class ViewPackageAction extends AbstractPackageAction {
 
     $this->logger->debug("Package '{$vendor}/{$project}:{$version}' was viewed.");
 
-    // $lastModified = $package->getUpdatedAt() ?? $package->getCreatedAt();
-    // $this->response = $this->cacheProvider->withLastModified(
-    //   $this->response,
-    //   $lastModified->getTimestamp()
-    // );
-    // $this->response = $this->cacheProvider->withEtag(
-    //   $this->response,
-    //   hash('sha1', (string)$lastModified->getTimestamp())
-    // );
+    $lastModified = $package->getUpdatedAt() ?? $package->getCreatedAt();
+    $this->response = $this->cacheProvider->withLastModified(
+      $this->response,
+      $lastModified->getTimestamp()
+    );
+    $this->response = $this->cacheProvider->withEtag(
+      $this->response,
+      hash('sha1', (string)$lastModified->getTimestamp())
+    );
 
     $data = [
       'status' => [

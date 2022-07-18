@@ -55,6 +55,27 @@ final class ListPackageVersionsAction extends AbstractPackageAction {
       $developCol = $developCol->sort('getCreatedAt', VersionCollection::SORT_DESC);
     }
 
+    if (count($taggedCol)) {
+      $lastModifiedList = array_map(
+        function (Package $package): int {
+          $lastModified = $package->getUpdatedAt() ?? $package->getCreatedAt();
+
+          return $lastModified->getTimestamp();
+        },
+        $taggedCol
+      );
+
+      $lastModified = max($lastModifiedList);
+      $this->response = $this->cacheProvider->withLastModified(
+        $this->response,
+        $lastModified
+      );
+      $this->response = $this->cacheProvider->withEtag(
+        $this->response,
+        hash('sha1', (string)$lastModified)
+      );
+    }
+
     return $this->respondWithHtml(
       $twig->fetch(
         'package/list.twig',

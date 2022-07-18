@@ -56,15 +56,15 @@ final class ViewPackageBadgeAction extends AbstractPackageAction {
       return $this->respondWith('image/svg+xml', (string)$badge);
     }
 
-    // $lastModified = $package->getUpdatedAt() ?? $package->getCreatedAt();
-    // $this->response = $this->cacheProvider->withLastModified(
-    //   $this->response,
-    //   $lastModified->getTimestamp()
-    // );
-    // $this->response = $this->cacheProvider->withEtag(
-    //   $this->response,
-    //   hash('sha1', (string)$lastModified->getTimestamp())
-    // );
+    $lastModified = $package->getUpdatedAt() ?? $package->getCreatedAt();
+    $this->response = $this->cacheProvider->withLastModified(
+      $this->response,
+      $lastModified->getTimestamp()
+    );
+    $this->response = $this->cacheProvider->withEtag(
+      $this->response,
+      hash('sha1', (string)$lastModified->getTimestamp())
+    );
 
     $release = $versionCol->first();
 

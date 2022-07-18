@@ -13,26 +13,26 @@ final class ListPackagesAction extends AbstractPackageAction {
 
     $this->logger->debug('Packages list was viewed.');
 
-    // if (count($packages)) {
-    //   $lastModifiedList = array_map(
-    //     function (Package $package): int {
-    //       $lastModified = $package->getUpdatedAt() ?? $package->getCreatedAt();
+    if (count($packages)) {
+      $lastModifiedList = array_map(
+        function (Package $package): int {
+          $lastModified = $package->getUpdatedAt() ?? $package->getCreatedAt();
 
-    //       return $lastModified->getTimestamp();
-    //     },
-    //     $packages
-    //   );
+          return $lastModified->getTimestamp();
+        },
+        $packages
+      );
 
-    //   $lastModified = max($lastModifiedList);
-    //   $this->response = $this->cacheProvider->withLastModified(
-    //     $this->response,
-    //     $lastModified
-    //   );
-    //   $this->response = $this->cacheProvider->withEtag(
-    //     $this->response,
-    //     hash('sha1', (string)$lastModified)
-    //   );
-    // }
+      $lastModified = max($lastModifiedList);
+      $this->response = $this->cacheProvider->withLastModified(
+        $this->response,
+        $lastModified
+      );
+      $this->response = $this->cacheProvider->withEtag(
+        $this->response,
+        hash('sha1', (string)$lastModified)
+      );
+    }
 
     return $this->respondWithHtml(
       $twig->fetch(
