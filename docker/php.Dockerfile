@@ -4,7 +4,7 @@
 FROM php:8.1.8-cli-alpine3.16 AS builder
 
 # https://blog.packagecloud.io/eng/2017/02/21/set-environment-variable-save-thousands-of-system-calls/
-ENV TZ=:/etc/localtime
+ENV TZ=:UTC
 
 WORKDIR /usr/src
 
@@ -46,16 +46,10 @@ RUN docker-php-source extract && \
     mkdir /usr/src/php/ext/amqp && \
     tar --extract --file amqp.tar.gz --directory /usr/src/php/ext/amqp --strip 1 && \
     docker-php-ext-install -j$(nproc) amqp && \
-    docker-php-source delete
-
-RUN docker-php-source extract && \
     wget -O redis.tar.gz https://github.com/phpredis/phpredis/archive/refs/tags/5.3.7.tar.gz && \
     mkdir /usr/src/php/ext/redis && \
     tar --extract --file redis.tar.gz --directory /usr/src/php/ext/redis --strip 1 && \
     docker-php-ext-install -j$(nproc) redis && \
-    docker-php-source delete
-
-RUN docker-php-source extract && \
     wget -O igbinary.tar.gz https://github.com/igbinary/igbinary/archive/refs/tags/3.2.7.tar.gz && \
     mkdir /usr/src/php/ext/igbinary && \
     tar --extract --file igbinary.tar.gz --directory /usr/src/php/ext/igbinary --strip 1 && \
@@ -94,7 +88,7 @@ RUN composer install --no-progress --ignore-platform-reqs --no-dev --prefer-dist
 FROM php:8.1.8-cli-alpine3.16 as cli
 
 # https://blog.packagecloud.io/eng/2017/02/21/set-environment-variable-save-thousands-of-system-calls/
-ENV TZ=:/etc/localtime
+ENV TZ=:UTC
 ENV PHP_ENV=dev
 
 #============================================
@@ -174,7 +168,7 @@ CMD ["php"]
 FROM php:8.1.8-fpm-alpine3.16 as fpm
 
 # https://blog.packagecloud.io/eng/2017/02/21/set-environment-variable-save-thousands-of-system-calls/
-ENV TZ=:/etc/localtime
+ENV TZ=:UTC
 ENV PHP_ENV=dev
 
 #============================================
@@ -189,7 +183,15 @@ RUN apk add --no-cache --upgrade apk-tools && \
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" && \
     echo "memory_limit = 256M" > /usr/local/etc/php/conf.d/memory.ini && \
     echo "variables_order = EGPCS" > /usr/local/etc/php/conf.d/variables_order.ini && \
-    echo "expose_php = 0" > /usr/local/etc/php/conf.d/expose_php.ini
+    echo "expose_php = Off" > /usr/local/etc/php/conf.d/expose_php.ini && \
+    echo "allow_url_fopen = Off" > /usr/local/etc/php/conf.d/security.ini && \
+    echo "allow_url_include = Off" >> /usr/local/etc/php/conf.d/security.ini && \
+    echo "cgi.fix_pathinfo = Off" >> /usr/local/etc/php/conf.d/security.ini && \
+    echo "cgi.force_redirect = On" >> /usr/local/etc/php/conf.d/security.ini && \
+    echo "file_uploads = Off" >> /usr/local/etc/php/conf.d/security.ini && \
+    echo "max_input_vars = 100" >> /usr/local/etc/php/conf.d/security.ini && \
+    echo "open_basedir = /var/www/html" >> /usr/local/etc/php/conf.d/security.ini && \
+    echo "post_max_size = 256K" >> /usr/local/etc/php/conf.d/security.ini
 RUN echo "pm.status_path = /status" >> /usr/local/etc/php-fpm.d/zz-docker.conf
 
 #============================================
@@ -220,14 +222,15 @@ RUN wget -O /usr/local/bin/php-fpm-healthcheck https://raw.githubusercontent.com
 #============================================
 # FPM Extensions
 #============================================
-RUN docker-php-ext-enable dom && \
-    docker-php-ext-enable gd && \
-    docker-php-ext-enable igbinary && \
+RUN docker-php-ext-enable gd && \
     docker-php-ext-enable opcache && \
     docker-php-ext-enable pdo_pgsql && \
     docker-php-ext-enable redis && \
-    docker-php-ext-enable simplexml && \
-    docker-php-ext-enable zip
+    docker-php-ext-enable simplexml
+RUN rm /usr/local/etc/php/conf.d/docker-php-ext-igbinary.ini && \
+    rm /usr/local/etc/php/conf.d/docker-php-ext-pcntl.ini && \
+    rm /usr/local/etc/php/conf.d/docker-php-ext-sockets.ini && \
+    rm /usr/local/etc/php/conf.d/docker-php-ext-zip.ini
 
 #============================================
 # User
