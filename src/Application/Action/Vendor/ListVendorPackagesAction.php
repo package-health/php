@@ -5,6 +5,7 @@ namespace PackageHealth\PHP\Application\Action\Vendor;
 
 use PackageHealth\PHP\Application\Action\AbstractAction;
 use PackageHealth\PHP\Domain\Package\PackageRepositoryInterface;
+use PackageHealth\PHP\Domain\Package\PackageValidator;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
 use Slim\HttpCache\CacheProvider;
@@ -23,7 +24,9 @@ final class ListVendorPackagesAction extends AbstractAction {
   }
 
   protected function action(): ResponseInterface {
-    $vendor   = $this->resolveStringArg('vendor');
+    $vendor = $this->resolveStringArg('vendor');
+    PackageValidator::assertValidVendor($vendor);
+
     $packages = $this->packageRepository->findMatching(['name' => "$vendor/%"]);
     $twig = Twig::fromRequest($this->request);
 

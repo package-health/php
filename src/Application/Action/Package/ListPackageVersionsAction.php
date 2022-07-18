@@ -4,6 +4,7 @@ declare(strict_types = 1);
 namespace PackageHealth\PHP\Application\Action\Package;
 
 use PackageHealth\PHP\Domain\Package\PackageRepositoryInterface;
+use PackageHealth\PHP\Domain\Package\PackageValidator;
 use PackageHealth\PHP\Domain\Version\VersionNotFoundException;
 use PackageHealth\PHP\Domain\Version\VersionRepositoryInterface;
 use PackageHealth\PHP\Domain\Version\VersionCollection;
@@ -26,9 +27,12 @@ final class ListPackageVersionsAction extends AbstractPackageAction {
   }
 
   protected function action(): ResponseInterface {
-    $vendor  = $this->resolveStringArg('vendor');
+    $vendor = $this->resolveStringArg('vendor');
+    PackageValidator::assertValidVendor($vendor);
+
     $project = $this->resolveStringArg('project');
-    $package = $this->packageRepository->get("{$vendor}/{$project}");
+    PackageValidator::assertValidProject($project);
+
     $twig = Twig::fromRequest($this->request);
 
     $this->logger->debug("Package '{$vendor}/{$project}' version list was viewed.");

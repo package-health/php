@@ -6,9 +6,11 @@ namespace PackageHealth\PHP\Application\Action\Package;
 use PackageHealth\PHP\Domain\Dependency\DependencyRepositoryInterface;
 use PackageHealth\PHP\Domain\Dependency\DependencyStatusEnum;
 use PackageHealth\PHP\Domain\Package\PackageRepositoryInterface;
+use PackageHealth\PHP\Domain\Package\PackageValidator;
 use PackageHealth\PHP\Domain\Version\VersionNotFoundException;
 use PackageHealth\PHP\Domain\Version\VersionRepositoryInterface;
 use PackageHealth\PHP\Domain\Version\VersionStatusEnum;
+use PackageHealth\PHP\Domain\Version\VersionValidator;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
 use Slim\HttpCache\CacheProvider;
@@ -31,10 +33,17 @@ final class ViewPackageAction extends AbstractPackageAction {
   }
 
   protected function action(): ResponseInterface {
-    $vendor  = $this->resolveStringArg('vendor');
+    $vendor = $this->resolveStringArg('vendor');
+    PackageValidator::assertValidVendor($vendor);
+
     $project = $this->resolveStringArg('project');
+    PackageValidator::assertValidProject($project);
+
     $version = $this->resolveStringArg('version');
+    VersionValidator::assertValid($version);
+
     $package = $this->packageRepository->get("{$vendor}/{$project}");
+
     $twig = Twig::fromRequest($this->request);
 
     $versionCol = $this->versionRepository->find(

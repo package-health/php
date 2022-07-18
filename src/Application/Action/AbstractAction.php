@@ -4,6 +4,7 @@ declare(strict_types = 1);
 namespace PackageHealth\PHP\Application\Action;
 
 use PackageHealth\PHP\Domain\Exception\DomainRecordNotFoundException;
+use PackageHealth\PHP\Domain\Exception\DomainValidationException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
@@ -42,6 +43,8 @@ abstract class AbstractAction {
 
     try {
       return $this->action();
+    } catch (DomainValidationException $exception) {
+      throw new HttpBadRequestException($this->request, $exception->getMessage());
     } catch (DomainRecordNotFoundException $exception) {
       throw new HttpNotFoundException($this->request, $exception->getMessage());
     }
