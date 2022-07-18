@@ -7,9 +7,9 @@ use DateTimeImmutable;
 
 interface VersionRepositoryInterface {
   public function create(
+    int $packageId,
     string $number,
     string $normalized,
-    string $packageName,
     bool $release,
     VersionStatusEnum $status = VersionStatusEnum::Unknown,
     DateTimeImmutable $createdAt = new DateTimeImmutable()

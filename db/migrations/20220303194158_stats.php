@@ -1,13 +1,14 @@
 <?php
 declare(strict_types = 1);
 
+use Phinx\Db\Table\ForeignKey;
 use Phinx\Migration\AbstractMigration;
 
 final class Stats extends AbstractMigration {
   public function change(): void {
-    $stats = $this->table('stats', ['id' => false, 'primary_key' => 'package_name']);
+    $stats = $this->table('stats');
     $stats
-      ->addColumn('package_name', 'text', ['null' => false])
+      ->addColumn('package_id', 'integer', ['null' => false])
       ->addColumn('github_stars', 'integer', ['null' => false, 'default' => 0])
       ->addColumn('github_watchers', 'integer', ['null' => false, 'default' => 0])
       ->addColumn('github_forks', 'integer', ['null' => false, 'default' => 0])
@@ -23,12 +24,12 @@ final class Stats extends AbstractMigration {
       ->addIndex('daily_downloads')
       ->addIndex('created_at')
       ->addForeignKey(
-        'package_name',
+        'package_id',
         'packages',
-        'name',
+        'id',
         [
-          'delete' => 'CASCADE',
-          'update' => 'NO_ACTION'
+          'delete' => ForeignKey::CASCADE,
+          'update' => ForeignKey::NO_ACTION
         ]
       )
       ->create();
