@@ -6,6 +6,7 @@ namespace PackageHealth\PHP\Infrastructure\Persistence\Package;
 use Courier\Client\Producer\ProducerInterface;
 use DateTimeImmutable;
 use DateTimeInterface;
+use InvalidArgumentException;
 use PackageHealth\PHP\Application\Message\Event\Package\PackageCreatedEvent;
 use PackageHealth\PHP\Application\Message\Event\Package\PackageUpdatedEvent;
 use PackageHealth\PHP\Domain\Package\Package;
@@ -20,6 +21,7 @@ final class PdoPackageRepository implements PackageRepositoryInterface {
 
   /**
    * @param array{
+   *   id?: int,
    *   name: string,
    *   description: string,
    *   latest_version: string,
@@ -30,6 +32,7 @@ final class PdoPackageRepository implements PackageRepositoryInterface {
    */
   private function hydrate(array $data): Package {
     return new Package(
+      $data['id'] ?? null,
       $data['name'],
       $data['description'],
       $data['latest_version'],
@@ -50,6 +53,7 @@ final class PdoPackageRepository implements PackageRepositoryInterface {
   ): Package {
     return $this->save(
       new Package(
+        null,
         $name,
         '',
         '',
@@ -84,7 +88,7 @@ final class PdoPackageRepository implements PackageRepositoryInterface {
           SELECT "dependencies"."name", COUNT("dependencies".*) AS "total"
           FROM "packages"
           INNER JOIN "versions" ON (
-            "versions"."package_name" = "packages"."name" AND
+            "versions"."package_id" = "packages"."id" AND
             "versions"."number" = "packages"."latest_version"
           )
           INNER JOIN "dependencies" ON ("dependencies"."version_id" = "versions"."id")
@@ -96,16 +100,23 @@ final class PdoPackageRepository implements PackageRepositoryInterface {
       );
     }
 
-    $packageCol = new PackageCollection();
+    $popularCol = new PackageCollection();
     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-      if ($this->exists($row['name']) === false) {
+      $packageCol = $this->find(
+        [
+          'name' => $row['name']
+        ],
+        1
+      );
+
+      if ($packageCol->isEmpty()) {
         continue;
       }
 
-      $packageCol->add($this->get($row['name']));
+      $popularCol->add($packageCol[0]);
     }
 
-    return $packageCol;
+    return $popularCol;
   }
 
   public function exists(string $name): bool {
@@ -126,22 +137,22 @@ final class PdoPackageRepository implements PackageRepositoryInterface {
     return $stmt->rowCount() === 1;
   }
 
-  public function get(string $name): Package {
+  public function get(int $id): Package {
     static $stmt = null;
     if ($stmt === null) {
       $stmt = $this->pdo->prepare(
         <<<SQL
           SELECT *
           FROM "packages"
-          WHERE "name" = :name
+          WHERE "id" = :id
           LIMIT 1
         SQL
       );
     }
 
-    $stmt->execute(['name' => $name]);
+    $stmt->execute(['id' => $id]);
     if ($stmt->rowCount() === 0) {
-      throw new PackageNotFoundException("Package '{$name}' not found");
+      throw new PackageNotFoundException("Package '{$id}' not found");
     }
 
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -228,6 +239,11 @@ final class PdoPackageRepository implements PackageRepositoryInterface {
       );
     }
 
+    if ($package->getId() !== null) {
+      throw new InvalidArgumentException(
+      );
+    }
+
     $stmt->execute(
       [
         'name'           => $package->getName(),
@@ -236,6 +252,15 @@ final class PdoPackageRepository implements PackageRepositoryInterface {
         'url'            => $package->getUrl(),
         'created_at'     => $package->getCreatedAt()->format(DateTimeInterface::ATOM)
       ]
+    );
+
+    $package = new Package(
+      (int)$this->pdo->lastInsertId('packages_id_seq'),
+      $package->getName(),
+      $package->getDescription(),
+      $package->getLatestVersion(),
+      $package->getUrl(),
+      $package->getCreatedAt()
     );
 
     $this->producer->sendEvent(
@@ -252,18 +277,24 @@ final class PdoPackageRepository implements PackageRepositoryInterface {
         <<<SQL
           UPDATE "packages"
           SET
+            "name" = :name,
             "description" = :description,
             "latest_version" = :latest_version,
             "url" = :url,
             "updated_at" = :updated_at
-          WHERE "name" = :name
+          WHERE "id" = :id
         SQL
       );
+    }
+
+    if ($package->getId() === null) {
+      throw InvalidArgumentException();
     }
 
     if ($package->isDirty()) {
       $stmt->execute(
         [
+          'id'             => $package->getId(),
           'name'           => $package->getName(),
           'description'    => $package->getDescription(),
           'latest_version' => $package->getLatestVersion(),
@@ -272,7 +303,7 @@ final class PdoPackageRepository implements PackageRepositoryInterface {
         ]
       );
 
-      $package = $this->get($package->getName());
+      $package = $this->get($package->getId());
 
       $this->producer->sendEvent(
         new PackageUpdatedEvent($package)

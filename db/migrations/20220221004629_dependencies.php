@@ -1,6 +1,7 @@
 <?php
 declare(strict_types = 1);
 
+use Phinx\Db\Table\ForeignKey;
 use Phinx\Migration\AbstractMigration;
 
 final class Dependencies extends AbstractMigration {
@@ -35,8 +36,8 @@ final class Dependencies extends AbstractMigration {
         'versions',
         'id',
         [
-          'delete' => 'CASCADE',
-          'update' => 'NO_ACTION'
+          'delete' => ForeignKey::CASCADE,
+          'update' => ForeignKey::NO_ACTION
         ]
       )
       ->create();

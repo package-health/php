@@ -36,14 +36,24 @@ final class ListPackageVersionsAction extends AbstractPackageAction {
 
     $twig = Twig::fromRequest($this->request);
 
-    $packageName = "{$vendor}/{$project}";
+    $packageCol = $this->packageRepository->find(
+      [
+        'name' => "{$vendor}/{$project}"
+      ],
+      1
+    );
 
-    $this->logger->debug("Package '{$packageName}' version list was viewed.");
+    $package = $packageCol[0] ?? null;
+    if ($package === null) {
+      throw new PackageNotFoundException();
+    }
+
+    $this->logger->debug("Package '{$vendor}/{$project}' version list was viewed.");
 
     $taggedCol = $this->versionRepository->find(
       [
-        'package_name' => $packageName,
-        'release' => true
+        'package_id' => $package->getId(),
+        'release'    => true
       ]
     );
 
@@ -53,8 +63,8 @@ final class ListPackageVersionsAction extends AbstractPackageAction {
 
     $developCol = $this->versionRepository->find(
       [
-        'package_name' => $packageName,
-        'release' => false
+        'package_id' => $package->getId(),
+        'release'    => false
       ]
     );
 
@@ -91,11 +101,7 @@ final class ListPackageVersionsAction extends AbstractPackageAction {
       $twig->fetch(
         'package/list.twig',
         [
-          'package' => [
-            'name' => $packageName,
-            'project' => $project,
-            'vendor' => $vendor
-          ],
+          'package' => $package,
           'tagged' => $taggedCol,
           'develop' => $developCol,
           'app' => [

@@ -22,9 +22,9 @@ final class PdoVersionRepository implements VersionRepositoryInterface {
   /**
    * @param array{
    *   id?: int,
+   *   package_id: int,
    *   number: string,
    *   normalized: string,
-   *   package_name: string,
    *   release: bool,
    *   status: string,
    *   created_at: string,
@@ -34,9 +34,9 @@ final class PdoVersionRepository implements VersionRepositoryInterface {
   private function hydrate(array $data): Version {
     return new Version(
       $data['id'] ?? null,
+      $data['package_id'],
       $data['number'],
       $data['normalized'],
-      $data['package_name'],
       $data['release'],
       VersionStatusEnum::tryFrom($data['status']) ?? VersionStatusEnum::Unknown,
       new DateTimeImmutable($data['created_at']),
@@ -50,9 +50,9 @@ final class PdoVersionRepository implements VersionRepositoryInterface {
   }
 
   public function create(
+    int $packageId,
     string $number,
     string $normalized,
-    string $packageName,
     bool $release,
     VersionStatusEnum $status = VersionStatusEnum::Unknown,
     DateTimeImmutable $createdAt = new DateTimeImmutable()
@@ -60,9 +60,9 @@ final class PdoVersionRepository implements VersionRepositoryInterface {
     return $this->save(
       new Version(
         null,
+        $packageId,
         $number,
         $normalized,
-        $packageName,
         $release,
         $status,
         $createdAt
@@ -163,29 +163,33 @@ final class PdoVersionRepository implements VersionRepositoryInterface {
       $stmt = $this->pdo->prepare(
         <<<SQL
           INSERT INTO "versions"
-          ("number", "normalized", "package_name", "release", "status", "created_at")
+          ("package_id", "number", "normalized", "release", "status", "created_at")
           VALUES
-          (:number, :normalized, :package_name, :release, :status, :created_at)
+          (:package_id, :number, :normalized, :release, :status, :created_at)
         SQL
       );
     }
 
+    if ($version->getId() !== null) {
+      throw new InvalidArgumentException();
+    }
+
     $stmt->execute(
       [
-        'number'       => $version->getNumber(),
-        'normalized'   => $version->getNormalized(),
-        'package_name' => $version->getPackageName(),
-        'release'      => $version->isRelease() ? 1 : 0,
-        'status'       => $version->getStatus()->getLabel(),
-        'created_at'   => $version->getCreatedAt()->format(DateTimeInterface::ATOM)
+        'package_id' => $version->getPackageId(),
+        'number'     => $version->getNumber(),
+        'normalized' => $version->getNormalized(),
+        'release'    => $version->isRelease() ? 1 : 0,
+        'status'     => $version->getStatus()->getLabel(),
+        'created_at' => $version->getCreatedAt()->format(DateTimeInterface::ATOM)
       ]
     );
 
     $version = new Version(
       (int)$this->pdo->lastInsertId('versions_id_seq'),
+      $version->getPackageId(),
       $version->getNumber(),
       $version->getNormalized(),
-      $version->getPackageName(),
       $version->isRelease(),
       $version->getStatus(),
       $version->getCreatedAt()
@@ -205,9 +209,9 @@ final class PdoVersionRepository implements VersionRepositoryInterface {
         <<<SQL
           UPDATE "versions"
           SET
+            "package_id" = :package_id,
             "number" = :number,
             "normalized" = :normalized,
-            "package_name" = :package_name,
             "release" = :release,
             "status" = :status,
             "updated_at" = :updated_at
@@ -216,16 +220,20 @@ final class PdoVersionRepository implements VersionRepositoryInterface {
       );
     }
 
+    if ($version->getId() === null) {
+      throw new InvalidArgumentException();
+    }
+
     if ($version->isDirty()) {
       $stmt->execute(
         [
-          'id'           => $version->getId(),
-          'number'       => $version->getNumber(),
-          'normalized'   => $version->getNormalized(),
-          'package_name' => $version->getPackageName(),
-          'release'      => $version->isRelease() ? 1 : 0,
-          'status'       => $version->getStatus()->getLabel(),
-          'updated_at'   => $version->getUpdatedAt()?->format(DateTimeInterface::ATOM)
+          'id'         => $version->getId(),
+          'package_id' => $version->getPackageId(),
+          'number'     => $version->getNumber(),
+          'normalized' => $version->getNormalized(),
+          'release'    => $version->isRelease() ? 1 : 0,
+          'status'     => $version->getStatus()->getLabel(),
+          'updated_at' => $version->getUpdatedAt()?->format(DateTimeInterface::ATOM)
         ]
       );
 

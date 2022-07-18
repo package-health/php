@@ -100,7 +100,18 @@ final class SendCommandCommand extends Command {
             throw new InvalidArgumentException('The option "--packageName" is required for this command');
           }
 
-          $package = $this->packageRepository->get($packageName);
+          $packageCol = $this->packageRepository->find(
+            [
+              'name' => $packageName
+            ],
+            1
+          );
+
+          $package = $packageCol[0] ?? null;
+          if ($package === null) {
+            throw new PackageNotFoundException();
+          }
+
           $this->producer->sendCommand(
             new $commandClass($package)
           );

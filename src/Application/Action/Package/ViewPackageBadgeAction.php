@@ -46,14 +46,24 @@ final class ViewPackageBadgeAction extends AbstractPackageAction {
     $version = $this->resolveStringArg('version');
     VersionValidator::assertValid($version);
 
-    $package = $this->packageRepository->get("{$vendor}/{$project}");
+    $packageCol = $this->packageRepository->find(
+      [
+        'name' => "{$vendor}/{$project}"
+      ],
+      1
+    );
+
+    $package = $packageCol[0] ?? null;
+    if ($package === null) {
+      throw new PackageNotFoundException();
+    }
 
     $this->logger->debug("Status badge for package '{$vendor}/{$project}' was viewed.");
 
     $versionCol = $this->versionRepository->find(
       [
-        'number' => $version,
-        'package_name' => $package->getName()
+        'package_id' => $package->getId(),
+        'number'     => $version
       ],
       1
     );

@@ -1,6 +1,7 @@
 <?php
 declare(strict_types = 1);
 
+use Phinx\Db\Table\ForeignKey;
 use Phinx\Migration\AbstractMigration;
 
 final class Versions extends AbstractMigration {
@@ -18,24 +19,24 @@ final class Versions extends AbstractMigration {
 
     $versions = $this->table('versions');
     $versions
+      ->addColumn('package_id', 'integer', ['null' => false])
       ->addColumn('number', 'text', ['null' => false])
       ->addColumn('normalized', 'text', ['null' => false])
-      ->addColumn('package_name', 'text', ['null' => false])
-      // ->addColumn('status', 'versionStatus', ['null' => false, 'default' => 'unknown'])
       ->addColumn('release', 'boolean', ['null' => false, 'default' => false])
+      // ->addColumn('status', 'versionStatus', ['null' => false, 'default' => 'unknown'])
       ->addColumn('status', 'text', ['null' => false, 'default' => 'unknown'])
       ->addTimestampsWithTimezone()
+      ->addIndex('package_id')
       ->addIndex('number')
-      ->addIndex('package_name')
       ->addIndex('created_at')
-      ->addIndex(['number', 'package_name'], ['unique' => true])
+      ->addIndex(['package_id', 'number'], ['unique' => true])
       ->addForeignKey(
-        'package_name',
+        'package_id',
         'packages',
-        'name',
+        'id',
         [
-          'delete' => 'CASCADE',
-          'update' => 'NO_ACTION'
+          'delete' => ForeignKey::CASCADE,
+          'update' => ForeignKey::NO_ACTION
         ]
       )
       ->create();
