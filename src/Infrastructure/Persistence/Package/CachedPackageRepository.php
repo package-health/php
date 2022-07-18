@@ -79,11 +79,11 @@ final class CachedPackageRepository implements PackageRepositoryInterface {
   /**
    * @throws \PackageHealth\PHP\Domain\Package\PackageNotFoundException
    */
-  public function get(string $name): Package {
-    $item = $this->cacheItemPool->getItem("/package/{$name}");
+  public function get(int $id): Package {
+    $item = $this->cacheItemPool->getItem("/package/{$id}");
     $package = $item->get();
     if ($item->isHit() === false) {
-      $package = $this->packageRepository->get($name);
+      $package = $this->packageRepository->get($id);
 
       $item->set($package);
       $item->expiresAfter(3600);

@@ -142,10 +142,17 @@ class PackageDiscoveryHandler implements InvokeHandlerInterface {
         ['package' => $packageName]
       );
 
-      $package = match ($this->packageRepository->exists($packageName)) {
-         true  => $this->packageRepository->get($packageName),
-         false => $this->packageRepository->create($packageName)
-      };
+      $packageCol = $this->packageRepository->find(
+        [
+          'name' => $packageName
+        ],
+        1
+      );
+
+      $package = $packageCol[0] ?? null;
+      if ($package === null) {
+        $package = $this->packageRepository->create($packageName);
+      }
 
       $pkgs = [
         // dev versions
@@ -194,11 +201,11 @@ class PackageDiscoveryHandler implements InvokeHandlerInterface {
           // exclude branches from tagged releases (https://getcomposer.org/doc/articles/versions.md#branches)
           $isBranch = preg_match('/^dev-|-dev$/', $release['version']) === 1;
 
-          // find by the unique constraint (number, package_name)
+          // find by the unique constraint (package_id, number)
           $versionCol = $this->versionRepository->find(
             [
-              'number'       => $release['version'],
-              'package_name' => $packageName
+              'package_id' => $package->getId(),
+              'number'     => $release['version']
             ],
             1
           );
@@ -206,9 +213,9 @@ class PackageDiscoveryHandler implements InvokeHandlerInterface {
           $version = $versionCol[0] ?? null;
           if ($version === null) {
             $version = $this->versionRepository->create(
+              $package->getId(),
               $release['version'],
               $release['version_normalized'],
-              $packageName,
               $isBranch === false,
               VersionStatusEnum::Unknown,
               new DateTimeImmutable($release['time'] ?? 'now')

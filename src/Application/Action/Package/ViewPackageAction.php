@@ -42,14 +42,24 @@ final class ViewPackageAction extends AbstractPackageAction {
     $version = $this->resolveStringArg('version');
     VersionValidator::assertValid($version);
 
-    $package = $this->packageRepository->get("{$vendor}/{$project}");
-
     $twig = Twig::fromRequest($this->request);
+
+    $packageCol = $this->packageRepository->find(
+      [
+        'name' => "{$vendor}/{$project}"
+      ],
+      1
+    );
+
+    $package = $packageCol[0] ?? null;
+    if ($package === null) {
+      throw new PackageNotFoundException();
+    }
 
     $versionCol = $this->versionRepository->find(
       [
-        'number' => $version,
-        'package_name' => $package->getName()
+        'package_id' => $package->getId(),
+        'number'     => $version
       ],
       1
     );
@@ -125,14 +135,21 @@ final class ViewPackageAction extends AbstractPackageAction {
 
     $subtitle = [];
     foreach ($reqDependencies as $dependency) {
-      // handle unregistered dependencies
-      $dependencyPackage = [
-        'name' => $dependency->getName()
-      ];
-      $unregistered = true;
-      if ($this->packageRepository->exists($dependency->getName())) {
-        $dependencyPackage = $this->packageRepository->get($dependency->getName());
-        $unregistered = false;
+      $packageCol = $this->packageRepository->find(
+        [
+          'name' => $dependency->getName()
+        ],
+        1
+      );
+
+      $unregistered = false;
+      $dependencyPackage = $packageCol[0] ?? null;
+      if ($dependencyPackage === null) {
+        // handle unregistered dependencies
+        $dependencyPackage = [
+          'name' => $dependency->getName()
+        ];
+        $unregistered = true;
       }
 
       $data['requiredDeps'][] = [
@@ -179,14 +196,21 @@ final class ViewPackageAction extends AbstractPackageAction {
 
     $subtitle = [];
     foreach ($devDependencies as $dependency) {
-      // handle unregistered dependencies
-      $dependencyPackage = [
-        'name' => $dependency->getName()
-      ];
-      $unregistered = true;
-      if ($this->packageRepository->exists($dependency->getName())) {
-        $dependencyPackage = $this->packageRepository->get($dependency->getName());
-        $unregistered = false;
+      $packageCol = $this->packageRepository->find(
+        [
+          'name' => $dependency->getName()
+        ],
+        1
+      );
+
+      $unregistered = false;
+      $dependencyPackage = $packageCol[0] ?? null;
+      if ($dependencyPackage === null) {
+        // handle unregistered dependencies
+        $dependencyPackage = [
+          'name' => $dependency->getName()
+        ];
+        $unregistered = true;
       }
 
       $data['requiredDevDeps'][] = [

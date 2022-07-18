@@ -20,7 +20,7 @@ interface PackageRepositoryInterface {
   /**
    * @throws \PackageHealth\PHP\Domain\Package\PackageNotFoundException
    */
-  public function get(string $name): Package;
+  public function get(int $id): Package;
 
   public function find(array $query, int $limit = -1, int $offset = 0): PackageCollection;
 

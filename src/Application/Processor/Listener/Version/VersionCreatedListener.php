@@ -48,7 +48,7 @@ final class VersionCreatedListener implements InvokeListenerInterface {
     $this->logger->debug(
       'Version created',
       [
-        'package' => $version->getPackageName(),
+        'package' => $version->getPackageId(),
         'version' => $version->getNumber()
       ]
     );
@@ -59,7 +59,7 @@ final class VersionCreatedListener implements InvokeListenerInterface {
     }
 
     $package = $this->packageRepository->get(
-      $version->getPackageName()
+      $version->getPackageId()
     );
 
     $latestVersionNormalized = '0.0.0.0';
