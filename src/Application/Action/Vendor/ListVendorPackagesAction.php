@@ -4,6 +4,7 @@ declare(strict_types = 1);
 namespace PackageHealth\PHP\Application\Action\Vendor;
 
 use PackageHealth\PHP\Application\Action\AbstractAction;
+use PackageHealth\PHP\Domain\Package\Package;
 use PackageHealth\PHP\Domain\Package\PackageRepositoryInterface;
 use PackageHealth\PHP\Domain\Package\PackageValidator;
 use Psr\Http\Message\ResponseInterface;
@@ -27,22 +28,26 @@ final class ListVendorPackagesAction extends AbstractAction {
     $vendor = $this->resolveStringArg('vendor');
     PackageValidator::assertValidVendor($vendor);
 
-    $packages = $this->packageRepository->findMatching(['name' => "$vendor/%"]);
+    $packageCol = $this->packageRepository->findMatching(['name' => "$vendor/%"]);
     $twig = Twig::fromRequest($this->request);
 
     $this->logger->debug("Vendor '{$vendor}' package list was viewed.");
 
-    if (count($packages)) {
-      $lastModifiedList = array_map(
-        function (Package $package): int {
-          $lastModified = $package->getUpdatedAt() ?? $package->getCreatedAt();
+    if ($packageCol->count()) {
+      $lastModified = array_reduce(
+        $packageCol
+          ->map(
+            function (Package $package): int {
+              $lastModified = $package->getUpdatedAt() ?? $package->getCreatedAt();
 
-          return $lastModified->getTimestamp();
-        },
-        $packages
+              return $lastModified->getTimestamp();
+            }
+          )
+          ->toArray(),
+        'max',
+        0
       );
 
-      $lastModified = max($lastModifiedList);
       $this->response = $this->cacheProvider->withLastModified(
         $this->response,
         $lastModified
@@ -58,7 +63,7 @@ final class ListVendorPackagesAction extends AbstractAction {
         'vendor/list.twig',
         [
           'vendor'   => $vendor,
-          'packages' => $packages,
+          'packages' => $packageCol,
           'app'      => [
             'version' => $_ENV['VERSION']
           ]

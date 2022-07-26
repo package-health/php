@@ -5,9 +5,10 @@ namespace PackageHealth\PHP\Application\Action\Package;
 
 use PackageHealth\PHP\Domain\Package\PackageRepositoryInterface;
 use PackageHealth\PHP\Domain\Package\PackageValidator;
+use PackageHealth\PHP\Domain\Version\Version;
+use PackageHealth\PHP\Domain\Version\VersionCollection;
 use PackageHealth\PHP\Domain\Version\VersionNotFoundException;
 use PackageHealth\PHP\Domain\Version\VersionRepositoryInterface;
-use PackageHealth\PHP\Domain\Version\VersionCollection;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
 use Slim\HttpCache\CacheProvider;
@@ -35,11 +36,13 @@ final class ListPackageVersionsAction extends AbstractPackageAction {
 
     $twig = Twig::fromRequest($this->request);
 
-    $this->logger->debug("Package '{$vendor}/{$project}' version list was viewed.");
+    $packageName = "{$vendor}/{$project}";
+
+    $this->logger->debug("Package '{$packageName}' version list was viewed.");
 
     $taggedCol = $this->versionRepository->find(
       [
-        'package_name' => $package->getName(),
+        'package_name' => $packageName,
         'release' => true
       ]
     );
@@ -50,7 +53,7 @@ final class ListPackageVersionsAction extends AbstractPackageAction {
 
     $developCol = $this->versionRepository->find(
       [
-        'package_name' => $package->getName(),
+        'package_name' => $packageName,
         'release' => false
       ]
     );
@@ -59,17 +62,21 @@ final class ListPackageVersionsAction extends AbstractPackageAction {
       $developCol = $developCol->sort('getCreatedAt', VersionCollection::SORT_DESC);
     }
 
-    if (count($taggedCol)) {
-      $lastModifiedList = array_map(
-        function (Package $package): int {
-          $lastModified = $package->getUpdatedAt() ?? $package->getCreatedAt();
-
-          return $lastModified->getTimestamp();
-        },
+    if ($taggedCol->count()) {
+      $lastModified = array_reduce(
         $taggedCol
+          ->map(
+            function (Version $version): int {
+              $lastModified = $version->getUpdatedAt() ?? $version->getCreatedAt();
+
+              return $lastModified->getTimestamp();
+            }
+          )
+          ->toArray(),
+        'max',
+        0
       );
 
-      $lastModified = max($lastModifiedList);
       $this->response = $this->cacheProvider->withLastModified(
         $this->response,
         $lastModified
@@ -84,7 +91,11 @@ final class ListPackageVersionsAction extends AbstractPackageAction {
       $twig->fetch(
         'package/list.twig',
         [
-          'package' => $package,
+          'package' => [
+            'name' => $packageName,
+            'project' => $project,
+            'vendor' => $vendor
+          ],
           'tagged' => $taggedCol,
           'develop' => $developCol,
           'app' => [
