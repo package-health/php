@@ -40,6 +40,7 @@ LABEL maintainer="Flavio Heleno <flaviohbatista@gmail.com>" \
       org.opencontainers.image.url="https://github.com/package-health/php" \
       org.opencontainers.image.vendor="Package Health" \
       org.opencontainers.image.version="${VERSION}" \
-      org.opencontainers.image.base.name="ghcr.io/package-health/pph-nginx:${VERSION}"
+      org.opencontainers.image.base.name="ghcr.io/package-health/pph-nginx:${VERSION}" \
+      org.opencontainers.image.source="https://github.com/package-health/php"
 
 WORKDIR /usr/share/nginx/html

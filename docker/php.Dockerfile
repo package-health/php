@@ -157,7 +157,8 @@ LABEL maintainer="Flavio Heleno <flaviohbatista@gmail.com>" \
       org.opencontainers.image.url="https://github.com/package-health/php" \
       org.opencontainers.image.vendor="Package Health" \
       org.opencontainers.image.version="${VERSION}" \
-      org.opencontainers.image.base.name="ghcr.io/package-health/pph-php-cli:${VERSION}"
+      org.opencontainers.image.base.name="ghcr.io/package-health/pph-php-cli:${VERSION}" \
+      org.opencontainers.image.source="https://github.com/package-health/php"
 
 ENTRYPOINT ["/usr/bin/dumb-init", "--"]
 CMD ["php"]
@@ -255,7 +256,8 @@ LABEL maintainer="Flavio Heleno <flaviohbatista@gmail.com>" \
       org.opencontainers.image.url="https://github.com/package-health/php" \
       org.opencontainers.image.vendor="Package Health" \
       org.opencontainers.image.version="${VERSION}" \
-      org.opencontainers.image.base.name="ghcr.io/package-health/pph-php-fpm:${VERSION}"
+      org.opencontainers.image.base.name="ghcr.io/package-health/pph-php-fpm:${VERSION}" \
+      org.opencontainers.image.source="https://github.com/package-health/php"
 
 ENTRYPOINT ["/usr/bin/dumb-init", "--"]
 CMD ["php-fpm"]
