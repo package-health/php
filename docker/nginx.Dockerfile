@@ -1,4 +1,4 @@
-FROM nginx:1.23-alpine
+FROM nginx:1.23-alpine as nginx
 
 # https://blog.packagecloud.io/eng/2017/02/21/set-environment-variable-save-thousands-of-system-calls/
 ENV TZ=:/etc/localtime

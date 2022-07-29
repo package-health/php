@@ -19,6 +19,19 @@ jobs:
     permissions:
       contents: write
       packages: write
+    strategy:
+      matrix:
+        service: [nginx, php-fpm, php-cli]
+        include:
+          - service: nginx
+            target: nginx
+            dockerfile: nginx.Dockerfile
+          - service: php-fpm
+            target: fpm
+            dockerfile: php.Dockerfile
+          - service: php-cli
+            target: cli
+            dockerfile: php.Dockerfile
 
     steps:
 
@@ -48,40 +61,15 @@ jobs:
       # TODO: maybe we can use a build matrix for parallel builds
       # About the cache:
       # https://github.com/docker/build-push-action/blob/master/docs/advanced/cache.md#cache-backend-api
-      - name: Build NGINX Docker Image
+      - name: Build ${{ matrix.service }} Docker Image
         uses: docker/build-push-action@1cb9d22b932e4832bb29793b7777ec860fc1cde0
         with:
           push: true
           build-args:
             "VERSION=${{ steps.prepare-build.outputs.environment }}-${{ steps.prepare-build.outputs.short }}"
-          tags: ghcr.io/package-health/nginx:${{ steps.prepare-build.outputs.environment }}-${{ steps.prepare-build.outputs.short }}
-          file: ./docker/nginx.Dockerfile
-          context: .
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-
-      - name: Build PHP-FPM Docker Image
-        uses: docker/build-push-action@1cb9d22b932e4832bb29793b7777ec860fc1cde0
-        with:
-          push: true
-          build-args:
-            "VERSION=${{ steps.prepare-build.outputs.environment }}-${{ steps.prepare-build.outputs.short }}"
-          tags: ghcr.io/package-health/php-fpm:${{ steps.prepare-build.outputs.environment }}-${{ steps.prepare-build.outputs.short }}
-          file: ./docker/php.Dockerfile
-          target: fpm
-          context: .
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-
-      - name: Build PHP-CLI Docker Image
-        uses: docker/build-push-action@1cb9d22b932e4832bb29793b7777ec860fc1cde0
-        with:
-          push: true
-          build-args:
-            "VERSION=${{ steps.prepare-build.outputs.environment }}-${{ steps.prepare-build.outputs.short }}"
-          tags: ghcr.io/package-health/php-cli:${{ steps.prepare-build.outputs.environment }}-${{ steps.prepare-build.outputs.short }}
-          file: ./docker/php.Dockerfile
-          target: cli
+          tags: ghcr.io/package-health/${{ matrix.service }}:${{ steps.prepare-build.outputs.environment }}-${{ steps.prepare-build.outputs.short }}
+          file: ./docker/${{ matrix.dockerfile }}
+          target: ${{ matrix.target }}
           context: .
           cache-from: type=gha
           cache-to: type=gha,mode=max
