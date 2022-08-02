@@ -23,17 +23,17 @@ final class CachedVersionRepository implements VersionRepositoryInterface {
   }
 
   public function create(
+    int $packageId,
     string $number,
     string $normalized,
-    string $packageName,
     bool $release,
     VersionStatusEnum $status = VersionStatusEnum::Unknown,
     DateTimeImmutable $createdAt = new DateTimeImmutable()
   ): Version {
     return $this->versionRepository->create(
+      $packageId,
       $number,
       $normalized,
-      $packageName,
       $release,
       $status,
       $createdAt

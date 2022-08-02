@@ -8,6 +8,7 @@ use JsonSerializable;
 use ReturnTypeWillChange;
 
 final class Package implements JsonSerializable {
+  private ?int $id;
   private string $name;
   private string $vendor;
   private string $project;
@@ -19,6 +20,7 @@ final class Package implements JsonSerializable {
   private bool $dirty = false;
 
   public function __construct(
+    ?int $id,
     string $name,
     string $description,
     string $latestVersion,
@@ -26,6 +28,7 @@ final class Package implements JsonSerializable {
     DateTimeImmutable $createdAt = new DateTimeImmutable(),
     DateTimeImmutable $updatedAt = null
   ) {
+    $this->id            = $id;
     $this->name          = $name;
     $this->description   = $description;
     $this->latestVersion = $latestVersion;
@@ -34,6 +37,10 @@ final class Package implements JsonSerializable {
     $this->updatedAt     = $updatedAt;
 
     [$this->vendor, $this->project] = explode('/', $name);
+  }
+
+  public function getId(): ?int {
+    return $this->id;
   }
 
   public function getName(): string {
@@ -113,6 +120,7 @@ final class Package implements JsonSerializable {
 
   /**
    * @return array{
+   *   id: int|null,
    *   name: string,
    *   description: string,
    *   latestVersion: string,
@@ -124,6 +132,7 @@ final class Package implements JsonSerializable {
   #[ReturnTypeWillChange]
   public function jsonSerialize(): array {
     return [
+      'id'            => $this->id,
       'name'          => $this->name,
       'description'   => $this->description,
       'latestVersion' => $this->latestVersion,

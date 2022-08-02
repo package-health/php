@@ -17,6 +17,18 @@ final class RedirectPackageBadgeAction extends AbstractPackageAction {
 
     $package = $this->packageRepository->get("{$vendor}/{$project}");
 
+    $packageCol = $this->packageRepository->find(
+      [
+        'name' => "{$vendor}/{$project}"
+      ],
+      1
+    );
+
+    $package = $packageCol[0] ?? null;
+    if ($package === null) {
+      throw new PackageNotFoundException();
+    }
+
     $routeParser = RouteContext::fromRequest($this->request)->getRouteParser();
 
     $this->logger->debug("Badge for package '{$vendor}/{$project}' is being redirected.");

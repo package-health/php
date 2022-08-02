@@ -97,7 +97,18 @@ final class GetDataCommand extends Command {
 
       $metadata = $this->packagist->getPackageMetadataVersion1($packageName, $mirror);
 
-      $package = $this->packageRepository->get($packageName);
+      $packageCol = $this->packageRepository->find(
+        [
+          'name' => "{$vendor}/{$project}"
+        ],
+        1
+      );
+
+      $package = $packageCol[0] ?? null;
+      if ($package === null) {
+        throw new PackageNotFoundException();
+      }
+
       $package = $package
         ->withDescription($metadata['description'] ?? '')
         ->withUrl($metadata['repository'] ?? '');
@@ -156,10 +167,10 @@ final class GetDataCommand extends Command {
 
         $versionCol = $this->versionRepository->find(
           [
-            'number'       => $release['version'],
-            'normalized'   => $release['version_normalized'],
-            'package_name' => $packageName,
-            'release'      => $isBranch === false
+            'package_id' => $package->getId(),
+            'number'     => $release['version'],
+            'normalized' => $release['version_normalized'],
+            'release'    => $isBranch === false
           ],
           1
         );
@@ -178,9 +189,9 @@ final class GetDataCommand extends Command {
           }
 
           $version = $this->versionRepository->create(
+            $package->getId(),
             $release['version'],
             $release['version_normalized'],
-            $packageName,
             $isBranch === false,
             VersionStatusEnum::Unknown
           );
@@ -226,10 +237,14 @@ final class GetDataCommand extends Command {
           }
 
           if (isset($packageList[$dependencyName]) === false) {
-            $packageList[$dependencyName] = '';
-            if ($this->packageRepository->exists($dependencyName)) {
-              $packageList[$dependencyName] = $this->packageRepository->get($dependencyName)->getLatestVersion();
-            }
+            $packageCol = $this->packageRepository->find(
+              [
+                'name' => $dependencyName
+              ],
+              1
+            );
+
+            $packageList[$dependencyName] = $packageCol[0]->getLatestVersion() ?? '';
           }
 
           $dependencyCol = $this->dependencyRepository->find(
@@ -302,10 +317,14 @@ final class GetDataCommand extends Command {
           }
 
           if (isset($packageList[$dependencyName]) === false) {
-            $packageList[$dependencyName] = '';
-            if ($this->packageRepository->exists($dependencyName)) {
-              $packageList[$dependencyName] = $this->packageRepository->get($dependencyName)->getLatestVersion();
-            }
+            $packageCol = $this->packageRepository->find(
+              [
+                'name' => $dependencyName
+              ],
+              1
+            );
+
+            $packageList[$dependencyName] = $packageCol[0]->getLatestVersion() ?? '';
           }
 
           $dependencyCol = $this->dependencyRepository->find(

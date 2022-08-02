@@ -10,9 +10,9 @@ use ReturnTypeWillChange;
 
 final class Version implements JsonSerializable {
   private ?int $id;
+  private int $packageId;
   private string $number;
   private string $normalized;
-  private string $packageName;
   private bool $release;
   private VersionStatusEnum $status;
   private DateTimeImmutable $createdAt;
@@ -21,26 +21,43 @@ final class Version implements JsonSerializable {
 
   public function __construct(
     ?int $id,
+    int $packageId,
     string $number,
     string $normalized,
-    string $packageName,
     bool $release = false,
     VersionStatusEnum $status = VersionStatusEnum::Unknown,
     DateTimeImmutable $createdAt = new DateTimeImmutable(),
     DateTimeImmutable $updatedAt = null
   ) {
-    $this->id          = $id;
-    $this->number      = $number;
-    $this->normalized  = $normalized;
-    $this->packageName = $packageName;
-    $this->release     = $release;
-    $this->status      = $status;
-    $this->createdAt   = $createdAt;
-    $this->updatedAt   = $updatedAt;
+    $this->id         = $id;
+    $this->packageId  = $packageId;
+    $this->number     = $number;
+    $this->normalized = $normalized;
+    $this->release    = $release;
+    $this->status     = $status;
+    $this->createdAt  = $createdAt;
+    $this->updatedAt  = $updatedAt;
   }
 
   public function getId(): ?int {
     return $this->id;
+  }
+
+  public function getPackageId(): int {
+    return $this->packageId;
+  }
+
+  public function withPackageId(int $packageId): self {
+    if ($this->packageId === $packageId) {
+      return $this;
+    }
+
+    $clone = clone $this;
+    $clone->packageId = $packageId;
+    $clone->dirty = true;
+    $clone->updatedAt = new DateTimeImmutable();
+
+    return $clone;
   }
 
   public function getNumber(): string {
@@ -71,23 +88,6 @@ final class Version implements JsonSerializable {
 
     $clone = clone $this;
     $clone->normalized = $normalized;
-    $clone->dirty = true;
-    $clone->updatedAt = new DateTimeImmutable();
-
-    return $clone;
-  }
-
-  public function getPackageName(): string {
-    return $this->packageName;
-  }
-
-  public function withPackageName(string $packageName): self {
-    if ($this->packageName === $packageName) {
-      return $this;
-    }
-
-    $clone = clone $this;
-    $clone->packageName = $packageName;
     $clone->dirty = true;
     $clone->updatedAt = new DateTimeImmutable();
 
@@ -147,8 +147,8 @@ final class Version implements JsonSerializable {
   /**
    * @return array{
    *   id: int|null,
+   *   packageId: int,
    *   number: string,
-   *   packageName: string,
    *   release: bool,
    *   status: \PackageHealth\PHP\Domain\Version\VersionStatusEnum,
    *   createdAt: \DateTimeImmutable,
@@ -158,13 +158,13 @@ final class Version implements JsonSerializable {
   #[ReturnTypeWillChange]
   public function jsonSerialize(): array {
     return [
-      'id'          => $this->id,
-      'number'      => $this->number,
-      'packageName' => $this->packageName,
-      'release'     => $this->release,
-      'status'      => $this->status,
-      'createdAt'   => $this->createdAt,
-      'updatedAt'   => $this->updatedAt
+      'id'        => $this->id,
+      'packageId' => $this->packageId,
+      'number'    => $this->number,
+      'release'   => $this->release,
+      'status'    => $this->status,
+      'createdAt' => $this->createdAt,
+      'updatedAt' => $this->updatedAt
     ];
   }
 }
