@@ -1,7 +1,7 @@
 #============================================
 # BUILD
 #============================================
-FROM php:8.1.8-cli-alpine3.16 AS builder
+FROM php:8.1.9-cli-alpine3.16 AS builder
 
 # https://blog.packagecloud.io/eng/2017/02/21/set-environment-variable-save-thousands-of-system-calls/
 ENV TZ=:UTC
@@ -85,7 +85,7 @@ RUN composer install --no-progress --ignore-platform-reqs --no-dev --prefer-dist
 #============================================
 # COMMAND LINE INTERFACE
 #============================================
-FROM php:8.1.8-cli-alpine3.16 as cli
+FROM php:8.1.9-cli-alpine3.16 as cli
 
 # https://blog.packagecloud.io/eng/2017/02/21/set-environment-variable-save-thousands-of-system-calls/
 ENV TZ=:UTC
@@ -101,6 +101,7 @@ RUN apk add --no-cache --upgrade apk-tools && \
 # Settings
 #============================================
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" && \
+    rm "$PHP_INI_DIR/php.ini-development" && \
     echo "memory_limit = -1" > /usr/local/etc/php/conf.d/memory.ini && \
     echo "variables_order = EGPCS" > /usr/local/etc/php/conf.d/variables_order.ini && \
     echo "zend.assertions = -1" > /usr/local/etc/php/conf.d/zend.ini
@@ -153,12 +154,12 @@ ARG VERSION=latest
 ENV VERSION="${VERSION}"
 LABEL maintainer="Flavio Heleno <flaviohbatista@gmail.com>" \
       org.opencontainers.image.authors="flaviohbatista@gmail.com" \
+      org.opencontainers.image.base.name="ghcr.io/package-health/pph-php-cli:${VERSION}" \
+      org.opencontainers.image.source="https://github.com/package-health/php" \
       org.opencontainers.image.title="PHP-Package-Health: PHP-CLI" \
       org.opencontainers.image.url="https://github.com/package-health/php" \
       org.opencontainers.image.vendor="Package Health" \
-      org.opencontainers.image.version="${VERSION}" \
-      org.opencontainers.image.base.name="ghcr.io/package-health/pph-php-cli:${VERSION}" \
-      org.opencontainers.image.source="https://github.com/package-health/php"
+      org.opencontainers.image.version="${VERSION}"
 
 ENTRYPOINT ["/usr/bin/dumb-init", "--"]
 CMD ["php"]
@@ -166,7 +167,7 @@ CMD ["php"]
 #============================================
 # FPM SAPI
 #============================================
-FROM php:8.1.8-fpm-alpine3.16 as fpm
+FROM php:8.1.9-fpm-alpine3.16 as fpm
 
 # https://blog.packagecloud.io/eng/2017/02/21/set-environment-variable-save-thousands-of-system-calls/
 ENV TZ=:UTC
@@ -182,6 +183,7 @@ RUN apk add --no-cache --upgrade apk-tools && \
 # Settings
 #============================================
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" && \
+    rm "$PHP_INI_DIR/php.ini-development" && \
     echo "memory_limit = 256M" > /usr/local/etc/php/conf.d/memory.ini && \
     echo "variables_order = EGPCS" > /usr/local/etc/php/conf.d/variables_order.ini && \
     echo "expose_php = Off" > /usr/local/etc/php/conf.d/expose_php.ini && \
@@ -252,12 +254,12 @@ ARG VERSION=latest
 ENV VERSION="${VERSION}"
 LABEL maintainer="Flavio Heleno <flaviohbatista@gmail.com>" \
       org.opencontainers.image.authors="flaviohbatista@gmail.com" \
+      org.opencontainers.image.base.name="ghcr.io/package-health/pph-php-fpm:${VERSION}" \
+      org.opencontainers.image.source="https://github.com/package-health/php" \
       org.opencontainers.image.title="PHP-Package-Health: PHP-FPM" \
       org.opencontainers.image.url="https://github.com/package-health/php" \
       org.opencontainers.image.vendor="Package Health" \
-      org.opencontainers.image.version="${VERSION}" \
-      org.opencontainers.image.base.name="ghcr.io/package-health/pph-php-fpm:${VERSION}" \
-      org.opencontainers.image.source="https://github.com/package-health/php"
+      org.opencontainers.image.version="${VERSION}"
 
 ENTRYPOINT ["/usr/bin/dumb-init", "--"]
 CMD ["php-fpm"]

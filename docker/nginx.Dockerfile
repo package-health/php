@@ -36,11 +36,11 @@ HEALTHCHECK --interval=1m30s --timeout=10s --retries=3 --start-period=40s CMD cu
 ARG VERSION=latest
 LABEL maintainer="Flavio Heleno <flaviohbatista@gmail.com>" \
       org.opencontainers.image.authors="flaviohbatista@gmail.com" \
+      org.opencontainers.image.base.name="ghcr.io/package-health/pph-nginx:${VERSION}" \
+      org.opencontainers.image.source="https://github.com/package-health/php" \
       org.opencontainers.image.title="PHP-Package-Health-NGINX" \
       org.opencontainers.image.url="https://github.com/package-health/php" \
       org.opencontainers.image.vendor="Package Health" \
-      org.opencontainers.image.version="${VERSION}" \
-      org.opencontainers.image.base.name="ghcr.io/package-health/pph-nginx:${VERSION}" \
-      org.opencontainers.image.source="https://github.com/package-health/php"
+      org.opencontainers.image.version="${VERSION}"
 
 WORKDIR /usr/share/nginx/html
