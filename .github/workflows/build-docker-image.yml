@@ -47,9 +47,6 @@ jobs:
               echo "::set-output name=environment::dev"
             fi
 
-      - name: Clone repository
-        uses: actions/checkout@v3
-
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2.0.0
 
@@ -71,7 +68,6 @@ jobs:
           tags: ghcr.io/package-health/${{ matrix.service }}:${{ steps.prepare-build.outputs.environment }}-${{ steps.prepare-build.outputs.short }}
           file: ./docker/${{ matrix.dockerfile }}
           target: ${{ matrix.target }}
-          context: .
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
