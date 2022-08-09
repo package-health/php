@@ -164,6 +164,8 @@ LABEL maintainer="Flavio Heleno <flaviohbatista@gmail.com>" \
       org.opencontainers.image.vendor="Package Health" \
       org.opencontainers.image.version="${VERSION}"
 
+VOLUME ["/var/www/html/run"]
+
 ENTRYPOINT ["/usr/bin/dumb-init", "--"]
 CMD ["php"]
 
