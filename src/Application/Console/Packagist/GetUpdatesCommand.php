@@ -20,11 +20,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 final class GetUpdatesCommand extends Command {
-  /**
-   * File cache lifetime (12 hour TTL)
-   */
-  private const FILE_TIMEOUT = 43200;
-
   protected static $defaultName = 'packagist:get-updates';
   private PreferenceRepositoryInterface $preferenceRepository;
   private PackageRepositoryInterface $packageRepository;
