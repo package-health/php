@@ -3,6 +3,7 @@ declare(strict_types = 1);
 
 namespace PackageHealth\PHP\Application\Action\Package;
 
+use PackageHealth\PHP\Domain\Package\PackageNotFoundException;
 use PackageHealth\PHP\Domain\Package\PackageValidator;
 use Psr\Http\Message\ResponseInterface;
 use Slim\Routing\RouteContext;

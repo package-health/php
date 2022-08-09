@@ -5,6 +5,7 @@ namespace PackageHealth\PHP\Application\Action\Package;
 
 use PackageHealth\PHP\Domain\Dependency\DependencyRepositoryInterface;
 use PackageHealth\PHP\Domain\Dependency\DependencyStatusEnum;
+use PackageHealth\PHP\Domain\Package\PackageNotFoundException;
 use PackageHealth\PHP\Domain\Package\PackageRepositoryInterface;
 use PackageHealth\PHP\Domain\Package\PackageValidator;
 use PackageHealth\PHP\Domain\Version\VersionNotFoundException;

@@ -3,6 +3,7 @@ declare(strict_types = 1);
 
 namespace PackageHealth\PHP\Application\Action\Package;
 
+use PackageHealth\PHP\Domain\Package\PackageNotFoundException;
 use PackageHealth\PHP\Domain\Package\PackageRepositoryInterface;
 use PackageHealth\PHP\Domain\Package\PackageValidator;
 use PackageHealth\PHP\Domain\Version\VersionRepositoryInterface;
