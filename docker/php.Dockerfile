@@ -118,6 +118,9 @@ COPY --chown=www-data:www-data --from=builder /usr/src/vendor/ /var/www/html/ven
 COPY --from=builder /usr/local/lib/php/extensions/no-debug-non-zts-20210902 /usr/local/lib/php/extensions/no-debug-non-zts-20210902
 COPY --from=builder /usr/local/etc/php/conf.d/*.ini /usr/local/etc/php/conf.d/
 
+RUN mkdir /var/www/html/run && \
+    chown -R www-data:www-data /var/www/html/run
+
 #============================================
 # Library dependencies
 #============================================
