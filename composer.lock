@@ -97,7 +97,7 @@
         },
         {
             "name": "cakephp/core",
-            "version": "4.4.3",
+            "version": "4.4.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cakephp/core.git",
@@ -154,7 +154,7 @@
         },
         {
             "name": "cakephp/database",
-            "version": "4.4.3",
+            "version": "4.4.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cakephp/database.git",
@@ -209,16 +209,16 @@
         },
         {
             "name": "cakephp/datasource",
-            "version": "4.4.3",
+            "version": "4.4.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cakephp/datasource.git",
-                "reference": "2f890a6b8d8b33da2d26fcb486ecf5484d9ab014"
+                "reference": "f0dd560edbaf6dac8045e7804c25d2e8e6ef0d3c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cakephp/datasource/zipball/2f890a6b8d8b33da2d26fcb486ecf5484d9ab014",
-                "reference": "2f890a6b8d8b33da2d26fcb486ecf5484d9ab014",
+                "url": "https://api.github.com/repos/cakephp/datasource/zipball/f0dd560edbaf6dac8045e7804c25d2e8e6ef0d3c",
+                "reference": "f0dd560edbaf6dac8045e7804c25d2e8e6ef0d3c",
                 "shasum": ""
             },
             "require": {
@@ -263,11 +263,11 @@
                 "issues": "https://github.com/cakephp/cakephp/issues",
                 "source": "https://github.com/cakephp/datasource"
             },
-            "time": "2022-07-06T14:29:38+00:00"
+            "time": "2022-07-28T08:59:25+00:00"
         },
         {
             "name": "cakephp/utility",
-            "version": "4.4.3",
+            "version": "4.4.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cakephp/utility.git",
@@ -480,12 +480,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/courier-php/courier.git",
-                "reference": "ffb7d51a0aa2398342827e0adac3dec54187bb53"
+                "reference": "614e6e99d166bb21c2b5d1c32d31033a1875206d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/courier-php/courier/zipball/ffb7d51a0aa2398342827e0adac3dec54187bb53",
-                "reference": "ffb7d51a0aa2398342827e0adac3dec54187bb53",
+                "url": "https://api.github.com/repos/courier-php/courier/zipball/614e6e99d166bb21c2b5d1c32d31033a1875206d",
+                "reference": "614e6e99d166bb21c2b5d1c32d31033a1875206d",
                 "shasum": ""
             },
             "require": {
@@ -528,7 +528,7 @@
                 "issues": "https://github.com/courier-php/courier/issues",
                 "source": "https://github.com/courier-php/courier/tree/main"
             },
-            "time": "2022-07-11T13:53:03+00:00"
+            "time": "2022-08-11T14:57:47+00:00"
         },
         {
             "name": "courier/locator-container",
@@ -7328,12 +7328,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Roave/SecurityAdvisories.git",
-                "reference": "83594c26a26f66af6e5322b9011b2e243a5509e8"
+                "reference": "8b99cfd0a6224d0fc7b223603210d48e36a79966"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/83594c26a26f66af6e5322b9011b2e243a5509e8",
-                "reference": "83594c26a26f66af6e5322b9011b2e243a5509e8",
+                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/8b99cfd0a6224d0fc7b223603210d48e36a79966",
+                "reference": "8b99cfd0a6224d0fc7b223603210d48e36a79966",
                 "shasum": ""
             },
             "conflict": {
@@ -7451,6 +7451,7 @@
                 "flarum/sticky": ">=0.1-beta.14,<=0.1-beta.15",
                 "flarum/tags": "<=0.1-beta.13",
                 "fluidtypo3/vhs": "<5.1.1",
+                "fof/byobu": ">=0.3-beta.2,<1.1.7",
                 "fof/upload": "<1.2.3",
                 "fooman/tcpdf": "<6.2.22",
                 "forkcms/forkcms": "<5.11.1",
@@ -7835,7 +7836,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-07-29T23:04:14+00:00"
+            "time": "2022-08-06T06:06:57+00:00"
         },
         {
             "name": "sanmai/later",
