@@ -36,6 +36,12 @@ final class ConsumeCommand extends Command implements SignalableCommandInterface
         'Run command as daemon'
       )
       ->addOption(
+        'all',
+        null,
+        InputOption::VALUE_NONE,
+        'Consume all available messages (overrides messageCount parameter)'
+      )
+      ->addOption(
         'messageCount',
         'm',
         InputOption::VALUE_REQUIRED,
@@ -71,9 +77,12 @@ final class ConsumeCommand extends Command implements SignalableCommandInterface
 
       $daemonize = (bool)$input->getOption('daemonize');
 
-      $messageCount = (int)$input->getOption('messageCount');
-
       $queueName = $input->getArgument('queueName');
+
+      $messageCount = match ((bool)$input->getOption('all')) {
+        true  => $this->consumer->getMessageCount($queueName),
+        false => (int)$input->getOption('messageCount')
+      };
 
       if ($output->isVerbose()) {
         $io->text(
