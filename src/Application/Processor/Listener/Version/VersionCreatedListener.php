@@ -48,8 +48,8 @@ final class VersionCreatedListener implements InvokeListenerInterface {
     $this->logger->debug(
       'Version created',
       [
-        'package' => $version->getPackageId(),
-        'version' => $version->getNumber()
+        'packageId' => $version->getPackageId(),
+        'version'   => $version->getNumber()
       ]
     );
 

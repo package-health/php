@@ -51,9 +51,9 @@ final class ListCommand extends Command {
         ]
       );
 
-      $routes = $this->bus->getRouter()->getRoutes();
+      $router = $this->bus->getRouter();
       $transp = $this->bus->getTransport();
-      foreach ($routes as $route) {
+      foreach ($router->getRoutes() as $route) {
         $table->addRow(
           [
             $route->getRouteName(),
