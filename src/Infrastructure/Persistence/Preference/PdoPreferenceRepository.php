@@ -6,18 +6,23 @@ namespace PackageHealth\PHP\Infrastructure\Persistence\Preference;
 use Courier\Client\Producer\ProducerInterface;
 use DateTimeImmutable;
 use DateTimeInterface;
+use Iterator;
+use Kolekto\CollectionInterface;
+use Kolekto\EagerCollection;
+use Kolekto\LazyCollection;
 use PackageHealth\PHP\Application\Message\Event\Preference\PreferenceCreatedEvent;
 use PackageHealth\PHP\Application\Message\Event\Preference\PreferenceUpdatedEvent;
 use PackageHealth\PHP\Domain\Preference\Preference;
-use PackageHealth\PHP\Domain\Preference\PreferenceCollection;
 use PackageHealth\PHP\Domain\Preference\PreferenceNotFoundException;
 use PackageHealth\PHP\Domain\Preference\PreferenceRepositoryInterface;
 use PackageHealth\PHP\Domain\Preference\PreferenceTypeEnum;
 use PDO;
+use PDOStatement;
 
 final class PdoPreferenceRepository implements PreferenceRepositoryInterface {
   private PDO $pdo;
   private ProducerInterface $producer;
+  private bool $lazyFetch = false;
 
   /**
    * @param array{
@@ -47,6 +52,12 @@ final class PdoPreferenceRepository implements PreferenceRepositoryInterface {
     $this->producer = $producer;
   }
 
+  public function withLazyFetch(): static {
+    $this->lazyFetch = true;
+
+    return $this;
+  }
+
   public function create(
     string $category,
     string $property,
@@ -66,21 +77,44 @@ final class PdoPreferenceRepository implements PreferenceRepositoryInterface {
     );
   }
 
-  public function all(): PreferenceCollection {
+  public function all(array $orderBy = []): CollectionInterface {
+    $order = '"category" ASC, "property" ASC';
+    if (count($orderBy) > 0) {
+      $order = [];
+      foreach ($orderBy as $column => $sort) {
+        if (in_array($sort, ['ASC', 'DESC']) === false) {
+          throw new InvalidArgumentException('Order by requires "ASC" or "DESC" order');
+        }
+
+        $order[] = sprintf('"%s" %s', $column, strtoupper($sort));
+      }
+
+      $order = implode(', ', $order);
+    }
+
     $stmt = $this->pdo->query(
       <<<SQL
         SELECT *
         FROM "preferences"
-        ORDER BY "category" ASC, "property" ASC
+        ORDER BY {$order}
       SQL
     );
 
-    $preferenceCol = new PreferenceCollection();
-    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-      $preferenceCol->add($this->hydrate($row));
+    if ($this->lazyFetch) {
+      $this->lazyFetch = false;
+
+      return new LazyCollection(
+        (function (PDOStatement $stmt): Iterator {
+          while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            yield $this->hydrate($row);
+          }
+        })->call($this, $stmt)
+      );
     }
 
-    return $preferenceCol;
+    return new EagerCollection(
+      array_map([$this, 'hydrate'], $stmt->fetchAll(PDO::FETCH_ASSOC))
+    );
   }
 
   public function get(int $id): Preference {
@@ -106,7 +140,12 @@ final class PdoPreferenceRepository implements PreferenceRepositoryInterface {
     return $this->hydrate($row);
   }
 
-  public function find(array $query, int $limit = -1, int $offset = 0): PreferenceCollection {
+  public function find(
+    array $query,
+    int $limit = -1,
+    int $offset = 0,
+    array $orderBy = []
+  ): CollectionInterface {
     $where = [];
     foreach (array_keys($query) as $col) {
       $where[] = sprintf(
@@ -121,12 +160,26 @@ final class PdoPreferenceRepository implements PreferenceRepositoryInterface {
       $limit = 'ALL';
     }
 
+    $order = '"category" ASC, "property" ASC';
+    if (count($orderBy) > 0) {
+      $order = [];
+      foreach ($orderBy as $column => $sort) {
+        if (in_array($sort, ['ASC', 'DESC']) === false) {
+          throw new InvalidArgumentException('Order by requires "ASC" or "DESC" order');
+        }
+
+        $order[] = sprintf('"%s" %s', $column, strtoupper($sort));
+      }
+
+      $order = implode(', ', $order);
+    }
+
     $stmt = $this->pdo->prepare(
       <<<SQL
         SELECT *
         FROM "preferences"
         WHERE {$where}
-        ORDER BY "category" ASC, "property" ASC
+        ORDER BY {$order}
         LIMIT {$limit}
         OFFSET {$offset}
       SQL
@@ -134,12 +187,21 @@ final class PdoPreferenceRepository implements PreferenceRepositoryInterface {
 
     $stmt->execute($query);
 
-    $preferenceCol = new PreferenceCollection();
-    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-      $preferenceCol->add($this->hydrate($row));
+    if ($this->lazyFetch) {
+      $this->lazyFetch = false;
+
+      return new LazyCollection(
+        (function (PDOStatement $stmt): Iterator {
+          while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            yield $this->hydrate($row);
+          }
+        })->call($this, $stmt)
+      );
     }
 
-    return $preferenceCol;
+    return new EagerCollection(
+      array_map([$this, 'hydrate'], $stmt->fetchAll(PDO::FETCH_ASSOC))
+    );
   }
 
   public function save(Preference $preference): Preference {

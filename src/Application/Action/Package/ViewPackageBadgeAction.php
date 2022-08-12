@@ -54,13 +54,13 @@ final class ViewPackageBadgeAction extends AbstractPackageAction {
       1
     );
 
-    $package = $packageCol[0] ?? null;
-    if ($package === null) {
+    if ($packageCol->isEmpty()) {
       throw new PackageNotFoundException();
     }
 
     $this->logger->debug("Status badge for package '{$vendor}/{$project}' was viewed.");
 
+    $package = $packageCol->first();
     $versionCol = $this->versionRepository->find(
       [
         'package_id' => $package->getId(),
@@ -107,13 +107,13 @@ final class ViewPackageBadgeAction extends AbstractPackageAction {
           ]
         );
 
-        $outdated = $dependencyCol->filter(
+        $outdated = count($dependencyCol->filter(
           static function (Dependency $dependency): bool {
             return $dependency->getStatus() === DependencyStatusEnum::Outdated;
           }
-        )->count();
+        ));
 
-        $total = $dependencyCol->count();
+        $total = count($dependencyCol);
 
         $status = [
           'text'  => "{$outdated} of {$total} outdated",

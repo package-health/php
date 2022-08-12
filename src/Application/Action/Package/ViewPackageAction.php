@@ -52,10 +52,11 @@ final class ViewPackageAction extends AbstractPackageAction {
       1
     );
 
-    $package = $packageCol[0] ?? null;
-    if ($package === null) {
+    if ($packageCol->isEmpty()) {
       throw new PackageNotFoundException();
     }
+
+    $package = $packageCol->first();
 
     $versionCol = $this->versionRepository->find(
       [
@@ -143,15 +144,14 @@ final class ViewPackageAction extends AbstractPackageAction {
         1
       );
 
-      $unregistered = false;
-      $dependencyPackage = $packageCol[0] ?? null;
-      if ($dependencyPackage === null) {
-        // handle unregistered dependencies
-        $dependencyPackage = [
+      // handle unregistered dependencies
+      $unregistered = $packageCol->isEmpty();
+      $dependencyPackage = match ($packageCol->isEmpty()) {
+        true  => [
           'name' => $dependency->getName()
-        ];
-        $unregistered = true;
-      }
+        ],
+        false => $packageCol->first()
+      };
 
       $data['requiredDeps'][] = [
         'package' => $dependencyPackage,
@@ -204,15 +204,14 @@ final class ViewPackageAction extends AbstractPackageAction {
         1
       );
 
-      $unregistered = false;
-      $dependencyPackage = $packageCol[0] ?? null;
-      if ($dependencyPackage === null) {
-        // handle unregistered dependencies
-        $dependencyPackage = [
+      // handle unregistered dependencies
+      $unregistered = $packageCol->isEmpty();
+      $dependencyPackage = match ($packageCol->isEmpty()) {
+        true  => [
           'name' => $dependency->getName()
-        ];
-        $unregistered = true;
-      }
+        ],
+        false => $packageCol->first()
+      };
 
       $data['requiredDevDeps'][] = [
         'package' => $dependencyPackage,

@@ -14,7 +14,7 @@ final class ListPackagesAction extends AbstractPackageAction {
 
     $this->logger->debug('Packages list was viewed.');
 
-    if ($packageCol->count()) {
+    if (count($packageCol)) {
       $lastModified = array_reduce(
         $packageCol
           ->map(

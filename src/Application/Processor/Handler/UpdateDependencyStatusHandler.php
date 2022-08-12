@@ -110,15 +110,22 @@ class UpdateDependencyStatusHandler implements InvokeHandlerInterface {
         return HandlerResultEnum::Reject;
       }
 
-      $limit = 500;
-      $offset = 0;
-      do {
-        $dependencyCol = $this->dependencyRepository->find(
-          [
-            'name' => $packageName
-          ],
-          $limit,
-          $offset
+      $dependencyCol = $this->dependencyRepository->withLazyFetch()->find(
+        [
+          'name' => $packageName
+        ]
+      );
+
+      foreach ($dependencyCol as $dependency) {
+        if ($dependency->getConstraint() === 'self.version') {
+          // need to find out how to handle this
+          continue;
+        }
+
+        $dependency = $dependency->withStatus(
+          Semver::satisfies($package->getLatestVersion(), $dependency->getConstraint()) ?
+            DependencyStatusEnum::UpToDate :
+            DependencyStatusEnum::Outdated
         );
 
         foreach ($dependencyCol as $dependency) {
@@ -135,10 +142,8 @@ class UpdateDependencyStatusHandler implements InvokeHandlerInterface {
 
           $this->dependencyRepository->update($dependency);
         }
-        
-        $offset += $limit;
       } while ($dependencyCol->isEmpty() === false);
-        
+
       return HandlerResultEnum::Accept;
     } catch (Exception $exception) {
       $this->logger->error(

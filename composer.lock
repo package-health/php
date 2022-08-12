@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "254602b86520ec8e5fc3a8721eca877e",
+    "content-hash": "2d2aea3881e9dc82295768504f3540b4",
     "packages": [
         {
             "name": "badges/poser",
@@ -759,6 +759,61 @@
             "time": "2022-07-11T13:56:09+00:00"
         },
         {
+            "name": "flavioheleno/kolekto",
+            "version": "dev-main",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/flavioheleno/kolekto.git",
+                "reference": "01f031109298ab7d5cbcc9a048d51c875ea2cd16"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/flavioheleno/kolekto/zipball/01f031109298ab7d5cbcc9a048d51c875ea2cd16",
+                "reference": "01f031109298ab7d5cbcc9a048d51c875ea2cd16",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.1"
+            },
+            "require-dev": {
+                "infection/infection": "^0.26",
+                "php-parallel-lint/php-parallel-lint": "^1.3",
+                "phpstan/phpstan": "^1.4",
+                "phpunit/phpunit": "^9.5",
+                "psy/psysh": "^0.11",
+                "roave/security-advisories": "dev-latest",
+                "squizlabs/php_codesniffer": "^3.6",
+                "vimeo/psalm": "^4.8"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Kolekto\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "mit"
+            ],
+            "authors": [
+                {
+                    "name": "Flavio Heleno",
+                    "email": "flaviohbatista@gmail.com"
+                }
+            ],
+            "description": "A generator-based collection.",
+            "keywords": [
+                "collection",
+                "generator"
+            ],
+            "support": {
+                "issues": "https://github.com/flavioheleno/kolekto/issues",
+                "source": "https://github.com/flavioheleno/kolekto/tree/main"
+            },
+            "time": "2022-08-18T11:16:06+00:00"
+        },
+        {
             "name": "graham-campbell/result-type",
             "version": "v1.1.0",
             "source": {
@@ -997,16 +1052,16 @@
         },
         {
             "name": "matthiasmullie/minify",
-            "version": "1.3.68",
+            "version": "1.3.69",
             "source": {
                 "type": "git",
                 "url": "https://github.com/matthiasmullie/minify.git",
-                "reference": "c00fb02f71b2ef0a5f53fe18c5a8b9aa30f48297"
+                "reference": "a61c949cccd086808063611ef9698eabe42ef22f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/matthiasmullie/minify/zipball/c00fb02f71b2ef0a5f53fe18c5a8b9aa30f48297",
-                "reference": "c00fb02f71b2ef0a5f53fe18c5a8b9aa30f48297",
+                "url": "https://api.github.com/repos/matthiasmullie/minify/zipball/a61c949cccd086808063611ef9698eabe42ef22f",
+                "reference": "a61c949cccd086808063611ef9698eabe42ef22f",
                 "shasum": ""
             },
             "require": {
@@ -1055,7 +1110,7 @@
             ],
             "support": {
                 "issues": "https://github.com/matthiasmullie/minify/issues",
-                "source": "https://github.com/matthiasmullie/minify/tree/1.3.68"
+                "source": "https://github.com/matthiasmullie/minify/tree/1.3.69"
             },
             "funding": [
                 {
@@ -1063,7 +1118,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2022-04-19T08:28:56+00:00"
+            "time": "2022-08-01T09:00:18+00:00"
         },
         {
             "name": "matthiasmullie/path-converter",
@@ -4269,39 +4324,45 @@
         },
         {
             "name": "thecodingmachine/safe",
-            "version": "v1.3.3",
+            "version": "v2.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thecodingmachine/safe.git",
-                "reference": "a8ab0876305a4cdaef31b2350fcb9811b5608dbc"
+                "reference": "e454a3142d2197694d1fda291a4462ccd3f66e12"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thecodingmachine/safe/zipball/a8ab0876305a4cdaef31b2350fcb9811b5608dbc",
-                "reference": "a8ab0876305a4cdaef31b2350fcb9811b5608dbc",
+                "url": "https://api.github.com/repos/thecodingmachine/safe/zipball/e454a3142d2197694d1fda291a4462ccd3f66e12",
+                "reference": "e454a3142d2197694d1fda291a4462ccd3f66e12",
                 "shasum": ""
             },
             "require": {
-                "php": ">=7.2"
+                "php": "^8.0"
             },
             "require-dev": {
-                "phpstan/phpstan": "^0.12",
+                "phpstan/phpstan": "^1.5",
+                "phpunit/phpunit": "^9.5",
                 "squizlabs/php_codesniffer": "^3.2",
-                "thecodingmachine/phpstan-strict-rules": "^0.12"
+                "thecodingmachine/phpstan-strict-rules": "^1.0"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.1-dev"
+                    "dev-master": "2.2.x-dev"
                 }
             },
             "autoload": {
                 "files": [
                     "deprecated/apc.php",
+                    "deprecated/array.php",
+                    "deprecated/datetime.php",
                     "deprecated/libevent.php",
+                    "deprecated/password.php",
                     "deprecated/mssql.php",
                     "deprecated/stats.php",
+                    "deprecated/strings.php",
                     "lib/special_cases.php",
+                    "deprecated/mysqli.php",
                     "generated/apache.php",
                     "generated/apcu.php",
                     "generated/array.php",
@@ -4322,6 +4383,7 @@
                     "generated/fpm.php",
                     "generated/ftp.php",
                     "generated/funchand.php",
+                    "generated/gettext.php",
                     "generated/gmp.php",
                     "generated/gnupg.php",
                     "generated/hash.php",
@@ -4331,7 +4393,6 @@
                     "generated/image.php",
                     "generated/imap.php",
                     "generated/info.php",
-                    "generated/ingres-ii.php",
                     "generated/inotify.php",
                     "generated/json.php",
                     "generated/ldap.php",
@@ -4340,20 +4401,14 @@
                     "generated/mailparse.php",
                     "generated/mbstring.php",
                     "generated/misc.php",
-                    "generated/msql.php",
                     "generated/mysql.php",
-                    "generated/mysqli.php",
-                    "generated/mysqlndMs.php",
-                    "generated/mysqlndQc.php",
                     "generated/network.php",
                     "generated/oci8.php",
                     "generated/opcache.php",
                     "generated/openssl.php",
                     "generated/outcontrol.php",
-                    "generated/password.php",
                     "generated/pcntl.php",
                     "generated/pcre.php",
-                    "generated/pdf.php",
                     "generated/pgsql.php",
                     "generated/posix.php",
                     "generated/ps.php",
@@ -4364,7 +4419,6 @@
                     "generated/sem.php",
                     "generated/session.php",
                     "generated/shmop.php",
-                    "generated/simplexml.php",
                     "generated/sockets.php",
                     "generated/sodium.php",
                     "generated/solr.php",
@@ -4387,13 +4441,13 @@
                     "generated/zip.php",
                     "generated/zlib.php"
                 ],
-                "psr-4": {
-                    "Safe\\": [
-                        "lib/",
-                        "deprecated/",
-                        "generated/"
-                    ]
-                }
+                "classmap": [
+                    "lib/DateTime.php",
+                    "lib/DateTimeImmutable.php",
+                    "lib/Exceptions/",
+                    "deprecated/Exceptions/",
+                    "generated/Exceptions/"
+                ]
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -4402,9 +4456,9 @@
             "description": "PHP core functions that throw exceptions instead of returning FALSE on error",
             "support": {
                 "issues": "https://github.com/thecodingmachine/safe/issues",
-                "source": "https://github.com/thecodingmachine/safe/tree/v1.3.3"
+                "source": "https://github.com/thecodingmachine/safe/tree/v2.2.3"
             },
-            "time": "2020-10-28T17:51:34+00:00"
+            "time": "2022-08-04T14:05:49+00:00"
         },
         {
             "name": "tubalmartin/cssmin",
@@ -4465,16 +4519,16 @@
         },
         {
             "name": "twig/twig",
-            "version": "v3.4.1",
+            "version": "v3.4.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "e939eae92386b69b49cfa4599dd9bead6bf4a342"
+                "reference": "e07cdd3d430cd7e453c31b36eb5ad6c0c5e43077"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/e939eae92386b69b49cfa4599dd9bead6bf4a342",
-                "reference": "e939eae92386b69b49cfa4599dd9bead6bf4a342",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/e07cdd3d430cd7e453c31b36eb5ad6c0c5e43077",
+                "reference": "e07cdd3d430cd7e453c31b36eb5ad6c0c5e43077",
                 "shasum": ""
             },
             "require": {
@@ -4525,7 +4579,7 @@
             ],
             "support": {
                 "issues": "https://github.com/twigphp/Twig/issues",
-                "source": "https://github.com/twigphp/Twig/tree/v3.4.1"
+                "source": "https://github.com/twigphp/Twig/tree/v3.4.2"
             },
             "funding": [
                 {
@@ -4537,7 +4591,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-05-17T05:48:52+00:00"
+            "time": "2022-08-12T06:47:24+00:00"
         },
         {
             "name": "vlucas/phpdotenv",
@@ -4983,22 +5037,22 @@
         },
         {
             "name": "wyrihaximus/css-compress",
-            "version": "2.1.0",
+            "version": "2.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/WyriHaximus/php-css-compress.git",
-                "reference": "1bdced948cc09a62aa3e2772bbed3bdf40514525"
+                "reference": "3b6e863c6fbcc01b5794d0717f25c8ac5a0f5998"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/WyriHaximus/php-css-compress/zipball/1bdced948cc09a62aa3e2772bbed3bdf40514525",
-                "reference": "1bdced948cc09a62aa3e2772bbed3bdf40514525",
+                "url": "https://api.github.com/repos/WyriHaximus/php-css-compress/zipball/3b6e863c6fbcc01b5794d0717f25c8ac5a0f5998",
+                "reference": "3b6e863c6fbcc01b5794d0717f25c8ac5a0f5998",
                 "shasum": ""
             },
             "require": {
                 "matthiasmullie/minify": "^1.3",
                 "php": "^8",
-                "thecodingmachine/safe": "^1.0 || ^0.1",
+                "thecodingmachine/safe": "^1.0 || ^0.1 || ^2.2",
                 "tubalmartin/cssmin": "^4.1",
                 "websharks/css-minifier": "150820",
                 "wyrihaximus/compress": "^1.1 || ^2.0",
@@ -5035,7 +5089,7 @@
             ],
             "support": {
                 "issues": "https://github.com/WyriHaximus/php-css-compress/issues",
-                "source": "https://github.com/WyriHaximus/php-css-compress/tree/2.1.0"
+                "source": "https://github.com/WyriHaximus/php-css-compress/tree/2.1.1"
             },
             "funding": [
                 {
@@ -5043,25 +5097,25 @@
                     "type": "github"
                 }
             ],
-            "time": "2022-03-19T21:41:44+00:00"
+            "time": "2022-08-12T14:21:28+00:00"
         },
         {
             "name": "wyrihaximus/html-compress",
-            "version": "4.2.0",
+            "version": "4.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/WyriHaximus/HtmlCompress.git",
-                "reference": "3e813e9612fc504eb12d0e8429530784b86bb3e2"
+                "reference": "3c23ba5bebcc842e014915c5d206809a8d71f570"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/WyriHaximus/HtmlCompress/zipball/3e813e9612fc504eb12d0e8429530784b86bb3e2",
-                "reference": "3e813e9612fc504eb12d0e8429530784b86bb3e2",
+                "url": "https://api.github.com/repos/WyriHaximus/HtmlCompress/zipball/3c23ba5bebcc842e014915c5d206809a8d71f570",
+                "reference": "3c23ba5bebcc842e014915c5d206809a8d71f570",
                 "shasum": ""
             },
             "require": {
                 "php": "^7.4 || ^8.0",
-                "thecodingmachine/safe": "^1.1",
+                "thecodingmachine/safe": "^1.1 || ^2.2",
                 "voku/html-min": "^4.4.8",
                 "voku/simple_html_dom": "^4.7.17",
                 "wyrihaximus/compress": "^1.1 || ^2.0",
@@ -5105,7 +5159,7 @@
             ],
             "support": {
                 "issues": "https://github.com/WyriHaximus/HtmlCompress/issues",
-                "source": "https://github.com/WyriHaximus/HtmlCompress/tree/4.2.0"
+                "source": "https://github.com/WyriHaximus/HtmlCompress/tree/4.2.1"
             },
             "funding": [
                 {
@@ -5113,7 +5167,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2022-03-20T18:43:24+00:00"
+            "time": "2022-08-12T14:23:17+00:00"
         },
         {
             "name": "wyrihaximus/js-compress",
@@ -5940,16 +5994,16 @@
         },
         {
             "name": "infection/infection",
-            "version": "0.26.6",
+            "version": "0.26.13",
             "source": {
                 "type": "git",
                 "url": "https://github.com/infection/infection.git",
-                "reference": "de9b6b92f00ff1cb39decddf95797a4ebec3a1ee"
+                "reference": "c2f121b1f86af20b1373236535abfe06e5358224"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/infection/infection/zipball/de9b6b92f00ff1cb39decddf95797a4ebec3a1ee",
-                "reference": "de9b6b92f00ff1cb39decddf95797a4ebec3a1ee",
+                "url": "https://api.github.com/repos/infection/infection/zipball/c2f121b1f86af20b1373236535abfe06e5358224",
+                "reference": "c2f121b1f86af20b1373236535abfe06e5358224",
                 "shasum": ""
             },
             "require": {
@@ -5964,18 +6018,17 @@
                 "justinrainbow/json-schema": "^5.2.10",
                 "nikic/php-parser": "^4.13.2",
                 "ondram/ci-detector": "^4.1.0",
-                "php": "^7.4.7 || ^8.0",
+                "php": "^8.0",
                 "sanmai/later": "^0.1.1",
                 "sanmai/pipeline": "^5.1 || ^6",
                 "sebastian/diff": "^3.0.2 || ^4.0",
                 "seld/jsonlint": "^1.7",
-                "symfony/console": "^3.4.29 || ^4.1.19 || ^5.0 || ^6.0",
-                "symfony/filesystem": "^3.4.29 || ^4.1.19 || ^5.0 || ^6.0",
-                "symfony/finder": "^3.4.29 || ^4.1.19 || ^5.0 || ^6.0",
-                "symfony/process": "^3.4.29 || ^4.1.19 || ^5.0 || ^6.0",
-                "thecodingmachine/safe": "^1.1.3",
-                "webmozart/assert": "^1.3",
-                "webmozart/path-util": "^2.3"
+                "symfony/console": "^5.4 || ^6.0",
+                "symfony/filesystem": "^5.4 || ^6.0",
+                "symfony/finder": "^5.4 || ^6.0",
+                "symfony/process": "^5.4 || ^6.0",
+                "thecodingmachine/safe": "^2.1.2",
+                "webmozart/assert": "^1.3"
             },
             "conflict": {
                 "dg/bypass-finals": "*",
@@ -5987,14 +6040,14 @@
                 "helmich/phpunit-json-assert": "^3.0",
                 "phpspec/prophecy-phpunit": "^2.0",
                 "phpstan/extension-installer": "^1.1.0",
-                "phpstan/phpstan": "^1.2.0",
+                "phpstan/phpstan": "^1.3.0",
                 "phpstan/phpstan-phpunit": "^1.0.0",
                 "phpstan/phpstan-strict-rules": "^1.1.0",
                 "phpstan/phpstan-webmozart-assert": "^1.0.2",
-                "phpunit/phpunit": "^9.3.11",
-                "symfony/phpunit-bridge": "^4.4.18 || ^5.1.10",
-                "symfony/yaml": "^5.0",
-                "thecodingmachine/phpstan-safe-rule": "^1.1.0"
+                "phpunit/phpunit": "^9.5.5",
+                "symfony/phpunit-bridge": "^5.4 || ^6.0",
+                "symfony/yaml": "^5.4 || ^6.0",
+                "thecodingmachine/phpstan-safe-rule": "^1.2.0"
             },
             "bin": [
                 "bin/infection"
@@ -6050,7 +6103,7 @@
             ],
             "support": {
                 "issues": "https://github.com/infection/infection/issues",
-                "source": "https://github.com/infection/infection/tree/0.26.6"
+                "source": "https://github.com/infection/infection/tree/0.26.13"
             },
             "funding": [
                 {
@@ -6062,7 +6115,7 @@
                     "type": "open_collective"
                 }
             ],
-            "time": "2022-03-07T11:40:30+00:00"
+            "time": "2022-06-23T12:48:45+00:00"
         },
         {
             "name": "justinrainbow/json-schema",
@@ -7328,12 +7381,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Roave/SecurityAdvisories.git",
-                "reference": "8b99cfd0a6224d0fc7b223603210d48e36a79966"
+                "reference": "773292d413a97c357a0b49635afd5fdb1d4f314a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/8b99cfd0a6224d0fc7b223603210d48e36a79966",
-                "reference": "8b99cfd0a6224d0fc7b223603210d48e36a79966",
+                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/773292d413a97c357a0b49635afd5fdb1d4f314a",
+                "reference": "773292d413a97c357a0b49635afd5fdb1d4f314a",
                 "shasum": ""
             },
             "conflict": {
@@ -7543,7 +7596,7 @@
                 "mautic/core": "<4.3|= 2.13.1",
                 "mediawiki/core": ">=1.27,<1.27.6|>=1.29,<1.29.3|>=1.30,<1.30.2|>=1.31,<1.31.9|>=1.32,<1.32.6|>=1.32.99,<1.33.3|>=1.33.99,<1.34.3|>=1.34.99,<1.35",
                 "mezzio/mezzio-swoole": "<3.7|>=4,<4.3",
-                "microweber/microweber": "<1.3",
+                "microweber/microweber": "<1.3.1",
                 "miniorange/miniorange-saml": "<1.4.3",
                 "mittwald/typo3_forum": "<1.2.1",
                 "modx/revolution": "<= 2.8.3-pl|<2.8",
@@ -7836,7 +7889,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-08-06T06:06:57+00:00"
+            "time": "2022-08-12T16:04:45+00:00"
         },
         {
             "name": "sanmai/later",
@@ -9533,12 +9586,13 @@
         "courier/middleware-envelope-compression": 20,
         "courier/serializer-igbinary": 20,
         "courier/transport-amqp": 20,
+        "flavioheleno/kolekto": 20,
         "roave/security-advisories": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=8.1",
+        "php": "^8.1",
         "ext-filter": "*",
         "ext-json": "*",
         "ext-pcntl": "*",

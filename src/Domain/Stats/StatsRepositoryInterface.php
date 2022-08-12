@@ -4,8 +4,10 @@ declare(strict_types = 1);
 namespace PackageHealth\PHP\Domain\Stats;
 
 use DateTimeImmutable;
+use Kolekto\CollectionInterface;
+use PackageHealth\PHP\Domain\Repository\RepositoryInterface;
 
-interface StatsRepositoryInterface {
+interface StatsRepositoryInterface extends RepositoryInterface {
   public function create(
     string $packageName,
     int $githubStars = 0,
@@ -20,9 +22,9 @@ interface StatsRepositoryInterface {
     DateTimeImmutable $createdAt = new DateTimeImmutable()
   ): Stats;
 
-  public function all(): StatsCollection;
+  public function all(array $orderBy = []): CollectionInterface;
 
-  public function findPopular(): StatsCollection;
+  public function findPopular(): CollectionInterface;
 
   public function exists(string $packageName): bool;
 
@@ -31,7 +33,12 @@ interface StatsRepositoryInterface {
    */
   public function get(string $packageName): Stats;
 
-  public function find(array $query, int $limit = -1, int $offset = 0): StatsCollection;
+  public function find(
+    array $query,
+    int $limit = -1,
+    int $offset = 0,
+    array $orderBy = []
+  ): CollectionInterface;
 
   public function save(Stats $stats): Stats;
 

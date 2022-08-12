@@ -4,8 +4,10 @@ declare(strict_types = 1);
 namespace PackageHealth\PHP\Infrastructure\Persistence\Stats;
 
 use DateTimeImmutable;
+use Kolekto\CollectionInterface;
+use Kolekto\EagerCollection;
+use Kolekto\LazyCollection;
 use PackageHealth\PHP\Domain\Stats\Stats;
-use PackageHealth\PHP\Domain\Stats\StatsCollection;
 use PackageHealth\PHP\Domain\Stats\StatsRepositoryInterface;
 use Psr\Cache\CacheItemPoolInterface;
 
@@ -19,6 +21,12 @@ final class CachedStatsRepository implements StatsRepositoryInterface {
   ) {
     $this->statsRepository = $statsRepository;
     $this->cacheItemPool        = $cacheItemPool;
+  }
+
+  public function withLazyFetch(): static {
+    $this->dependencyRepository->withLazyFetch();
+
+    return $this;
   }
 
   public function create(
@@ -49,11 +57,15 @@ final class CachedStatsRepository implements StatsRepositoryInterface {
     );
   }
 
-  public function all(): StatsCollection {
-    $item = $this->cacheItemPool->getItem('/stats');
+  public function all(array $orderBy = []): CollectionInterface {
+    $key = http_build_query($orderBy) ?: 'no-order';
+    $item = $this->cacheItemPool->getItem("/stats/{$key}");
     $statsCol = $item->get();
     if ($item->isHit() === false) {
       $statsCol = $this->statsRepository->all();
+      if ($statsCol instanceof LazyCollection) {
+        return $statsCol;
+      }
 
       $item->set($statsCol);
       $item->expiresAfter(3600);
@@ -64,11 +76,14 @@ final class CachedStatsRepository implements StatsRepositoryInterface {
     return $statsCol;
   }
 
-  public function findPopular(): StatsCollection {
+  public function findPopular(): CollectionInterface {
     $item = $this->cacheItemPool->getItem('/stats/popular');
     $statsCol = $item->get();
     if ($item->isHit() === false) {
       $statsCol = $this->statsRepository->findPopular();
+      if ($statsCol instanceof LazyCollection) {
+        return $statsCol;
+      }
 
       $item->set($statsCol);
       $item->expiresAfter(3600);
@@ -112,12 +127,28 @@ final class CachedStatsRepository implements StatsRepositoryInterface {
     return $stats;
   }
 
-  public function find(array $query, int $limit = -1, int $offset = 0): StatsCollection {
-    $key = http_build_query($query);
-    $item = $this->cacheItemPool->getItem("/stats/find/{$key}/{$limit}/{$offset}");
+  public function find(
+    array $query,
+    int $limit = -1,
+    int $offset = 0,
+    array $orderBy = []
+  ): CollectionInterface {
+    $key = implode(
+      '/',
+      [
+        http_build_query($query),
+        http_build_query($orderBy) ?: 'no-order',
+        $limit,
+        $offset
+      ]
+    );
+    $item = $this->cacheItemPool->getItem("/stats/find/{$key}");
     $statsCol = $item->get();
     if ($item->isHit() === false) {
       $statsCol = $this->statsRepository->find($query, $limit, $offset);
+      if ($statsCol instanceof LazyCollection) {
+        return $statsCol;
+      }
 
       $item->set($statsCol);
       $item->expiresAfter(3600);

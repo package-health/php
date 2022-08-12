@@ -4,8 +4,10 @@ declare(strict_types = 1);
 namespace PackageHealth\PHP\Infrastructure\Persistence\Preference;
 
 use DateTimeImmutable;
+use Kolekto\CollectionInterface;
+use Kolekto\EagerCollection;
+use Kolekto\LazyCollection;
 use PackageHealth\PHP\Domain\Preference\Preference;
-use PackageHealth\PHP\Domain\Preference\PreferenceCollection;
 use PackageHealth\PHP\Domain\Preference\PreferenceRepositoryInterface;
 use PackageHealth\PHP\Domain\Preference\PreferenceTypeEnum;
 use Psr\Cache\CacheItemPoolInterface;
@@ -20,6 +22,12 @@ final class CachedPreferenceRepository implements PreferenceRepositoryInterface 
   ) {
     $this->preferenceRepository = $preferenceRepository;
     $this->cacheItemPool     = $cacheItemPool;
+  }
+
+  public function withLazyFetch(): static {
+    $this->dependencyRepository->withLazyFetch();
+
+    return $this;
   }
 
   public function create(
@@ -38,11 +46,15 @@ final class CachedPreferenceRepository implements PreferenceRepositoryInterface 
     );
   }
 
-  public function all(): PreferenceCollection {
-    $item = $this->cacheItemPool->getItem('/preference');
+  public function all(array $orderBy = []): CollectionInterface {
+    $key = http_build_query($orderBy) ?: 'no-order';
+    $item = $this->cacheItemPool->getItem("/preference/{$key}");
     $preferenceCol = $item->get();
     if ($item->isHit() === false) {
       $preferenceCol = $this->preferenceRepository->all();
+      if ($preferenceCol instanceof LazyCollection) {
+        return $preferenceCol;
+      }
 
       $item->set($preferenceCol);
       $item->expiresAfter(3600);
@@ -71,12 +83,28 @@ final class CachedPreferenceRepository implements PreferenceRepositoryInterface 
     return $preference;
   }
 
-  public function find(array $query, int $limit = -1, int $offset = 0): PreferenceCollection {
-    $key = http_build_query($query);
-    $item = $this->cacheItemPool->getItem("/preference/find/{$key}/{$limit}/{$offset}");
+  public function find(
+    array $query,
+    int $limit = -1,
+    int $offset = 0,
+    array $orderBy = []
+  ): CollectionInterface {
+    $key = implode(
+      '/',
+      [
+        http_build_query($query),
+        http_build_query($orderBy) ?: 'no-order',
+        $limit,
+        $offset
+      ]
+    );
+    $item = $this->cacheItemPool->getItem("/preference/find/{$key}");
     $preferenceCol = $item->get();
     if ($item->isHit() === false) {
       $preferenceCol = $this->preferenceRepository->find($query, $limit, $offset);
+      if ($preferenceCol instanceof LazyCollection) {
+        return $preferenceCol;
+      }
 
       $item->set($preferenceCol);
       $item->expiresAfter(3600);

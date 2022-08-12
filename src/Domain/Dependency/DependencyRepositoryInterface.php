@@ -4,8 +4,10 @@ declare(strict_types = 1);
 namespace PackageHealth\PHP\Domain\Dependency;
 
 use DateTimeImmutable;
+use Kolekto\CollectionInterface;
+use PackageHealth\PHP\Domain\Repository\RepositoryInterface;
 
-interface DependencyRepositoryInterface {
+interface DependencyRepositoryInterface extends RepositoryInterface {
   public function create(
     int $versionId,
     string $name,
@@ -15,14 +17,19 @@ interface DependencyRepositoryInterface {
     DateTimeImmutable $createdAt = new DateTimeImmutable()
   ): Dependency;
 
-  public function all(): DependencyCollection;
+  public function all(array $orderBy = []): CollectionInterface;
 
   /**
    * @throws \PackageHealth\PHP\Domain\Dependency\DependencyNotFoundException
    */
   public function get(int $id): Dependency;
 
-  public function find(array $query, int $limit = -1, int $offset = 0): DependencyCollection;
+  public function find(
+    array $query,
+    int $limit = -1,
+    int $offset = 0,
+    array $orderBy = []
+  ): CollectionInterface;
 
   public function save(Dependency $dependency): Dependency;
 

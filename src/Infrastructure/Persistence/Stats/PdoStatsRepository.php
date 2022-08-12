@@ -6,17 +6,22 @@ namespace PackageHealth\PHP\Infrastructure\Persistence\Stats;
 use Courier\Client\Producer\ProducerInterface;
 use DateTimeImmutable;
 use DateTimeInterface;
+use Iterator;
+use Kolekto\CollectionInterface;
+use Kolekto\EagerCollection;
+use Kolekto\LazyCollection;
 use PackageHealth\PHP\Application\Message\Event\Stats\StatsCreatedEvent;
 use PackageHealth\PHP\Application\Message\Event\Stats\StatsUpdatedEvent;
 use PackageHealth\PHP\Domain\Stats\Stats;
-use PackageHealth\PHP\Domain\Stats\StatsCollection;
 use PackageHealth\PHP\Domain\Stats\StatsNotFoundException;
 use PackageHealth\PHP\Domain\Stats\StatsRepositoryInterface;
 use PDO;
+use PDOStatement;
 
 final class PdoStatsRepository implements StatsRepositoryInterface {
   private PDO $pdo;
   private ProducerInterface $producer;
+  private bool $lazyFetch = false;
 
   /**
    * @param array{
@@ -56,6 +61,12 @@ final class PdoStatsRepository implements StatsRepositoryInterface {
     $this->producer = $producer;
   }
 
+  public function withLazyFetch(): static {
+    $this->lazyFetch = true;
+
+    return $this;
+  }
+
   public function create(
     string $packageName,
     int $githubStars = 0,
@@ -86,7 +97,7 @@ final class PdoStatsRepository implements StatsRepositoryInterface {
     );
   }
 
-  public function all(): StatsCollection {
+  public function all(array $orderBy = []): CollectionInterface {
     $stmt = $this->pdo->query(
       <<<SQL
         SELECT *
@@ -95,34 +106,49 @@ final class PdoStatsRepository implements StatsRepositoryInterface {
       SQL
     );
 
-    $statsCol = new StatsCollection();
-    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-      $statsCol->add($this->hydrate($row));
-    }
+    if ($this->lazyFetch) {
+      $this->lazyFetch = false;
 
-    return $statsCol;
-  }
-
-  public function findPopular(): StatsCollection {
-    static $stmt = null;
-    if ($stmt === null) {
-      $stmt = $this->pdo->query(
-        <<<SQL
-          SELECT "stats".*
-          FROM "stats"
-          INNER JOIN "packages" ON ("packages"."name" = "stats"."package_name")
-          ORDER BY "stats"."daily_downloads" DESC, "packages"."created_at" ASC
-          LIMIT 10
-        SQL
+      return new LazyCollection(
+        (function (PDOStatement $stmt): Iterator {
+          while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            yield $this->hydrate($row);
+          }
+        })->call($this, $stmt)
       );
     }
 
-    $statsCol = new StatsCollection();
-    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-      $statsCol->add($this->hydrate($row));
+    return new EagerCollection(
+      array_map([$this, 'hydrate'], $stmt->fetchAll(PDO::FETCH_ASSOC))
+    );
+  }
+
+  public function findPopular(): CollectionInterface {
+    $stmt = $this->pdo->query(
+      <<<SQL
+        SELECT "stats".*
+        FROM "stats"
+        INNER JOIN "packages" ON ("packages"."name" = "stats"."package_name")
+        ORDER BY "stats"."daily_downloads" DESC, "packages"."created_at" ASC
+        LIMIT 10
+      SQL
+    );
+
+    if ($this->lazyFetch) {
+      $this->lazyFetch = false;
+
+      return new LazyCollection(
+        (function (PDOStatement $stmt): Iterator {
+          while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            yield $this->hydrate($row);
+          }
+        })->call($this, $stmt)
+      );
     }
 
-    return $statsCol;
+    return new EagerCollection(
+      array_map([$this, 'hydrate'], $stmt->fetchAll(PDO::FETCH_ASSOC))
+    );
   }
 
   public function exists(string $packageName): bool {
@@ -166,7 +192,12 @@ final class PdoStatsRepository implements StatsRepositoryInterface {
     return $this->hydrate($row);
   }
 
-  public function find(array $query, int $limit = -1, int $offset = 0): StatsCollection {
+  public function find(
+    array $query,
+    int $limit = -1,
+    int $offset = 0,
+    array $orderBy = []
+  ): CollectionInterface {
     $where = [];
     foreach (array_keys($query) as $col) {
       $where[] = sprintf(
@@ -193,12 +224,21 @@ final class PdoStatsRepository implements StatsRepositoryInterface {
 
     $stmt->execute($query);
 
-    $statsCol = new StatsCollection();
-    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-      $statsCol->add($this->hydrate($row));
+    if ($this->lazyFetch) {
+      $this->lazyFetch = false;
+
+      return new LazyCollection(
+        (function (PDOStatement $stmt): Iterator {
+          while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            yield $this->hydrate($row);
+          }
+        })->call($this, $stmt)
+      );
     }
 
-    return $statsCol;
+    return new EagerCollection(
+      array_map([$this, 'hydrate'], $stmt->fetchAll(PDO::FETCH_ASSOC))
+    );
   }
 
   public function save(Stats $stats): Stats {

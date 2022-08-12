@@ -76,7 +76,7 @@ final class GetUpdatesCommand extends Command {
         1
       );
 
-      $preference = $preferenceCol[0] ?? null;
+      $preference = $preferenceCol->first();
       if ($preference === null) {
         $io->text(
           sprintf(
