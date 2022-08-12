@@ -40,13 +40,13 @@ final class RedirectPackageAction extends AbstractPackageAction {
       1
     );
 
-    $package = $packageCol[0] ?? null;
-    if ($package === null) {
+    if ($packageCol->isEmpty()) {
       throw new PackageNotFoundException();
     }
 
     $routeParser = RouteContext::fromRequest($this->request)->getRouteParser();
 
+    $package = $packageCol->first();
     if ($package->getLatestVersion() === '') {
       $versionCol = $this->versionRepository->find(
         [

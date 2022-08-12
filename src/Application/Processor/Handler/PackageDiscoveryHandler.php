@@ -149,10 +149,10 @@ class PackageDiscoveryHandler implements InvokeHandlerInterface {
         1
       );
 
-      $package = $packageCol[0] ?? null;
-      if ($package === null) {
-        $package = $this->packageRepository->create($packageName);
-      }
+      $package = match ($packageCol->isEmpty()) {
+        true  => $this->packageRepository->create($packageName),
+        false => $packageCol->first()
+      };
 
       $pkgs = [
         // dev versions
@@ -210,17 +210,17 @@ class PackageDiscoveryHandler implements InvokeHandlerInterface {
             1
           );
 
-          $version = $versionCol[0] ?? null;
-          if ($version === null) {
-            $version = $this->versionRepository->create(
+          $version = match ($versionCol->isEmpty()) {
+            true  => $this->versionRepository->create(
               $package->getId(),
               $release['version'],
               $release['version_normalized'],
               $isBranch === false,
               VersionStatusEnum::Unknown,
               new DateTimeImmutable($release['time'] ?? 'now')
-            );
-          }
+            ),
+            false => $versionCol->first()
+          };
 
           // track "require" dependencies
           $filteredRequire = $this->filterDeps($release['require'] ?? []);
@@ -256,9 +256,9 @@ class PackageDiscoveryHandler implements InvokeHandlerInterface {
               1
             );
 
-            $dependency = $dependencyCol[0] ?? null;
-            if ($dependency === null) {
-              $dependency = $this->dependencyRepository->create(
+            // create previously missing dependency record
+            if ($dependencyCol->isEmpty()) {
+              $this->dependencyRepository->create(
                 $version->getId(),
                 $dependencyName,
                 $constraint,
@@ -298,9 +298,9 @@ class PackageDiscoveryHandler implements InvokeHandlerInterface {
               1
             );
 
-            $dependency = $dependencyCol[0] ?? null;
-            if ($dependency === null) {
-              $dependency = $this->dependencyRepository->create(
+            // create previously missing dependency record
+            if ($dependencyCol->isEmpty()) {
+              $this->dependencyRepository->create(
                 $version->getId(),
                 $dependencyName,
                 $constraint,

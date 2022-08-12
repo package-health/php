@@ -4,8 +4,10 @@ declare(strict_types = 1);
 namespace PackageHealth\PHP\Infrastructure\Persistence\Package;
 
 use DateTimeImmutable;
+use Kolekto\CollectionInterface;
+use Kolekto\EagerCollection;
+use Kolekto\LazyCollection;
 use PackageHealth\PHP\Domain\Package\Package;
-use PackageHealth\PHP\Domain\Package\PackageCollection;
 use PackageHealth\PHP\Domain\Package\PackageRepositoryInterface;
 use Psr\Cache\CacheItemPoolInterface;
 
@@ -18,7 +20,13 @@ final class CachedPackageRepository implements PackageRepositoryInterface {
     CacheItemPoolInterface $cacheItemPool
   ) {
     $this->packageRepository = $packageRepository;
-    $this->cacheItemPool        = $cacheItemPool;
+    $this->cacheItemPool     = $cacheItemPool;
+  }
+
+  public function withLazyFetch(): static {
+    $this->packageRepository->withLazyFetch();
+
+    return $this;
   }
 
   public function create(
@@ -31,8 +39,9 @@ final class CachedPackageRepository implements PackageRepositoryInterface {
     );
   }
 
-  public function all(): PackageCollection {
-    $item = $this->cacheItemPool->getItem('/package');
+  public function all(array $orderBy = []): CollectionInterface {
+    $key = http_build_query($orderBy) ?: 'no-order';
+    $item = $this->cacheItemPool->getItem("/package/{$key}");
     $packageCol = $item->get();
     if ($item->isHit() === false) {
       $packageCol = $this->packageRepository->all();
@@ -46,11 +55,14 @@ final class CachedPackageRepository implements PackageRepositoryInterface {
     return $packageCol;
   }
 
-  public function findPopular(int $limit = 10): PackageCollection {
+  public function findPopular(int $limit = 10): CollectionInterface {
     $item = $this->cacheItemPool->getItem("/package/popular/{$limit}");
     $packageCol = $item->get();
     if ($item->isHit() === false) {
       $packageCol = $this->packageRepository->findPopular($limit);
+      if ($packageCol instanceof LazyCollection) {
+        return $packageCol;
+      }
 
       $item->set($packageCol);
       $item->expiresAfter(3600);
@@ -94,12 +106,28 @@ final class CachedPackageRepository implements PackageRepositoryInterface {
     return $package;
   }
 
-  public function find(array $query, int $limit = -1, int $offset = 0): PackageCollection {
-    $key = http_build_query($query);
-    $item = $this->cacheItemPool->getItem("/package/find/{$key}/{$limit}/{$offset}");
+  public function find(
+    array $query,
+    int $limit = -1,
+    int $offset = 0,
+    array $orderBy = []
+  ): CollectionInterface {
+    $key = implode(
+      '/',
+      [
+        http_build_query($query),
+        http_build_query($orderBy) ?: 'no-order',
+        $limit,
+        $offset
+      ]
+    );
+    $item = $this->cacheItemPool->getItem("/package/find/{$key}");
     $packageCol = $item->get();
     if ($item->isHit() === false) {
       $packageCol = $this->packageRepository->find($query, $limit, $offset);
+      if ($packageCol instanceof LazyCollection) {
+        return $packageCol;
+      }
 
       $item->set($packageCol);
       $item->expiresAfter(3600);
@@ -110,12 +138,21 @@ final class CachedPackageRepository implements PackageRepositoryInterface {
     return $packageCol;
   }
 
-  public function findMatching(array $query): PackageCollection {
-    $key = http_build_query($query);
+  public function findMatching(array $query, array $orderBy = []): CollectionInterface {
+    $key = implode(
+      '/',
+      [
+        http_build_query($query),
+        http_build_query($orderBy) ?: 'no-order'
+      ]
+    );
     $item = $this->cacheItemPool->getItem("/package/matching/{$key}");
     $packageCol = $item->get();
     if ($item->isHit() === false) {
       $packageCol = $this->packageRepository->findMatching($query);
+      if ($packageCol instanceof LazyCollection) {
+        return $packageCol;
+      }
 
       $item->set($packageCol);
       $item->expiresAfter(3600);

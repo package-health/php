@@ -44,36 +44,36 @@ final class ListPackageVersionsAction extends AbstractPackageAction {
       1
     );
 
-    $package = $packageCol[0] ?? null;
-    if ($package === null) {
+    if ($packageCol->isEmpty()) {
       throw new PackageNotFoundException();
     }
 
     $this->logger->debug("Package '{$vendor}/{$project}' version list was viewed.");
 
+    $package = $packageCol->first();
     $taggedCol = $this->versionRepository->find(
-      [
+      query: [
         'package_id' => $package->getId(),
         'release'    => true
+      ],
+      orderBy: [
+        'created_at' => 'DESC',
+        'number'     => 'ASC'
       ]
     );
-
-    if ($taggedCol->isEmpty() === false) {
-      $taggedCol = $taggedCol->sort('getCreatedAt', VersionCollection::SORT_DESC);
-    }
 
     $developCol = $this->versionRepository->find(
-      [
+      query: [
         'package_id' => $package->getId(),
         'release'    => false
+      ],
+      orderBy: [
+        'created_at' => 'DESC',
+        'number'     => 'ASC'
       ]
     );
 
-    if ($developCol->isEmpty() === false) {
-      $developCol = $developCol->sort('getCreatedAt', VersionCollection::SORT_DESC);
-    }
-
-    if ($taggedCol->count()) {
+    if (count($taggedCol)) {
       $lastModified = array_reduce(
         $taggedCol
           ->map(

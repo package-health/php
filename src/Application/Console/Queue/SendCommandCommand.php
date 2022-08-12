@@ -90,7 +90,7 @@ final class SendCommandCommand extends Command {
         );
       }
 
-      $commandClass = match ($input->getArgument('commandName')) {
+      $commandClass = match ($commandName) {
         'PackageDiscovery' => PackageDiscoveryCommand::class,
         'UpdateDependencyStatus' => UpdateDependencyStatusCommand::class,
         'UpdateVersionStatus' => UpdateVersionStatusCommand::class,

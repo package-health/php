@@ -4,8 +4,10 @@ declare(strict_types = 1);
 namespace PackageHealth\PHP\Infrastructure\Persistence\Version;
 
 use DateTimeImmutable;
+use Kolekto\CollectionInterface;
+use Kolekto\EagerCollection;
+use Kolekto\LazyCollection;
 use PackageHealth\PHP\Domain\Version\Version;
-use PackageHealth\PHP\Domain\Version\VersionCollection;
 use PackageHealth\PHP\Domain\Version\VersionRepositoryInterface;
 use PackageHealth\PHP\Domain\Version\VersionStatusEnum;
 use Psr\Cache\CacheItemPoolInterface;
@@ -20,6 +22,12 @@ final class CachedVersionRepository implements VersionRepositoryInterface {
   ) {
     $this->versionRepository = $versionRepository;
     $this->cacheItemPool     = $cacheItemPool;
+  }
+
+  public function withLazyFetch(): static {
+    $this->dependencyRepository->withLazyFetch();
+
+    return $this;
   }
 
   public function create(
@@ -40,11 +48,15 @@ final class CachedVersionRepository implements VersionRepositoryInterface {
     );
   }
 
-  public function all(): VersionCollection {
-    $item = $this->cacheItemPool->getItem('/version');
+  public function all(array $orderBy = []): CollectionInterface {
+    $key = http_build_query($orderBy) ?: 'no-order';
+    $item = $this->cacheItemPool->getItem("/version/{$key}");
     $versionCol = $item->get();
     if ($item->isHit() === false) {
       $versionCol = $this->versionRepository->all();
+      if ($versionCol instanceof LazyCollection) {
+        return $versionCol;
+      }
 
       $item->set($versionCol);
       $item->expiresAfter(3600);
@@ -73,12 +85,28 @@ final class CachedVersionRepository implements VersionRepositoryInterface {
     return $version;
   }
 
-  public function find(array $query, int $limit = -1, int $offset = 0): VersionCollection {
-    $key = http_build_query($query);
-    $item = $this->cacheItemPool->getItem("/version/find/{$key}/{$limit}/{$offset}");
+  public function find(
+    array $query,
+    int $limit = -1,
+    int $offset = 0,
+    array $orderBy = []
+  ): CollectionInterface {
+    $key = implode(
+      '/',
+      [
+        http_build_query($query),
+        http_build_query($orderBy) ?: 'no-order',
+        $limit,
+        $offset
+      ]
+    );
+    $item = $this->cacheItemPool->getItem("/version/find/{$key}");
     $versionCol = $item->get();
     if ($item->isHit() === false) {
       $versionCol = $this->versionRepository->find($query, $limit, $offset);
+      if ($versionCol instanceof LazyCollection) {
+        return $versionCol;
+      }
 
       $item->set($versionCol);
       $item->expiresAfter(3600);

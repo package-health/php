@@ -6,18 +6,23 @@ namespace PackageHealth\PHP\Infrastructure\Persistence\Version;
 use Courier\Client\Producer\ProducerInterface;
 use DateTimeImmutable;
 use DateTimeInterface;
+use Iterator;
+use Kolekto\CollectionInterface;
+use Kolekto\EagerCollection;
+use Kolekto\LazyCollection;
 use PackageHealth\PHP\Application\Message\Event\Version\VersionCreatedEvent;
 use PackageHealth\PHP\Application\Message\Event\Version\VersionUpdatedEvent;
 use PackageHealth\PHP\Domain\Version\Version;
-use PackageHealth\PHP\Domain\Version\VersionCollection;
 use PackageHealth\PHP\Domain\Version\VersionNotFoundException;
 use PackageHealth\PHP\Domain\Version\VersionRepositoryInterface;
 use PackageHealth\PHP\Domain\Version\VersionStatusEnum;
 use PDO;
+use PDOStatement;
 
 final class PdoVersionRepository implements VersionRepositoryInterface {
   private PDO $pdo;
   private ProducerInterface $producer;
+  private bool $lazyFetch = false;
 
   /**
    * @param array{
@@ -49,6 +54,12 @@ final class PdoVersionRepository implements VersionRepositoryInterface {
     $this->producer = $producer;
   }
 
+  public function withLazyFetch(): static {
+    $this->lazyFetch = true;
+
+    return $this;
+  }
+
   public function create(
     int $packageId,
     string $number,
@@ -70,21 +81,44 @@ final class PdoVersionRepository implements VersionRepositoryInterface {
     );
   }
 
-  public function all(): VersionCollection {
+  public function all(array $orderBy = []): CollectionInterface {
+    $order = '"created_at" ASC';
+    if (count($orderBy) > 0) {
+      $order = [];
+      foreach ($orderBy as $column => $sort) {
+        if (in_array($sort, ['ASC', 'DESC']) === false) {
+          throw new InvalidArgumentException('Order by requires "ASC" or "DESC" order');
+        }
+
+        $order[] = sprintf('"%s" %s', $column, strtoupper($sort));
+      }
+
+      $order = implode(', ', $order);
+    }
+
     $stmt = $this->pdo->query(
       <<<SQL
         SELECT *
         FROM "versions"
-        ORDER BY "created_at"
+        ORDER BY {$order}
       SQL
     );
 
-    $versionCol = new VersionCollection();
-    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-      $versionCol->add($this->hydrate($row));
+    if ($this->lazyFetch) {
+      $this->lazyFetch = false;
+
+      return new LazyCollection(
+        (function (PDOStatement $stmt): Iterator {
+          while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            yield $this->hydrate($row);
+          }
+        })->call($this, $stmt)
+      );
     }
 
-    return $versionCol;
+    return new EagerCollection(
+      array_map([$this, 'hydrate'], $stmt->fetchAll(PDO::FETCH_ASSOC))
+    );
   }
 
   public function get(int $id): Version {
@@ -110,7 +144,12 @@ final class PdoVersionRepository implements VersionRepositoryInterface {
     return $this->hydrate($row);
   }
 
-  public function find(array $query, int $limit = -1, int $offset = 0): VersionCollection {
+  public function find(
+    array $query,
+    int $limit = -1,
+    int $offset = 0,
+    array $orderBy = []
+  ): CollectionInterface {
     $where = [];
     $cols = array_keys($query);
 
@@ -133,6 +172,20 @@ final class PdoVersionRepository implements VersionRepositoryInterface {
 
     $where = implode(' AND ', $where);
 
+    $order = '"created_at" ASC';
+    if (count($orderBy) > 0) {
+      $order = [];
+      foreach ($orderBy as $column => $sort) {
+        if (in_array($sort, ['ASC', 'DESC']) === false) {
+          throw new InvalidArgumentException('Order by requires "ASC" or "DESC" order');
+        }
+
+        $order[] = sprintf('"%s" %s', $column, strtoupper($sort));
+      }
+
+      $order = implode(', ', $order);
+    }
+
     if ($limit === -1) {
       $limit = 'ALL';
     }
@@ -142,6 +195,7 @@ final class PdoVersionRepository implements VersionRepositoryInterface {
         SELECT *
         FROM "versions"
         WHERE {$where}
+        ORDER BY {$order}
         LIMIT {$limit}
         OFFSET {$offset}
       SQL
@@ -149,12 +203,21 @@ final class PdoVersionRepository implements VersionRepositoryInterface {
 
     $stmt->execute($query);
 
-    $versionCol = new VersionCollection();
-    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-      $versionCol->add($this->hydrate($row));
+    if ($this->lazyFetch) {
+      $this->lazyFetch = false;
+
+      return new LazyCollection(
+        (function (PDOStatement $stmt): Iterator {
+          while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            yield $this->hydrate($row);
+          }
+        })->call($this, $stmt)
+      );
     }
 
-    return $versionCol;
+    return new EagerCollection(
+      array_map([$this, 'hydrate'], $stmt->fetchAll(PDO::FETCH_ASSOC))
+    );
   }
 
   public function save(Version $version): Version {

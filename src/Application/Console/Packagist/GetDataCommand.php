@@ -104,11 +104,11 @@ final class GetDataCommand extends Command {
         1
       );
 
-      $package = $packageCol[0] ?? null;
-      if ($package === null) {
+      if ($packageCol->isEmpty()) {
         throw new PackageNotFoundException();
       }
 
+      $package = $packageCol->first();
       $package = $package
         ->withDescription($metadata['description'] ?? '')
         ->withUrl($metadata['repository'] ?? '');
@@ -175,7 +175,7 @@ final class GetDataCommand extends Command {
           1
         );
 
-        $version = $versionCol[0] ?? null;
+        $version = $versionCol->first();
         if ($version === null) {
           if ($output->isVeryVerbose()) {
             $io->text(

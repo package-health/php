@@ -7,17 +7,22 @@ use Courier\Client\Producer\ProducerInterface;
 use DateTimeImmutable;
 use DateTimeInterface;
 use InvalidArgumentException;
+use Iterator;
+use Kolekto\CollectionInterface;
+use Kolekto\EagerCollection;
+use Kolekto\LazyCollection;
 use PackageHealth\PHP\Application\Message\Event\Package\PackageCreatedEvent;
 use PackageHealth\PHP\Application\Message\Event\Package\PackageUpdatedEvent;
 use PackageHealth\PHP\Domain\Package\Package;
-use PackageHealth\PHP\Domain\Package\PackageCollection;
 use PackageHealth\PHP\Domain\Package\PackageNotFoundException;
 use PackageHealth\PHP\Domain\Package\PackageRepositoryInterface;
 use PDO;
+use PDOStatement;
 
 final class PdoPackageRepository implements PackageRepositoryInterface {
   private PDO $pdo;
   private ProducerInterface $producer;
+  private bool $lazyFetch = false;
 
   /**
    * @param array{
@@ -47,6 +52,12 @@ final class PdoPackageRepository implements PackageRepositoryInterface {
     $this->producer = $producer;
   }
 
+  public function withLazyFetch(): static {
+    $this->lazyFetch = true;
+
+    return $this;
+  }
+
   public function create(
     string $name,
     DateTimeImmutable $createdAt = new DateTimeImmutable()
@@ -63,28 +74,52 @@ final class PdoPackageRepository implements PackageRepositoryInterface {
     );
   }
 
-  public function all(): PackageCollection {
+  public function all(array $orderBy = []): CollectionInterface {
+    $order = '"name" ASC';
+    if (count($orderBy) > 0) {
+      $order = [];
+      foreach ($orderBy as $column => $sort) {
+        if (in_array($sort, ['ASC', 'DESC']) === false) {
+          throw new InvalidArgumentException('Order by requires "ASC" or "DESC" order');
+        }
+
+        $order[] = sprintf('"%s" %s', $column, strtoupper($sort));
+      }
+
+      $order = implode(', ', $order);
+    }
+
     $stmt = $this->pdo->query(
       <<<SQL
         SELECT *
         FROM "packages"
-        ORDER BY "created_at"
+        ORDER BY {$order}
       SQL
     );
 
-    $packageCol = new PackageCollection();
-    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-      $packageCol->add($this->hydrate($row));
+    if ($this->lazyFetch) {
+      $this->lazyFetch = false;
+
+      return new LazyCollection(
+        (function (PDOStatement $stmt): Iterator {
+          while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            yield $this->hydrate($row);
+          }
+        })->call($this, $stmt)
+      );
     }
 
-    return $packageCol;
+    return new EagerCollection(
+      array_map([$this, 'hydrate'], $stmt->fetchAll(PDO::FETCH_ASSOC))
+    );
   }
 
-  public function findPopular(int $limit = 10): PackageCollection {
-    static $stmt = null;
-    if ($stmt === null) {
-      $stmt = $this->pdo->query(
-        <<<SQL
+  public function findPopular(int $limit = 10): CollectionInterface {
+    $stmt = $this->pdo->query(
+      <<<SQL
+        SELECT *
+        FROM "packages"
+        INNER JOIN (
           SELECT "dependencies"."name", COUNT("dependencies".*) AS "total"
           FROM "packages"
           INNER JOIN "versions" ON (
@@ -96,27 +131,25 @@ final class PdoPackageRepository implements PackageRepositoryInterface {
           GROUP BY "dependencies"."name"
           ORDER BY "total" DESC
           LIMIT {$limit}
-        SQL
+        ) AS "popular" ON ("popular"."name" = "packages"."name");
+      SQL
+    );
+
+    if ($this->lazyFetch) {
+      $this->lazyFetch = false;
+
+      return new LazyCollection(
+        (function (PDOStatement $stmt): Iterator {
+          while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            yield $this->hydrate($row);
+          }
+        })->call($this, $stmt)
       );
     }
 
-    $popularCol = new PackageCollection();
-    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-      $packageCol = $this->find(
-        [
-          'name' => $row['name']
-        ],
-        1
-      );
-
-      if ($packageCol->isEmpty()) {
-        continue;
-      }
-
-      $popularCol->add($packageCol[0]);
-    }
-
-    return $popularCol;
+    return new EagerCollection(
+      array_map([$this, 'hydrate'], $stmt->fetchAll(PDO::FETCH_ASSOC))
+    );
   }
 
   public function exists(string $name): bool {
@@ -160,7 +193,12 @@ final class PdoPackageRepository implements PackageRepositoryInterface {
     return $this->hydrate($row);
   }
 
-  public function find(array $query, int $limit = -1, int $offset = 0): PackageCollection {
+  public function find(
+    array $query,
+    int $limit = -1,
+    int $offset = 0,
+    array $orderBy = []
+  ): CollectionInterface {
     $where = [];
     foreach (array_keys($query) as $col) {
       $where[] = sprintf(
@@ -175,12 +213,26 @@ final class PdoPackageRepository implements PackageRepositoryInterface {
       $limit = 'ALL';
     }
 
+    $order = '"name" ASC';
+    if (count($orderBy) > 0) {
+      $order = [];
+      foreach ($orderBy as $column => $sort) {
+        if (in_array($sort, ['ASC', 'DESC']) === false) {
+          throw new InvalidArgumentException('Order by requires "ASC" or "DESC" order');
+        }
+
+        $order[] = sprintf('"%s" %s', $column, strtoupper($sort));
+      }
+
+      $order = implode(', ', $order);
+    }
+
     $stmt = $this->pdo->prepare(
       <<<SQL
         SELECT *
         FROM "packages"
         WHERE {$where}
-        ORDER BY "name" ASC
+        ORDER BY {$order}
         LIMIT {$limit}
         OFFSET {$offset}
       SQL
@@ -188,15 +240,24 @@ final class PdoPackageRepository implements PackageRepositoryInterface {
 
     $stmt->execute($query);
 
-    $packageCol = new PackageCollection();
-    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-      $packageCol->add($this->hydrate($row));
+    if ($this->lazyFetch) {
+      $this->lazyFetch = false;
+
+      return new LazyCollection(
+        (function (PDOStatement $stmt): Iterator {
+          while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            yield $this->hydrate($row);
+          }
+        })->call($this, $stmt)
+      );
     }
 
-    return $packageCol;
+    return new EagerCollection(
+      array_map([$this, 'hydrate'], $stmt->fetchAll(PDO::FETCH_ASSOC))
+    );
   }
 
-  public function findMatching(array $query): PackageCollection {
+  public function findMatching(array $query, array $orderBy = []): CollectionInterface {
     $where = [];
     foreach (array_keys($query) as $col) {
       $where[] = sprintf(
@@ -207,23 +268,45 @@ final class PdoPackageRepository implements PackageRepositoryInterface {
 
     $where = implode(' AND ', $where);
 
+    $order = '"name" ASC';
+    if (count($orderBy) > 0) {
+      $order = [];
+      foreach ($orderBy as $column => $sort) {
+        if (in_array($sort, ['ASC', 'DESC']) === false) {
+          throw new InvalidArgumentException('Order by requires "ASC" or "DESC" order');
+        }
+
+        $order[] = sprintf('"%s" %s', $column, strtoupper($sort));
+      }
+
+      $order = implode(', ', $order);
+    }
     $stmt = $this->pdo->prepare(
       <<<SQL
         SELECT *
         FROM "packages"
         WHERE {$where}
-        ORDER BY "name" ASC
+        ORDER BY {$order}
       SQL
     );
 
     $stmt->execute($query);
 
-    $packageCol = new PackageCollection();
-    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-      $packageCol->add($this->hydrate($row));
+    if ($this->lazyFetch) {
+      $this->lazyFetch = false;
+
+      return new LazyCollection(
+        (function (PDOStatement $stmt): Iterator {
+          while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            yield $this->hydrate($row);
+          }
+        })->call($this, $stmt)
+      );
     }
 
-    return $packageCol;
+    return new EagerCollection(
+      array_map([$this, 'hydrate'], $stmt->fetchAll(PDO::FETCH_ASSOC))
+    );
   }
 
   public function save(Package $package): Package {

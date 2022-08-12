@@ -33,7 +33,7 @@ final class ListVendorPackagesAction extends AbstractAction {
 
     $this->logger->debug("Vendor '{$vendor}' package list was viewed.");
 
-    if ($packageCol->count()) {
+    if ($packageCol->isEmpty() == false) {
       $lastModified = array_reduce(
         $packageCol
           ->map(

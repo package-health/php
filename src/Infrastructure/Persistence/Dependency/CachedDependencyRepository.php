@@ -4,8 +4,10 @@ declare(strict_types = 1);
 namespace PackageHealth\PHP\Infrastructure\Persistence\Dependency;
 
 use DateTimeImmutable;
+use Kolekto\CollectionInterface;
+use Kolekto\EagerCollection;
+use Kolekto\LazyCollection;
 use PackageHealth\PHP\Domain\Dependency\Dependency;
-use PackageHealth\PHP\Domain\Dependency\DependencyCollection;
 use PackageHealth\PHP\Domain\Dependency\DependencyRepositoryInterface;
 use PackageHealth\PHP\Domain\Dependency\DependencyStatusEnum;
 use Psr\Cache\CacheItemPoolInterface;
@@ -20,6 +22,12 @@ final class CachedDependencyRepository implements DependencyRepositoryInterface 
   ) {
     $this->dependencyRepository = $dependencyRepository;
     $this->cacheItemPool        = $cacheItemPool;
+  }
+
+  public function withLazyFetch(): static {
+    $this->dependencyRepository->withLazyFetch();
+
+    return $this;
   }
 
   public function create(
@@ -40,11 +48,15 @@ final class CachedDependencyRepository implements DependencyRepositoryInterface 
     );
   }
 
-  public function all(): DependencyCollection {
-    $item = $this->cacheItemPool->getItem('/dependency');
+  public function all(array $orderBy = []): CollectionInterface {
+    $key = http_build_query($orderBy) ?: 'no-order';
+    $item = $this->cacheItemPool->getItem("/dependency/{$key}");
     $dependencyCol = $item->get();
     if ($item->isHit() === false) {
       $dependencyCol = $this->dependencyRepository->all();
+      if ($dependencyCol instanceof LazyCollection) {
+        return $dependencyCol;
+      }
 
       $item->set($dependencyCol);
       $item->expiresAfter(3600);
@@ -73,12 +85,28 @@ final class CachedDependencyRepository implements DependencyRepositoryInterface 
     return $dependency;
   }
 
-  public function find(array $query, int $limit = -1, int $offset = 0): DependencyCollection {
-    $key = http_build_query($query);
-    $item = $this->cacheItemPool->getItem("/dependency/find/{$key}/{$limit}/{$offset}");
+  public function find(
+    array $query,
+    int $limit = -1,
+    int $offset = 0,
+    array $orderBy = []
+  ): CollectionInterface {
+    $key = implode(
+      '/',
+      array_filter([
+        http_build_query($query),
+        http_build_query($orderBy) ?: 'no-order',
+        $limit,
+        $offset,
+      ])
+    );
+    $item = $this->cacheItemPool->getItem("/dependency/find/{$key}");
     $dependencyCol = $item->get();
     if ($item->isHit() === false) {
       $dependencyCol = $this->dependencyRepository->find($query, $limit, $offset);
+      if ($dependencyCol instanceof LazyCollection) {
+        return $dependencyCol;
+      }
 
       $item->set($dependencyCol);
       $item->expiresAfter(3600);

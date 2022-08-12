@@ -6,18 +6,24 @@ namespace PackageHealth\PHP\Infrastructure\Persistence\Dependency;
 use Courier\Client\Producer\ProducerInterface;
 use DateTimeImmutable;
 use DateTimeInterface;
+use InvalidArgumentException;
+use Iterator;
+use Kolekto\CollectionInterface;
+use Kolekto\EagerCollection;
+use Kolekto\LazyCollection;
 use PackageHealth\PHP\Application\Message\Event\Dependency\DependencyCreatedEvent;
 use PackageHealth\PHP\Application\Message\Event\Dependency\DependencyUpdatedEvent;
 use PackageHealth\PHP\Domain\Dependency\Dependency;
-use PackageHealth\PHP\Domain\Dependency\DependencyCollection;
 use PackageHealth\PHP\Domain\Dependency\DependencyNotFoundException;
 use PackageHealth\PHP\Domain\Dependency\DependencyRepositoryInterface;
 use PackageHealth\PHP\Domain\Dependency\DependencyStatusEnum;
 use PDO;
+use PDOStatement;
 
 final class PdoDependencyRepository implements DependencyRepositoryInterface {
   private PDO $pdo;
   private ProducerInterface $producer;
+  private bool $lazyFetch = false;
 
   /**
    * @param array{
@@ -49,6 +55,12 @@ final class PdoDependencyRepository implements DependencyRepositoryInterface {
     $this->producer = $producer;
   }
 
+  public function withLazyFetch(): static {
+    $this->lazyFetch = true;
+
+    return $this;
+  }
+
   public function create(
     int $versionId,
     string $name,
@@ -70,21 +82,44 @@ final class PdoDependencyRepository implements DependencyRepositoryInterface {
     );
   }
 
-  public function all(): DependencyCollection {
+  public function all(array $orderBy = []): CollectionInterface {
+    $order = '"created_at" ASC';
+    if (count($orderBy) > 0) {
+      $order = [];
+      foreach ($orderBy as $column => $sort) {
+        if (in_array($sort, ['ASC', 'DESC']) === false) {
+          throw new InvalidArgumentException('Order by requires "ASC" or "DESC" order');
+        }
+
+        $order[] = sprintf('"%s" %s', $column, strtoupper($sort));
+      }
+
+      $order = implode(', ', $order);
+    }
+
     $stmt = $this->pdo->query(
       <<<SQL
         SELECT *
         FROM "dependencies"
-        ORDER BY "created_at"
+        ORDER BY {$order}
       SQL
     );
 
-    $dependencyCol = new DependencyCollection();
-    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-      $dependencyCol->add($this->hydrate($row));
+    if ($this->lazyFetch) {
+      $this->lazyFetch = false;
+
+      return new LazyCollection(
+        (function (PDOStatement $stmt): Iterator {
+          while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            yield $this->hydrate($row);
+          }
+        })->call($this, $stmt)
+      );
     }
 
-    return $dependencyCol;
+    return new EagerCollection(
+      array_map([$this, 'hydrate'], $stmt->fetchAll(PDO::FETCH_ASSOC))
+    );
   }
 
   public function get(int $id): Dependency {
@@ -110,7 +145,12 @@ final class PdoDependencyRepository implements DependencyRepositoryInterface {
     return $this->hydrate($row);
   }
 
-  public function find(array $query, int $limit = -1, int $offset = 0): DependencyCollection {
+  public function find(
+    array $query,
+    int $limit = -1,
+    int $offset = 0,
+    array $orderBy = []
+  ): CollectionInterface {
     $where = [];
     $cols = array_keys($query);
 
@@ -137,12 +177,26 @@ final class PdoDependencyRepository implements DependencyRepositoryInterface {
       $limit = 'ALL';
     }
 
+    $order = '"name" ASC';
+    if (count($orderBy) > 0) {
+      $order = [];
+      foreach ($orderBy as $column => $sort) {
+        if (in_array($sort, ['ASC', 'DESC']) === false) {
+          throw new InvalidArgumentException('Order by requires "ASC" or "DESC" order');
+        }
+
+        $order[] = sprintf('"%s" %s', $column, strtoupper($sort));
+      }
+
+      $order = implode(', ', $order);
+    }
+
     $stmt = $this->pdo->prepare(
       <<<SQL
         SELECT *
         FROM "dependencies"
         WHERE {$where}
-        ORDER BY "name" ASC
+        ORDER BY {$order}
         LIMIT {$limit}
         OFFSET {$offset}
       SQL
@@ -150,12 +204,21 @@ final class PdoDependencyRepository implements DependencyRepositoryInterface {
 
     $stmt->execute($query);
 
-    $dependencyCol = new DependencyCollection();
-    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-      $dependencyCol->add($this->hydrate($row));
+    if ($this->lazyFetch) {
+      $this->lazyFetch = false;
+
+      return new LazyCollection(
+        (function (PDOStatement $stmt): Iterator {
+          while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            yield $this->hydrate($row);
+          }
+        })->call($this, $stmt)
+      );
     }
 
-    return $dependencyCol;
+    return new EagerCollection(
+      array_map([$this, 'hydrate'], $stmt->fetchAll(PDO::FETCH_ASSOC))
+    );
   }
 
   public function save(Dependency $dependency): Dependency {
