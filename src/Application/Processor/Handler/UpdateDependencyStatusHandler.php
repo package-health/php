@@ -110,27 +110,35 @@ class UpdateDependencyStatusHandler implements InvokeHandlerInterface {
         return HandlerResultEnum::Reject;
       }
 
-      $dependencyCol = $this->dependencyRepository->find(
-        [
-          'name' => $packageName
-        ]
-      );
-
-      foreach ($dependencyCol as $dependency) {
-        if ($dependency->getConstraint() === 'self.version') {
-          // need to find out how to handle this
-          continue;
-        }
-
-        $dependency = $dependency->withStatus(
-          Semver::satisfies($package->getLatestVersion(), $dependency->getConstraint()) ?
-            DependencyStatusEnum::UpToDate :
-            DependencyStatusEnum::Outdated
+      $limit = 500;
+      $offset = 0;
+      do {
+        $dependencyCol = $this->dependencyRepository->find(
+          [
+            'name' => $packageName
+          ],
+          $limit,
+          $offset
         );
 
-        $this->dependencyRepository->update($dependency);
-      }
+        foreach ($dependencyCol as $dependency) {
+          if ($dependency->getConstraint() === 'self.version') {
+            // need to find out how to handle this
+            continue;
+          }
 
+          $dependency = $dependency->withStatus(
+            Semver::satisfies($package->getLatestVersion(), $dependency->getConstraint()) ?
+              DependencyStatusEnum::UpToDate :
+              DependencyStatusEnum::Outdated
+          );
+
+          $this->dependencyRepository->update($dependency);
+        }
+        
+        $offset += $limit;
+      } while ($dependencyCol->isEmpty() === false);
+        
       return HandlerResultEnum::Accept;
     } catch (Exception $exception) {
       $this->logger->error(
