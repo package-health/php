@@ -54,9 +54,9 @@ final class SendCommandCommand extends Command {
         ''
       )
       ->addArgument(
-        'commandClass',
+        'commandName',
         InputArgument::REQUIRED,
-        'A fully-qualified command class name'
+        'Command name'
       );
   }
 
@@ -80,7 +80,35 @@ final class SendCommandCommand extends Command {
         )
       );
 
-      $commandClass = $input->getArgument('commandClass');
+      $commandName = (string)$input->getArgument('commandName');
+      if (preg_match('/^[a-zA-Z_\x80-\xff][a-zA-Z0-9_\x80-\xff]*$/', $commandName) !== 1) {
+        throw new InvalidArgumentException(
+          sprintf(
+            'Invalid command name "%s"',
+            $commandName
+          )
+        );
+      }
+
+      $commandClass = match ($input->getArgument('commandName')) {
+        'PackageDiscovery' => PackageDiscoveryCommand::class,
+        'UpdateDependencyStatus' => UpdateDependencyStatusCommand::class,
+        'UpdateVersionStatus' => UpdateVersionStatusCommand::class,
+        default => throw new InvalidArgumentException(
+          sprintf(
+            'Command "%s" not found',
+            $commandName
+          )
+        )
+      };
+
+      $io->text(
+        sprintf(
+          '[%s] Command class: <options=bold;fg=cyan>%s</>',
+          date('H:i:s'),
+          $commandClass
+        )
+      );
 
       switch ($commandClass) {
         case PackageDiscoveryCommand::class:
@@ -100,21 +128,34 @@ final class SendCommandCommand extends Command {
             throw new InvalidArgumentException('The option "--packageName" is required for this command');
           }
 
-          $packageCol = $this->packageRepository->find(
+          $packageCol = $this->packageRepository->findMatching(
             [
               'name' => $packageName
-            ],
-            1
+            ]
           );
 
-          $package = $packageCol[0] ?? null;
-          if ($package === null) {
-            throw new PackageNotFoundException();
+          $io->text(
+            sprintf(
+              '[%s] Found <options=bold;fg=cyan>%d</> packages matching the name "<options=bold;fg=cyan>%s</>"',
+              date('H:i:s'),
+              count($packageCol),
+              $packageName
+            )
+          );
+
+          foreach ($packageCol as $package) {
+            $io->text(
+              sprintf(
+                '[%s] Sending command for: <options=bold;fg=cyan>%s</>',
+                date('H:i:s'),
+                $package->getName()
+              )
+            );
+            $this->producer->sendCommand(
+              new $commandClass($package)
+            );
           }
 
-          $this->producer->sendCommand(
-            new $commandClass($package)
-          );
           break;
 
         case UpdateVersionStatusCommand::class:

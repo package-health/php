@@ -57,9 +57,9 @@ final class SendEventCommand extends Command {
         ''
       )
       ->addArgument(
-        'eventClass',
+        'eventName',
         InputArgument::REQUIRED,
-        'A fully-qualified event class name'
+        'Event name'
       );
   }
 
@@ -83,11 +83,43 @@ final class SendEventCommand extends Command {
         )
       );
 
-      $eventClass = $input->getArgument('eventClass');
+      $eventName = (string)$input->getArgument('eventName');
+      if (preg_match('/^[a-zA-Z_\x80-\xff][a-zA-Z0-9_\x80-\xff]*$/', $eventName) !== 1) {
+        throw new InvalidArgumentException(
+          sprintf(
+            'Invalid event name "%s"',
+            $eventName
+          )
+        );
+      }
+
+      $eventClass = match ($eventName) {
+        'DependencyCreated' => DependencyCreatedEvent::class,
+        'DependencyUpdated' => DependencyUpdatedEvent::class,
+        'PackageCreated' => PackageCreatedEvent::class,
+        'PackageUpdated' => PackageUpdatedEvent::class,
+        'VersionCreated' => VersionCreatedEvent::class,
+        'VersionUpdated' => VersionUpdatedEvent::class,
+        default => throw new InvalidArgumentException(
+          sprintf(
+            'Event "%s" not found',
+            $eventName
+          )
+        )
+      };
+
+      $io->text(
+        sprintf(
+          '[%s] Event class: <options=bold;fg=cyan>%s</>',
+          date('H:i:s'),
+          $eventClass
+        )
+      );
 
       switch ($eventClass) {
         case DependencyCreatedEvent::class:
         case DependencyUpdatedEvent::class:
+          $dependencyId = $input->getOption('dependencyId');
           if ($dependencyId === null) {
             throw new InvalidArgumentException('The option "--dependencyId" is required for this command');
           }
@@ -100,25 +132,29 @@ final class SendEventCommand extends Command {
           break;
         case PackageCreatedEvent::class:
         case PackageUpdatedEvent::class:
+          $packageName = $input->getOption('packageName');
           if ($packageName === null) {
             throw new InvalidArgumentException('The option "--packageName" is required for this command');
           }
 
-          $packageCol = $this->packageRepository->find(
+          $packageCol = $this->packageRepository->findMatching(
             [
               'name' => $packageName
-            ],
-            1
+            ]
           );
 
-          $package = $packageCol[0] ?? null;
-          if ($package === null) {
-            throw new PackageNotFoundException();
+          foreach ($packageCol as $package) {
+            $io->text(
+              sprintf(
+                '[%s] Sending event for: <options=bold;fg=cyan>%s</>',
+                date('H:i:s'),
+                $package->getName()
+              )
+            );
+            $this->producer->sendEvent(
+              new $eventClass($package)
+            );
           }
-
-          $this->producer->sendEvent(
-            new $eventClass($package)
-          );
 
           break;
         case VersionCreatedEvent::class:
