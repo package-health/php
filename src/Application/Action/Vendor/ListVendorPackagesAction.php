@@ -7,6 +7,7 @@ use PackageHealth\PHP\Application\Action\AbstractAction;
 use PackageHealth\PHP\Domain\Package\Package;
 use PackageHealth\PHP\Domain\Package\PackageRepositoryInterface;
 use PackageHealth\PHP\Domain\Package\PackageValidator;
+use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
 use Slim\HttpCache\CacheProvider;
@@ -18,9 +19,10 @@ final class ListVendorPackagesAction extends AbstractAction {
   public function __construct(
     LoggerInterface $logger,
     CacheProvider $cacheProvider,
+    CacheItemPoolInterface $cacheItemPool,
     PackageRepositoryInterface $packageRepository
   ) {
-    parent::__construct($logger, $cacheProvider);
+    parent::__construct($logger, $cacheProvider, $cacheItemPool);
     $this->packageRepository = $packageRepository;
   }
 
@@ -28,38 +30,15 @@ final class ListVendorPackagesAction extends AbstractAction {
     $vendor = $this->resolveStringArg('vendor');
     PackageValidator::assertValidVendor($vendor);
 
-    $packageCol = $this->packageRepository->findMatching(['name' => "$vendor/%"]);
-    $twig = Twig::fromRequest($this->request);
+    $item = $this->cacheItemPool->getItem("/view/listVendorPackages/{$vendor}");
+    $html = $item->get();
+    if ($item->isHit() === false) {
+      $twig = Twig::fromRequest($this->request);
 
-    $this->logger->debug("Vendor '{$vendor}' package list was viewed.");
+      $packageCol = $this->packageRepository->findMatching(['name' => "$vendor/%"]);
 
-    if ($packageCol->isEmpty() == false) {
-      $lastModified = array_reduce(
-        $packageCol
-          ->map(
-            function (Package $package): int {
-              $lastModified = $package->getUpdatedAt() ?? $package->getCreatedAt();
-
-              return $lastModified->getTimestamp();
-            }
-          )
-          ->toArray(),
-        'max',
-        0
-      );
-
-      $this->response = $this->cacheProvider->withLastModified(
-        $this->response,
-        $lastModified
-      );
-      $this->response = $this->cacheProvider->withEtag(
-        $this->response,
-        hash('sha1', (string)$lastModified)
-      );
-    }
-
-    return $this->respondWithHtml(
-      $twig->fetch(
+      $this->logger->debug("Vendor '{$vendor}' package list was rendered.");
+      $html = $twig->fetch(
         'vendor/list.twig',
         [
           'vendor'   => $vendor,
@@ -68,7 +47,20 @@ final class ListVendorPackagesAction extends AbstractAction {
             'version' => $_ENV['VERSION']
           ]
         ]
-      )
+      );
+
+      $item->set($html);
+      $item->expiresAfter(3600);
+
+      $this->cacheItemPool->save($item);
+    }
+
+    $this->logger->debug("Vendor '{$vendor}' package list was viewed.");
+    $this->response = $this->cacheProvider->withEtag(
+      $this->response,
+      hash('sha1', $html)
     );
+
+    return $this->respondWithHtml($html);
   }
 }
