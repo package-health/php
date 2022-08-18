@@ -5,6 +5,7 @@ namespace PackageHealth\PHP\Application\Action;
 
 use PackageHealth\PHP\Domain\Exception\DomainRecordNotFoundException;
 use PackageHealth\PHP\Domain\Exception\DomainValidationException;
+use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
@@ -15,6 +16,7 @@ use Slim\HttpCache\CacheProvider;
 abstract class AbstractAction {
   protected LoggerInterface $logger;
   protected CacheProvider $cacheProvider;
+  protected CacheItemPoolInterface $cacheItemPool;
   protected ServerRequestInterface $request;
   protected ResponseInterface $response;
 
@@ -23,9 +25,14 @@ abstract class AbstractAction {
    */
   protected array $args;
 
-  public function __construct(LoggerInterface $logger, CacheProvider $cacheProvider) {
+  public function __construct(
+    LoggerInterface $logger,
+    CacheProvider $cacheProvider,
+    CacheItemPoolInterface $cacheItemPool
+  ) {
     $this->logger        = $logger;
     $this->cacheProvider = $cacheProvider;
+    $this->cacheItemPool = $cacheItemPool;
   }
 
   /**

@@ -9,38 +9,15 @@ use Slim\Views\Twig;
 
 final class ListPackagesAction extends AbstractPackageAction {
   protected function action(): ResponseInterface {
-    $packageCol = $this->packageRepository->findPopular();
-    $twig = Twig::fromRequest($this->request);
+    $item = $this->cacheItemPool->getItem('/view/listPackages');
+    $html = $item->get();
+    if ($item->isHit() === false) {
+      $twig = Twig::fromRequest($this->request);
 
-    $this->logger->debug('Packages list was viewed.');
+      $packageCol = $this->packageRepository->findPopular();
 
-    if (count($packageCol)) {
-      $lastModified = array_reduce(
-        $packageCol
-          ->map(
-            function (Package $package): int {
-              $lastModified = $package->getUpdatedAt() ?? $package->getCreatedAt();
-
-              return $lastModified->getTimestamp();
-            }
-          )
-          ->toArray(),
-        'max',
-        0
-      );
-
-      $this->response = $this->cacheProvider->withLastModified(
-        $this->response,
-        $lastModified
-      );
-      $this->response = $this->cacheProvider->withEtag(
-        $this->response,
-        hash('sha1', (string)$lastModified)
-      );
-    }
-
-    return $this->respondWithHtml(
-      $twig->fetch(
+      $this->logger->debug('Packages list was rendered.');
+      $html = $twig->fetch(
         'index.twig',
         [
           'packages' => $packageCol,
@@ -48,7 +25,20 @@ final class ListPackagesAction extends AbstractPackageAction {
             'version' => $_ENV['VERSION']
           ]
         ]
-      )
+      );
+
+      $item->set($html);
+      $item->expiresAfter(3600);
+
+      $this->cacheItemPool->save($item);
+    }
+
+    $this->logger->debug('Packages list was viewed.');
+    $this->response = $this->cacheProvider->withEtag(
+      $this->response,
+      hash('sha1', $html)
     );
+
+    return $this->respondWithHtml($html);
   }
 }

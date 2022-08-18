@@ -10,6 +10,7 @@ use PackageHealth\PHP\Domain\Version\Version;
 use PackageHealth\PHP\Domain\Version\VersionCollection;
 use PackageHealth\PHP\Domain\Version\VersionNotFoundException;
 use PackageHealth\PHP\Domain\Version\VersionRepositoryInterface;
+use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
 use Slim\HttpCache\CacheProvider;
@@ -21,11 +22,12 @@ final class ListPackageVersionsAction extends AbstractPackageAction {
   public function __construct(
     LoggerInterface $logger,
     CacheProvider $cacheProvider,
+    CacheItemPoolInterface $cacheItemPool,
     PackageRepositoryInterface $packageRepository,
     VersionRepositoryInterface $versionRepository
   ) {
-    parent::__construct($logger, $cacheProvider, $packageRepository);
-    $this->versionRepository    = $versionRepository;
+    parent::__construct($logger, $cacheProvider, $cacheItemPool, $packageRepository);
+    $this->versionRepository = $versionRepository;
   }
 
   protected function action(): ResponseInterface {
@@ -35,81 +37,69 @@ final class ListPackageVersionsAction extends AbstractPackageAction {
     $project = $this->resolveStringArg('project');
     PackageValidator::assertValidProject($project);
 
-    $twig = Twig::fromRequest($this->request);
+    $item = $this->cacheItemPool->getItem("/view/listPackageVersions/{$vendor}/{$project}");
+    $html = $item->get();
+    if ($item->isHit() === false) {
+      $twig = Twig::fromRequest($this->request);
 
-    $packageCol = $this->packageRepository->find(
-      [
-        'name' => "{$vendor}/{$project}"
-      ],
-      1
-    );
-
-    if ($packageCol->isEmpty()) {
-      throw new PackageNotFoundException();
-    }
-
-    $this->logger->debug("Package '{$vendor}/{$project}' version list was viewed.");
-
-    $package = $packageCol->first();
-    $taggedCol = $this->versionRepository->find(
-      query: [
-        'package_id' => $package->getId(),
-        'release'    => true
-      ],
-      orderBy: [
-        'created_at' => 'DESC',
-        'number'     => 'ASC'
-      ]
-    );
-
-    $developCol = $this->versionRepository->find(
-      query: [
-        'package_id' => $package->getId(),
-        'release'    => false
-      ],
-      orderBy: [
-        'created_at' => 'DESC',
-        'number'     => 'ASC'
-      ]
-    );
-
-    if (count($taggedCol)) {
-      $lastModified = array_reduce(
-        $taggedCol
-          ->map(
-            function (Version $version): int {
-              $lastModified = $version->getUpdatedAt() ?? $version->getCreatedAt();
-
-              return $lastModified->getTimestamp();
-            }
-          )
-          ->toArray(),
-        'max',
-        0
+      $packageCol = $this->packageRepository->find(
+        [
+          'name' => "{$vendor}/{$project}"
+        ],
+        1
       );
 
-      $this->response = $this->cacheProvider->withLastModified(
-        $this->response,
-        $lastModified
-      );
-      $this->response = $this->cacheProvider->withEtag(
-        $this->response,
-        hash('sha1', (string)$lastModified)
-      );
-    }
+      if ($packageCol->isEmpty()) {
+        throw new PackageNotFoundException();
+      }
 
-    return $this->respondWithHtml(
-      $twig->fetch(
+      $package = $packageCol->first();
+
+      $taggedCol = $this->versionRepository->find(
+        query: [
+          'package_id' => $package->getId(),
+          'release'    => true
+        ],
+        orderBy: [
+          'created_at' => 'DESC'
+        ]
+      );
+
+      $developCol = $this->versionRepository->find(
+        query: [
+          'package_id' => $package->getId(),
+          'release'    => false
+        ],
+        orderBy: [
+          'created_at' => 'DESC'
+        ]
+      );
+
+      $this->logger->debug("Package '{$vendor}/{$project}' version list was rendered.");
+      $html = $twig->fetch(
         'package/list.twig',
         [
           'package' => $package,
-          'tagged' => $taggedCol,
+          'tagged'  => $taggedCol,
           'develop' => $developCol,
           'app' => [
             'version' => $_ENV['VERSION']
           ]
         ]
-      )
+      );
+
+      $item->set($html);
+      $item->expiresAfter(3600);
+
+      $this->cacheItemPool->save($item);
+    }
+
+    $this->logger->debug("Package '{$vendor}/{$project}' version list was viewed.");
+    $this->response = $this->cacheProvider->withEtag(
+      $this->response,
+      hash('sha1', $html)
     );
+
+    return $this->respondWithHtml($html);
   }
 }

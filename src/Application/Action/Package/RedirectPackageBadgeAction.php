@@ -16,31 +16,39 @@ final class RedirectPackageBadgeAction extends AbstractPackageAction {
     $project = $this->resolveStringArg('project');
     PackageValidator::assertValidProject($project);
 
-    $packageCol = $this->packageRepository->find(
-      [
-        'name' => "{$vendor}/{$project}"
-      ],
-      1
-    );
+    $item = $this->cacheItemPool->getItem("/view/redirectPackageBadge/{$vendor}/{$project}");
+    $url  = $item->get();
+    if ($item->isHit() === false) {
+      $packageCol = $this->packageRepository->find(
+        [
+          'name' => "{$vendor}/{$project}"
+        ],
+        1
+      );
 
-    if ($packageCol->isEmpty()) {
-      throw new PackageNotFoundException();
-    }
+      if ($packageCol->isEmpty()) {
+        throw new PackageNotFoundException();
+      }
 
-    $this->logger->debug("Badge for package '{$vendor}/{$project}' is being redirected.");
+      $this->logger->debug("Badge for package '{$vendor}/{$project}' is being redirected.");
 
-    $package = $packageCol->first();
-    $routeParser = RouteContext::fromRequest($this->request)->getRouteParser();
-
-    return $this->respondWithRedirect(
-      $routeParser->urlFor(
+      $package = $packageCol->first();
+      $routeParser = RouteContext::fromRequest($this->request)->getRouteParser();
+      $url = $routeParser->urlFor(
         'viewPackageBadge',
         [
           'vendor'  => $vendor,
           'project' => $project,
           'version' => (string)($package->getLatestVersion() ?: 'unknown')
         ]
-      )
-    );
+      );
+
+      $item->set($url);
+      $item->expiresAfter(3600);
+
+      $this->cacheItemPool->save($item);
+    }
+
+    return $this->respondWithRedirect($url);
   }
 }
