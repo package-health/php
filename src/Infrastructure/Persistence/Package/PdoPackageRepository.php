@@ -131,7 +131,7 @@ final class PdoPackageRepository implements PackageRepositoryInterface {
           GROUP BY "dependencies"."name"
           ORDER BY "total" DESC
           LIMIT {$limit}
-        ) AS "popular" ON ("popular"."name" = "packages"."name");
+        ) AS "popular" ON ("popular"."name" = "packages"."name")
       SQL
     );
 
