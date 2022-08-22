@@ -36,6 +36,9 @@ final class ListVendorPackagesAction extends AbstractAction {
       $twig = Twig::fromRequest($this->request);
 
       $packageCol = $this->packageRepository->findMatching(['name' => "$vendor/%"]);
+      if ($packageCol->isEmpty()) {
+        $this->throwError(404);
+      }
 
       $this->logger->debug("Vendor '{$vendor}' package list was rendered.");
       $html = $twig->fetch(

@@ -10,7 +10,13 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
 use Slim\Exception\HttpBadRequestException;
+use Slim\Exception\HttpForbiddenException;
+use Slim\Exception\HttpGoneException;
+use Slim\Exception\HttpInternalServerErrorException;
+use Slim\Exception\HttpMethodNotAllowedException;
 use Slim\Exception\HttpNotFoundException;
+use Slim\Exception\HttpNotImplementedException;
+use Slim\Exception\HttpUnauthorizedException;
 use Slim\HttpCache\CacheProvider;
 
 abstract class AbstractAction {
@@ -112,6 +118,27 @@ abstract class AbstractAction {
     }
 
     return (bool)$this->args[$name];
+  }
+
+  protected function throwError(int $statusCode, string $message = ''): void {
+    switch ($statusCode) {
+      case 400:
+        throw new HttpBadRequestException($this->request);
+      case 401:
+        throw new HttpUnauthorizedException($this->request);
+      case 403:
+        throw new HttpForbiddenException($this->request);
+      case 404:
+        throw new HttpNotFoundException($this->request);
+      case 405:
+        throw new HttpMethodNotAllowedException($this->request);
+      case 410:
+        throw new HttpGoneException($this->request);
+      case 500:
+        throw new HttpInternalServerErrorException($this->request);
+      case 501:
+        throw new HttpNotImplementedException($this->request);
+    }
   }
 
   protected function respondWith(string $contentType, string $content, int $statusCode = 200): ResponseInterface {
