@@ -69,8 +69,8 @@ RUN docker-php-ext-enable opcache && \
     echo "opcache.fast_shutdown=0" >> /usr/local/etc/php/conf.d/opcache.ini && \
     echo "opcache.use_cwd=1" >> /usr/local/etc/php/conf.d/opcache.ini && \
     echo "opcache.save_comments=0" >> /usr/local/etc/php/conf.d/opcache.ini && \
-    echo 'opcache.jit_buffer_size=100M' >> /usr/local/etc/php/conf.d/opcache.ini && \
-    echo 'opcache.jit=1255' >> /usr/local/etc/php/conf.d/opcache.ini
+    echo "opcache.jit_buffer_size=100M" >> /usr/local/etc/php/conf.d/opcache.ini && \
+    echo "opcache.jit=1255" >> /usr/local/etc/php/conf.d/opcache.ini
 
 #============================================
 # Dependencies
@@ -200,7 +200,13 @@ RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" && \
     echo "max_input_vars = 100" >> /usr/local/etc/php/conf.d/security.ini && \
     echo "open_basedir = /var/www/html" >> /usr/local/etc/php/conf.d/security.ini && \
     echo "post_max_size = 256K" >> /usr/local/etc/php/conf.d/security.ini
-RUN echo "pm.status_path = /status" >> /usr/local/etc/php-fpm.d/zz-docker.conf
+
+# https://tideways.com/profiler/blog/an-introduction-to-php-fpm-tuning
+RUN echo "pm.status_path = /status" >> /usr/local/etc/php-fpm.d/zz-docker.conf && \
+    echo "pm.max_children = 30" >> /usr/local/etc/php-fpm.d/zz-docker.conf && \
+    echo "pm.start_servers = 8" >> /usr/local/etc/php-fpm.d/zz-docker.conf && \
+    echo "pm.min_spare_servers = 4" >> /usr/local/etc/php-fpm.d/zz-docker.conf && \
+    echo "pm.max_spare_servers = 8" >> /usr/local/etc/php-fpm.d/zz-docker.conf
 
 #============================================
 # Application
