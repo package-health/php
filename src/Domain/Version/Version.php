@@ -17,7 +17,7 @@ final class Version implements JsonSerializable {
   private VersionStatusEnum $status;
   private DateTimeImmutable $createdAt;
   private ?DateTimeImmutable $updatedAt;
-  private bool $dirty = false;
+  private array $changes = [];
 
   public function __construct(
     ?int $id,
@@ -54,7 +54,7 @@ final class Version implements JsonSerializable {
 
     $clone = clone $this;
     $clone->packageId = $packageId;
-    $clone->dirty = true;
+    $clone->changes['packageId'] = $packageId;
     $clone->updatedAt = new DateTimeImmutable();
 
     return $clone;
@@ -71,7 +71,7 @@ final class Version implements JsonSerializable {
 
     $clone = clone $this;
     $clone->number = $number;
-    $clone->dirty = true;
+    $clone->changes['number'] = $number;
     $clone->updatedAt = new DateTimeImmutable();
 
     return $clone;
@@ -88,7 +88,7 @@ final class Version implements JsonSerializable {
 
     $clone = clone $this;
     $clone->normalized = $normalized;
-    $clone->dirty = true;
+    $clone->changes['normalized'] = $normalized;
     $clone->updatedAt = new DateTimeImmutable();
 
     return $clone;
@@ -105,7 +105,7 @@ final class Version implements JsonSerializable {
 
     $clone = clone $this;
     $clone->release = $release;
-    $clone->dirty = true;
+    $clone->changes['release'] = $release;
     $clone->updatedAt = new DateTimeImmutable();
 
     return $clone;
@@ -122,7 +122,7 @@ final class Version implements JsonSerializable {
 
     $clone = clone $this;
     $clone->status = $status;
-    $clone->dirty = true;
+    $clone->changes['status'] = $status;
     $clone->updatedAt = new DateTimeImmutable();
 
     return $clone;
@@ -141,7 +141,14 @@ final class Version implements JsonSerializable {
   }
 
   public function isDirty(): bool {
-    return $this->dirty;
+    return count($this->changes) > 0;
+  }
+
+  /**
+   * @return array<string, mixed>
+   */
+  public function getChanges(): array {
+    return $this->changes;
   }
 
   /**
@@ -149,6 +156,7 @@ final class Version implements JsonSerializable {
    *   id: int|null,
    *   packageId: int,
    *   number: string,
+   *   normalized: string,
    *   release: bool,
    *   status: \PackageHealth\PHP\Domain\Version\VersionStatusEnum,
    *   createdAt: \DateTimeImmutable,
@@ -158,13 +166,14 @@ final class Version implements JsonSerializable {
   #[ReturnTypeWillChange]
   public function jsonSerialize(): array {
     return [
-      'id'        => $this->id,
-      'packageId' => $this->packageId,
-      'number'    => $this->number,
-      'release'   => $this->release,
-      'status'    => $this->status,
-      'createdAt' => $this->createdAt,
-      'updatedAt' => $this->updatedAt
+      'id'         => $this->id,
+      'packageId'  => $this->packageId,
+      'number'     => $this->number,
+      'normalized' => $this->normalized,
+      'release'    => $this->release,
+      'status'     => $this->status,
+      'createdAt'  => $this->createdAt,
+      'updatedAt'  => $this->updatedAt
     ];
   }
 }

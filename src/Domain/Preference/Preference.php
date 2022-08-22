@@ -15,7 +15,7 @@ final class Preference implements JsonSerializable {
   private PreferenceTypeEnum $type;
   private DateTimeImmutable $createdAt;
   private ?DateTimeImmutable $updatedAt;
-  private bool $dirty = false;
+  private array $changes = [];
 
   public function __construct(
     ?int $id,
@@ -54,8 +54,9 @@ final class Preference implements JsonSerializable {
   public function withStringValue(string $value): self {
     $clone = clone $this;
     $clone->value = $value;
-    $clone->type  = PreferenceTypeEnum::isString;
-    $clone->dirty = true;
+    $clone->changes['value'] = $value;
+    $clone->type = PreferenceTypeEnum::isString;
+    $clone->changes['type'] = PreferenceTypeEnum::isString;
     $clone->updatedAt = new DateTimeImmutable();
 
     return $clone;
@@ -68,8 +69,9 @@ final class Preference implements JsonSerializable {
   public function withIntegerValue(int $value): self {
     $clone = clone $this;
     $clone->value = (string)$value;
-    $clone->type  = PreferenceTypeEnum::isInteger;
-    $clone->dirty = true;
+    $clone->changes['value'] = $value;
+    $clone->type = PreferenceTypeEnum::isInteger;
+    $clone->changes['type'] = PreferenceTypeEnum::isInteger;
     $clone->updatedAt = new DateTimeImmutable();
 
     return $clone;
@@ -82,8 +84,9 @@ final class Preference implements JsonSerializable {
   public function withFloatValue(float $value): self {
     $clone = clone $this;
     $clone->value = (string)$value;
-    $clone->type  = PreferenceTypeEnum::isFloat;
-    $clone->dirty = true;
+    $clone->changes['value'] = $value;
+    $clone->type = PreferenceTypeEnum::isFloat;
+    $clone->changes['type'] = PreferenceTypeEnum::isFloat;
     $clone->updatedAt = new DateTimeImmutable();
 
     return $clone;
@@ -96,8 +99,9 @@ final class Preference implements JsonSerializable {
   public function withBoolValue(bool $value): self {
     $clone = clone $this;
     $clone->value = (string)$value;
-    $clone->type  = PreferenceTypeEnum::isBool;
-    $clone->dirty = true;
+    $clone->changes['value'] = $value;
+    $clone->type = PreferenceTypeEnum::isBool;
+    $clone->changes['type'] = PreferenceTypeEnum::isBool;
     $clone->updatedAt = new DateTimeImmutable();
 
     return $clone;
@@ -116,7 +120,14 @@ final class Preference implements JsonSerializable {
   }
 
   public function isDirty(): bool {
-    return $this->dirty;
+    return count($this->changes) > 0;
+  }
+
+  /**
+   * @return array<string, mixed>
+   */
+  public function getChanges(): array {
+    return $this->changes;
   }
 
   /**

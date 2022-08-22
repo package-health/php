@@ -17,7 +17,7 @@ final class Package implements JsonSerializable {
   private string $url;
   private DateTimeImmutable $createdAt;
   private ?DateTimeImmutable $updatedAt;
-  private bool $dirty = false;
+  private array $changes = [];
 
   public function __construct(
     ?int $id,
@@ -66,7 +66,7 @@ final class Package implements JsonSerializable {
 
     $clone = clone $this;
     $clone->description = $description;
-    $clone->dirty = true;
+    $clone->changes['description'] = $description;
     $clone->updatedAt = new DateTimeImmutable();
 
     return $clone;
@@ -83,7 +83,7 @@ final class Package implements JsonSerializable {
 
     $clone = clone $this;
     $clone->latestVersion = $latestVersion;
-    $clone->dirty = true;
+    $clone->changes['latestVersion'] = $latestVersion;
     $clone->updatedAt = new DateTimeImmutable();
 
     return $clone;
@@ -100,7 +100,7 @@ final class Package implements JsonSerializable {
 
     $clone = clone $this;
     $clone->url = $url;
-    $clone->dirty = true;
+    $clone->changes['url'] = $url;
     $clone->updatedAt = new DateTimeImmutable();
 
     return $clone;
@@ -115,7 +115,14 @@ final class Package implements JsonSerializable {
   }
 
   public function isDirty(): bool {
-    return $this->dirty;
+    return count($this->changes) > 0;
+  }
+
+  /**
+   * @return array<string, mixed>
+   */
+  public function getChanges(): array {
+    return $this->changes;
   }
 
   /**

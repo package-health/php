@@ -20,7 +20,7 @@ final class Stats implements JsonSerializable {
   private int $dailyDownloads;
   private DateTimeImmutable $createdAt;
   private ?DateTimeImmutable $updatedAt;
-  private bool $dirty = false;
+  private array $changes = [];
 
   public function __construct(
     string $packageName,
@@ -65,7 +65,7 @@ final class Stats implements JsonSerializable {
 
     $clone = clone $this;
     $clone->githubStars = $githubStars;
-    $clone->dirty = true;
+    $clone->changes['githubStars'] = $githubStars;
     $clone->updatedAt = new DateTimeImmutable();
 
     return $clone;
@@ -82,7 +82,7 @@ final class Stats implements JsonSerializable {
 
     $clone = clone $this;
     $clone->githubWatchers = $githubWatchers;
-    $clone->dirty = true;
+    $clone->changes['githubWatchers'] = $githubWatchers;
     $clone->updatedAt = new DateTimeImmutable();
 
     return $clone;
@@ -99,7 +99,7 @@ final class Stats implements JsonSerializable {
 
     $clone = clone $this;
     $clone->githubForks = $githubForks;
-    $clone->dirty = true;
+    $clone->changes['githubForks'] = $githubForks;
     $clone->updatedAt = new DateTimeImmutable();
 
     return $clone;
@@ -116,7 +116,7 @@ final class Stats implements JsonSerializable {
 
     $clone = clone $this;
     $clone->dependents = $dependents;
-    $clone->dirty = true;
+    $clone->changes['dependents'] = $dependents;
     $clone->updatedAt = new DateTimeImmutable();
 
     return $clone;
@@ -133,7 +133,7 @@ final class Stats implements JsonSerializable {
 
     $clone = clone $this;
     $clone->suggesters = $suggesters;
-    $clone->dirty = true;
+    $clone->changes['suggesters'] = $suggesters;
     $clone->updatedAt = new DateTimeImmutable();
 
     return $clone;
@@ -150,7 +150,7 @@ final class Stats implements JsonSerializable {
 
     $clone = clone $this;
     $clone->favers = $favers;
-    $clone->dirty = true;
+    $clone->changes['favers'] = $favers;
     $clone->updatedAt = new DateTimeImmutable();
 
     return $clone;
@@ -167,7 +167,7 @@ final class Stats implements JsonSerializable {
 
     $clone = clone $this;
     $clone->totalDownloads = $totalDownloads;
-    $clone->dirty = true;
+    $clone->changes['totalDownloads'] = $totalDownloads;
     $clone->updatedAt = new DateTimeImmutable();
 
     return $clone;
@@ -184,7 +184,7 @@ final class Stats implements JsonSerializable {
 
     $clone = clone $this;
     $clone->monthlyDownloads = $monthlyDownloads;
-    $clone->dirty = true;
+    $clone->changes['monthlyDownloads'] = $monthlyDownloads;
     $clone->updatedAt = new DateTimeImmutable();
 
     return $clone;
@@ -201,7 +201,7 @@ final class Stats implements JsonSerializable {
 
     $clone = clone $this;
     $clone->dailyDownloads = $dailyDownloads;
-    $clone->dirty = true;
+    $clone->changes['dailyDownloads'] = $dailyDownloads;
     $clone->updatedAt = new DateTimeImmutable();
 
     return $clone;
@@ -216,7 +216,14 @@ final class Stats implements JsonSerializable {
   }
 
   public function isDirty(): bool {
-    return $this->dirty;
+    return count($this->changes) > 0;
+  }
+
+  /**
+   * @return array<string, mixed>
+   */
+  public function getChanges(): array {
+    return $this->changes;
   }
 
   /**

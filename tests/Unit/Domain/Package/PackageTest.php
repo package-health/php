@@ -44,6 +44,7 @@ final class PackageTest extends TestCase {
   public function testObjectIsInItsInitialState(): void {
     $this->assertInstanceOf(DateTimeImmutable::class, $this->package->getCreatedAt());
     $this->assertFalse($this->package->isDirty());
+    $this->assertEmpty($this->package->getChanges());
     $this->assertNull($this->package->getUpdatedAt());
   }
 

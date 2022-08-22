@@ -16,7 +16,7 @@ final class Dependency implements JsonSerializable {
   private DependencyStatusEnum $status;
   private DateTimeImmutable $createdAt;
   private ?DateTimeImmutable $updatedAt;
-  private bool $dirty = false;
+  private array $changes = [];
 
   public function __construct(
     ?int $id,
@@ -53,7 +53,7 @@ final class Dependency implements JsonSerializable {
 
     $clone = clone $this;
     $clone->versionId = $versionId;
-    $clone->dirty = true;
+    $clone->changes['versionId'] = $versionId;
     $clone->updatedAt = new DateTimeImmutable();
 
     return $clone;
@@ -70,7 +70,7 @@ final class Dependency implements JsonSerializable {
 
     $clone = clone $this;
     $clone->name = $name;
-    $clone->dirty = true;
+    $clone->changes['name'] = $name;
     $clone->updatedAt = new DateTimeImmutable();
 
     return $clone;
@@ -87,7 +87,7 @@ final class Dependency implements JsonSerializable {
 
     $clone = clone $this;
     $clone->constraint = $constraint;
-    $clone->dirty = true;
+    $clone->changes['constraint'] = $constraint;
     $clone->updatedAt = new DateTimeImmutable();
 
     return $clone;
@@ -108,7 +108,7 @@ final class Dependency implements JsonSerializable {
 
     $clone = clone $this;
     $clone->status = $status;
-    $clone->dirty = true;
+    $clone->changes['status'] = $status;
     $clone->updatedAt = new DateTimeImmutable();
 
     return $clone;
@@ -123,7 +123,14 @@ final class Dependency implements JsonSerializable {
   }
 
   public function isDirty(): bool {
-    return $this->dirty;
+    return count($this->changes) > 0;
+  }
+
+  /**
+   * @return array<string, mixed>
+   */
+  public function getChanges(): array {
+    return $this->changes;
   }
 
   /**
