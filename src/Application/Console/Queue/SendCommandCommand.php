@@ -6,6 +6,7 @@ namespace PackageHealth\PHP\Application\Console\Queue;
 use Courier\Client\Producer\ProducerInterface;
 use Exception;
 use InvalidArgumentException;
+use PackageHealth\PHP\Application\Message\Command\CheckDependencyStatusCommand;
 use PackageHealth\PHP\Application\Message\Command\PackageDiscoveryCommand;
 use PackageHealth\PHP\Application\Message\Command\UpdateDependencyStatusCommand;
 use PackageHealth\PHP\Application\Message\Command\UpdateVersionStatusCommand;
@@ -91,6 +92,7 @@ final class SendCommandCommand extends Command {
       }
 
       $commandClass = match ($commandName) {
+        'CheckDependencyStatus' => CheckDependencyStatusCommand::class,
         'PackageDiscovery' => PackageDiscoveryCommand::class,
         'UpdateDependencyStatus' => UpdateDependencyStatusCommand::class,
         'UpdateVersionStatus' => UpdateVersionStatusCommand::class,
@@ -111,6 +113,51 @@ final class SendCommandCommand extends Command {
       );
 
       switch ($commandClass) {
+        case CheckDependencyStatusCommand::class:
+          $packageName = $input->getOption('packageName');
+          if ($packageName === null) {
+            throw new InvalidArgumentException('The option "--packageName" is required for this command');
+          }
+
+          $packageCol = $this->packageRepository->findMatching(
+            [
+              'name' => $packageName
+            ]
+          );
+
+          $io->text(
+            sprintf(
+              '[%s] Found <options=bold;fg=cyan>%d</> packages matching the name "<options=bold;fg=cyan>%s</>"',
+              date('H:i:s'),
+              count($packageCol),
+              $packageName
+            )
+          );
+
+          foreach ($packageCol as $package) {
+            $io->text(
+              sprintf(
+                '[%s] Sending command for: <options=bold;fg=cyan>%s</>',
+                date('H:i:s'),
+                $package->getName()
+              )
+            );
+
+            $dependencyCol = $this->dependencyRepository->withLazyFetch()->find(
+              [
+                'name' => $package->getName()
+              ]
+            );
+
+            foreach ($dependencyCol as $dependency) {
+              $this->producer->sendCommand(
+                new $commandClass($dependency)
+              );
+            }
+          }
+
+          break;
+
         case PackageDiscoveryCommand::class:
           $packageName = $input->getOption('packageName');
           if ($packageName === null) {
