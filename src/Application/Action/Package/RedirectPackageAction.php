@@ -106,6 +106,7 @@ final class RedirectPackageAction extends AbstractPackageAction {
                 ]
               ],
               'app' => [
+                'canonicalUrl' => (string)$this->request->getUri(),
                 'version' => $_ENV['VERSION']
               ]
             ]

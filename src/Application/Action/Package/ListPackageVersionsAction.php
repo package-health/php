@@ -83,6 +83,7 @@ final class ListPackageVersionsAction extends AbstractPackageAction {
           'tagged'  => $taggedCol,
           'develop' => $developCol,
           'app' => [
+            'canonicalUrl' => (string)$this->request->getUri(),
             'version' => $_ENV['VERSION']
           ]
         ]

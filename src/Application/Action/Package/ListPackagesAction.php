@@ -22,6 +22,7 @@ final class ListPackagesAction extends AbstractPackageAction {
         [
           'packages' => $packageCol,
           'app'      => [
+            'canonicalUrl' => (string)$this->request->getUri(),
             'version' => $_ENV['VERSION']
           ]
         ]
