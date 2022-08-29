@@ -11,6 +11,7 @@ use PackageHealth\PHP\Application\Service\Packagist;
 use PackageHealth\PHP\Domain\Package\Package;
 use PackageHealth\PHP\Domain\Package\PackageRepositoryInterface;
 use RuntimeException;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Command\SignalableCommandInterface;
 use Symfony\Component\Console\Input\InputInterface;
@@ -18,8 +19,8 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+#[AsCommand('packagist:get-list', 'Get the complete list of packages from a Packagist mirror')]
 final class GetListCommand extends Command implements SignalableCommandInterface {
-  protected static $defaultName = 'packagist:get-list';
   private PackageRepositoryInterface $packageRepository;
   private ProducerInterface $producer;
   private Packagist $packagist;
@@ -32,7 +33,6 @@ final class GetListCommand extends Command implements SignalableCommandInterface
    */
   protected function configure(): void {
     $this
-      ->setDescription('Get the complete list of packages from a Packagist mirror')
       ->addOption(
         'resync',
         'r',

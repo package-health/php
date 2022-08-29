@@ -13,6 +13,7 @@ use PackageHealth\PHP\Application\Message\Command\UpdateVersionStatusCommand;
 use PackageHealth\PHP\Domain\Dependency\DependencyRepositoryInterface;
 use PackageHealth\PHP\Domain\Package\PackageRepositoryInterface;
 use PackageHealth\PHP\Domain\Version\VersionRepositoryInterface;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
@@ -21,8 +22,8 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+#[AsCommand('queue:send-command', 'Send a command to the message bus')]
 final class SendCommandCommand extends Command {
-  protected static $defaultName = 'queue:send-command';
   private ProducerInterface $producer;
   private DependencyRepositoryInterface $dependencyRepository;
   private PackageRepositoryInterface $packageRepository;
@@ -35,7 +36,6 @@ final class SendCommandCommand extends Command {
    */
   protected function configure(): void {
     $this
-      ->setDescription('Send a command to the message bus')
       ->addOption(
         'packageName',
         null,

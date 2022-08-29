@@ -24,6 +24,7 @@ use PackageHealth\PHP\Domain\Stats\StatsRepositoryInterface;
 use PackageHealth\PHP\Domain\Version\VersionRepositoryInterface;
 use PackageHealth\PHP\Domain\Version\VersionStatusEnum;
 use RuntimeException;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -31,13 +32,13 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+#[AsCommand('packagist:get-data', 'Get the metadata of a package from a Packagist mirror')]
 final class GetDataCommand extends Command {
   /**
    * File cache lifetime (12 hour TTL)
    */
   private const FILE_TIMEOUT = 43200;
 
-  protected static $defaultName = 'packagist:get-data';
   private PackageRepositoryInterface $packageRepository;
   private VersionRepositoryInterface $versionRepository;
   private DependencyRepositoryInterface $dependencyRepository;
@@ -53,7 +54,6 @@ final class GetDataCommand extends Command {
    */
   protected function configure(): void {
     $this
-      ->setDescription('Get the metadata of a package from a Packagist mirror')
       ->addOption(
         'mirror',
         'm',

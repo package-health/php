@@ -7,6 +7,7 @@ use Courier\Client\Consumer;
 use Exception;
 use InvalidArgumentException;
 use SebastianBergmann\Timer\Timer;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Command\SignalableCommandInterface;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -16,8 +17,8 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+#[AsCommand('queue:consume', 'Consume messages from a bus queue')]
 final class ConsumeCommand extends Command implements SignalableCommandInterface {
-  protected static $defaultName = 'queue:consume';
   private Consumer $consumer;
   private bool $stopDaemon = false;
 
@@ -28,7 +29,6 @@ final class ConsumeCommand extends Command implements SignalableCommandInterface
    */
   protected function configure(): void {
     $this
-      ->setDescription('Consume messages from a bus queue')
       ->addOption(
         'daemonize',
         'd',

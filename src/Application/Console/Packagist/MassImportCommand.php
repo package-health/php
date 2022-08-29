@@ -6,6 +6,7 @@ namespace PackageHealth\PHP\Application\Console\Packagist;
 use Exception;
 use InvalidArgumentException;
 use PackageHealth\PHP\Domain\Package\PackageRepositoryInterface;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
@@ -14,8 +15,8 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+#[AsCommand('packagist:mass-import', 'Get the metadata of a list of packages from a Packagist mirror')]
 final class MassImportCommand extends Command {
-  protected static $defaultName = 'packagist:mass-import';
   private PackageRepositoryInterface $packageRepository;
 
   /**
@@ -25,7 +26,6 @@ final class MassImportCommand extends Command {
    */
   protected function configure(): void {
     $this
-      ->setDescription('Get the metadata of a list of packages from a Packagist mirror')
       ->addOption(
         'mirror',
         'm',

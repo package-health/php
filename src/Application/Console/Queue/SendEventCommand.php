@@ -15,6 +15,7 @@ use PackageHealth\PHP\Application\Message\Event\Version\VersionUpdatedEvent;
 use PackageHealth\PHP\Domain\Dependency\DependencyRepositoryInterface;
 use PackageHealth\PHP\Domain\Package\PackageRepositoryInterface;
 use PackageHealth\PHP\Domain\Version\VersionRepositoryInterface;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
@@ -23,8 +24,8 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+#[AsCommand('queue:send-event', 'Send an event to the message bus')]
 final class SendEventCommand extends Command {
-  protected static $defaultName = 'queue:send-event';
   private ProducerInterface $producer;
   private DependencyRepositoryInterface $dependencyRepository;
   private PackageRepositoryInterface $packageRepository;
@@ -37,7 +38,6 @@ final class SendEventCommand extends Command {
    */
   protected function configure(): void {
     $this
-      ->setDescription('Send an event to the message bus')
       ->addOption(
         'packageName',
         null,

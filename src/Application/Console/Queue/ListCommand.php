@@ -6,6 +6,7 @@ namespace PackageHealth\PHP\Application\Console\Queue;
 use Courier\Bus;
 use Exception;
 use InvalidArgumentException;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -15,19 +16,9 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+#[AsCommand('queue:list', 'List message bus available queues (bound routes)')]
 final class ListCommand extends Command {
-  protected static $defaultName = 'queue:list';
   private Bus $bus;
-
-  /**
-   * Command configuration.
-   *
-   * @return void
-   */
-  protected function configure(): void {
-    $this
-      ->setDescription('List message bus available queues (bound routes)');
-  }
 
   /**
    * Command execution.
