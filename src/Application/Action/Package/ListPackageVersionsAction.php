@@ -3,6 +3,7 @@ declare(strict_types = 1);
 
 namespace PackageHealth\PHP\Application\Action\Package;
 
+use DateTimeImmutable;
 use PackageHealth\PHP\Domain\Package\PackageNotFoundException;
 use PackageHealth\PHP\Domain\Package\PackageRepositoryInterface;
 use PackageHealth\PHP\Domain\Package\PackageValidator;
@@ -82,6 +83,17 @@ final class ListPackageVersionsAction extends AbstractPackageAction {
           'package' => $package,
           'tagged'  => $taggedCol,
           'develop' => $developCol,
+          'dates'    => [
+            'createdAt' => $package->getCreatedAt(),
+            'updatedAt' => $taggedCol
+              ->merge($developCol)
+              ->maxOr(
+                static function (Version $version): DateTimeImmutable {
+                  return max($version->getCreatedAt(), $version->getUpdatedAt());
+                },
+                new DateTimeImmutable()
+              )
+          ],
           'app' => [
             'canonicalUrl' => (string)$this->request->getUri(),
             'version' => $_ENV['VERSION']

@@ -114,6 +114,10 @@ final class ViewPackageAction extends AbstractPackageAction {
             'menu' => true
           ]
         ],
+        'dates' => [
+          'createdAt' => $package->getCreatedAt(),
+          'updatedAt' => max($package->getUpdatedAt(), $release->getUpdatedAt())
+        ],
         'app' => [
           'canonicalUrl' => (string)$this->request->getUri(),
           'version' => $_ENV['VERSION']

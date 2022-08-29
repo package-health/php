@@ -3,6 +3,7 @@ declare(strict_types = 1);
 
 namespace PackageHealth\PHP\Application\Action\Vendor;
 
+use DateTimeImmutable;
 use PackageHealth\PHP\Application\Action\AbstractAction;
 use PackageHealth\PHP\Domain\Package\Package;
 use PackageHealth\PHP\Domain\Package\PackageRepositoryInterface;
@@ -46,6 +47,18 @@ final class ListVendorPackagesAction extends AbstractAction {
         [
           'vendor'   => $vendor,
           'packages' => $packageCol,
+          'dates'    => [
+            'createdAt' => $packageCol->min(
+              static function (Package $package): DateTimeImmutable {
+                return $package->getCreatedAt();
+              }
+            ),
+            'updatedAt' => $packageCol->max(
+              static function (Package $package): DateTimeImmutable {
+                return max($package->getCreatedAt(), $package->getUpdatedAt());
+              }
+            )
+          ],
           'app'      => [
             'canonicalUrl' => (string)$this->request->getUri(),
             'version' => $_ENV['VERSION']

@@ -3,6 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="{% block description %}{% endblock %}">
     <title>{% block title %}{% endblock %}</title>
     <link rel="canonical" href="{{ app.canonicalUrl }}">
     <link rel="stylesheet" href="/css/bulma.min.css">
@@ -11,6 +12,18 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
     <link rel="manifest" href="/favicon/site.webmanifest">
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Report",
+        {% if dates.createdAt is not empty %}
+        "datePublished": "{{ dates.createdAt | date('Y-m-d\\TH:i:sP') }}",
+        {% endif %}
+        {% if dates.updatedAt is not empty %}
+        "dateModified": "{{ dates.updatedAt | date('Y-m-d\\TH:i:sP') }}"
+        {% endif %}
+      }
+    </script>
   </head>
   <body>
     <section class="hero {% block hero_type %}{% endblock %}">
@@ -54,6 +67,9 @@
         <div class="content has-text-centered">
           <p><strong>Package.Health</strong> is <em>heavily</em> inspired in <a href="https://deps.rs">Deps.rs</a>.</p>
           <p>Source code available on <a href="https://github.com/package-health/php"><span class="icon-text"><span class="icon"><i class="cib-github" alt="GitHub"></i></span> GitHub</span></a>.</p>
+          {% if dates.updatedAt is defined %}
+            <p class="is-size-7 is-family-monospace has-text-grey-light">Last updated: {{ dates.updatedAt | date('D, d M Y H:i O') }}</p>
+          {% endif %}
           {% if app.version is defined %}
             <p class="is-size-7 is-family-monospace has-text-grey-light">{{ app.version }}</p>
           {% endif %}

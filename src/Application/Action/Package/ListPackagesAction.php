@@ -3,6 +3,7 @@ declare(strict_types = 1);
 
 namespace PackageHealth\PHP\Application\Action\Package;
 
+use DateTimeImmutable;
 use PackageHealth\PHP\Domain\Package\Package;
 use Psr\Http\Message\ResponseInterface;
 use Slim\Views\Twig;
@@ -15,12 +16,25 @@ final class ListPackagesAction extends AbstractPackageAction {
       $twig = Twig::fromRequest($this->request);
 
       $packageCol = $this->packageRepository->findPopular();
-
       $this->logger->debug('Packages list was rendered.');
       $html = $twig->fetch(
         'index.twig',
         [
           'packages' => $packageCol,
+          'dates'    => [
+            'createdAt' => $packageCol->minOr(
+                static function (Package $package): DateTimeImmutable {
+                  return $package->getCreatedAt();
+                },
+                ''
+              ),
+            'updatedAt' => $packageCol->maxOr(
+                static function (Package $package): DateTimeImmutable {
+                  return max($package->getCreatedAt(), $package->getUpdatedAt());
+                },
+                new DateTimeImmutable()
+              )
+          ],
           'app'      => [
             'canonicalUrl' => (string)$this->request->getUri(),
             'version' => $_ENV['VERSION']
