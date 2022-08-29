@@ -1,6 +1,8 @@
 {% extends "template.twig" %}
 
-{% block title %}{{ package.name }} - PHP.Package.Health{% endblock %}
+{% block title %}Releases of "{{ package.name }}" - PHP.Package.Health{% endblock %}
+
+{% block description %}{{ package.description }}{% endblock %}
 
 {% block hero_type %}is-info{% endblock %}
 
@@ -12,11 +14,11 @@
   <h2 class="title is-3">Releases of {{ package.name }}</h2>
   <div class="columns">
     <div class="column">
-      {% if tagged|length == 0 %}
+      {% if tagged | length == 0 %}
         <h3 class="title is-4">Tagged</h3>
         <p class="subtitle is-5">No tagged releases.</p>
       {% else %}
-        <h3 class="title is-4">Tagged ({{ tagged|length }} releases)</h3>
+        <h3 class="title is-4">Tagged ({{ tagged | length }} releases)</h3>
         <table class="table is-fullwidth is-striped is-hoverable">
           <thead>
             <tr>
@@ -28,7 +30,7 @@
             {% for version in tagged %}
               <tr>
                 <td><a href="{{ url_for('viewPackage', {vendor: package.vendor, project: package.project, version: version.number}) }}">{{ version.number }}</a></td>
-                <td class="has-text-right">{{ version.createdAt|date('d-m-Y') }}</td>
+                <td class="has-text-right">{{ version.createdAt | date('d-m-Y') }}</td>
               </tr>
             {% endfor %}
           </tbody>
@@ -36,11 +38,11 @@
       {% endif %}
     </div>
     <div class="column">
-      {% if develop|length == 0 %}
+      {% if develop | length == 0 %}
         <h3 class="title is-4">Development</h3>
         <p class="subtitle is-5">No development branches.</p>
       {% else %}
-        <h3 class="title is-4">Development ({{ develop|length }} branches)</h3>
+        <h3 class="title is-4">Development ({{ develop | length }} branches)</h3>
         <table class="table is-fullwidth is-striped is-hoverable">
           <thead>
             <tr>
@@ -52,7 +54,7 @@
             {% for version in develop %}
               <tr>
                 <td><a href="{{ url_for('viewPackage', {vendor: package.vendor, project: package.project, version: version.number}) }}">{{ version.number }}</a></td>
-                <td class="has-text-right">{{ version.createdAt|date('d-m-Y') }}</td>
+                <td class="has-text-right">{{ version.createdAt | date('d-m-Y') }}</td>
               </tr>
             {% endfor %}
           </tbody>

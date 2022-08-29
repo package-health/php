@@ -1,6 +1,8 @@
 {% extends "template.twig" %}
 
-{% block title %}{{ package.name }} - PHP.Package.Health{% endblock %}
+{% block title %}{{ package.name }} @ {{ version.number }} - PHP.Package.Health{% endblock %}
+
+{% block description %}{{ package.description }}{% endblock %}
 
 {% block hero_type %}{{ status.type }}{% endblock %}
 
@@ -25,12 +27,12 @@
     </div>
   {% endif %}
   <h3 class="title is-4">Requires</h3>
-  {% if requiredDeps|length == 0 %}
+  {% if requiredDeps | length == 0 %}
     <p class="subtitle is-5">No required dependencies.</p>
     <table class="table is-fullwidth is-striped is-hoverable">
     </table>
   {% else %}
-    <p class="subtitle is-5">{{ requiredDeps|length }} total, {{ requiredDepsSubtitle }}</p>
+    <p class="subtitle is-5">{{ requiredDeps | length }} total, {{ requiredDepsSubtitle }}</p>
     <table class="table is-fullwidth is-striped is-hoverable">
       <thead>
         <tr>
@@ -59,12 +61,12 @@
     </table>
   {% endif %}
   <h3 class="title is-4">Requires (dev)</h3>
-  {% if requiredDevDeps|length == 0 %}
+  {% if requiredDevDeps | length == 0 %}
     <p class="subtitle is-5">No required development dependencies.</p>
     <table class="table is-fullwidth is-striped is-hoverable">
     </table>
   {% else %}
-    <p class="subtitle is-5">{{ requiredDevDeps|length }} total, {{ requiredDevDepsSubtitle }}</p>
+    <p class="subtitle is-5">{{ requiredDevDeps | length }} total, {{ requiredDevDepsSubtitle }}</p>
     <table class="table is-fullwidth is-striped is-hoverable">
       <thead>
         <tr>
