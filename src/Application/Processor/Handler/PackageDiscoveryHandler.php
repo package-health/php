@@ -15,6 +15,7 @@ use PackageHealth\PHP\Application\Service\Packagist;
 use PackageHealth\PHP\Domain\Dependency\DependencyRepositoryInterface;
 use PackageHealth\PHP\Domain\Dependency\DependencyStatusEnum;
 use PackageHealth\PHP\Domain\Package\PackageRepositoryInterface;
+use PackageHealth\PHP\Domain\Version\Version;
 use PackageHealth\PHP\Domain\Version\VersionRepositoryInterface;
 use PackageHealth\PHP\Domain\Version\VersionStatusEnum;
 use Psr\Log\LoggerInterface;
@@ -161,6 +162,47 @@ class PackageDiscoveryHandler implements InvokeHandlerInterface {
         $packageName
       ];
 
+      // list all package releases
+      $versionCol = $this->versionRepository->find(
+        [
+          'package_id' => $package->getId()
+        ]
+      );
+
+      $releaseList = $versionCol
+        ->filter(
+          static function (Version $version): bool {
+            return $version->isRelease();
+          }
+        )
+        ->map(
+          static function (Version $version): string {
+            return $version->getNormalized();
+          }
+        )
+        ->all();
+
+      $developList = $versionCol
+        ->filter(
+          static function (Version $version): bool {
+            return $version->isRelease() === false;
+          }
+        )
+        ->map(
+          static function (Version $version): string {
+            return $version->getNormalized();
+          }
+        )
+        ->all();
+
+      $this->logger->debug(
+        'Preloaded version list',
+        [
+          'release' => count($releaseList),
+          'develop' => count($developList)
+        ]
+      );
+
       foreach ($pkgs as $pkg) {
         $metadata = $this->packagist->getPackageMetadataVersion2($pkg);
         if (count($metadata) === 0) {
@@ -201,6 +243,15 @@ class PackageDiscoveryHandler implements InvokeHandlerInterface {
           // exclude branches from tagged releases (https://getcomposer.org/doc/articles/versions.md#branches)
           $isBranch = preg_match('/^dev-|-dev$/', $release['version']) === 1;
 
+          if (
+            in_array($release['version_normalized'], $releaseList, true) === true ||
+            in_array($release['version_normalized'], $developList, true) === true
+          ) {
+            // skip versions that have been previously discovered
+            continue;
+          }
+
+          // double check that the current release is not registered
           // find by the unique constraint (package_id, number)
           $versionCol = $this->versionRepository->find(
             [
@@ -219,7 +270,7 @@ class PackageDiscoveryHandler implements InvokeHandlerInterface {
               VersionStatusEnum::Unknown,
               new DateTimeImmutable($release['time'] ?? 'now')
             ),
-            false => $versionCol->first()
+            false => $versionCol->first() // should never happen, but just in case
           };
 
           // track "require" dependencies
