@@ -1,7 +1,7 @@
 #============================================
 # BUILD
 #============================================
-FROM php:8.1.10-cli-alpine3.16 AS builder
+FROM php:8.1.11-cli-alpine3.16 AS builder
 
 # https://blog.packagecloud.io/eng/2017/02/21/set-environment-variable-save-thousands-of-system-calls/
 ENV TZ=:UTC
@@ -42,14 +42,17 @@ RUN docker-php-ext-install -j$(nproc) dom && \
 # Third party Extensions
 #============================================
 RUN docker-php-source extract && \
+    # amqp
     wget -O amqp.tar.gz https://github.com/php-amqp/php-amqp/archive/refs/tags/v1.11.0.tar.gz && \
     mkdir /usr/src/php/ext/amqp && \
     tar --extract --file amqp.tar.gz --directory /usr/src/php/ext/amqp --strip 1 && \
     docker-php-ext-install -j$(nproc) amqp && \
+    # redis
     wget -O redis.tar.gz https://github.com/phpredis/phpredis/archive/refs/tags/5.3.7.tar.gz && \
     mkdir /usr/src/php/ext/redis && \
     tar --extract --file redis.tar.gz --directory /usr/src/php/ext/redis --strip 1 && \
     docker-php-ext-install -j$(nproc) redis && \
+    # igbinary
     wget -O igbinary.tar.gz https://github.com/igbinary/igbinary/archive/refs/tags/3.2.7.tar.gz && \
     mkdir /usr/src/php/ext/igbinary && \
     tar --extract --file igbinary.tar.gz --directory /usr/src/php/ext/igbinary --strip 1 && \
@@ -85,7 +88,7 @@ RUN composer install --no-progress --ignore-platform-reqs --no-dev --prefer-dist
 #============================================
 # COMMAND LINE INTERFACE
 #============================================
-FROM php:8.1.10-cli-alpine3.16 as cli
+FROM php:8.1.11-cli-alpine3.16 as cli
 
 # https://blog.packagecloud.io/eng/2017/02/21/set-environment-variable-save-thousands-of-system-calls/
 ENV TZ=:UTC
@@ -172,7 +175,7 @@ CMD ["php"]
 #============================================
 # FPM SAPI
 #============================================
-FROM php:8.1.10-fpm-alpine3.16 as fpm
+FROM php:8.1.11-fpm-alpine3.16 as fpm
 
 # https://blog.packagecloud.io/eng/2017/02/21/set-environment-variable-save-thousands-of-system-calls/
 ENV TZ=:UTC
