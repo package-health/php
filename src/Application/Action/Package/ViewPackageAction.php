@@ -43,7 +43,7 @@ final class ViewPackageAction extends AbstractPackageAction {
     PackageValidator::assertValidProject($project);
 
     $version = $this->resolveStringArg('version');
-    VersionValidator::assertValid($version);
+    VersionValidator::assertValidNumber($version);
 
     $item = $this->cacheItemPool->getItem("/view/viewPackage/{$vendor}/{$project}/{$version}");
     $html = $item->get();
@@ -157,18 +157,18 @@ final class ViewPackageAction extends AbstractPackageAction {
           'unregistered' => $unregistered,
           'status' => [
             'type' => $dependency->getStatus()->getColor(),
-            'text' => $dependency->getStatus()->getLabel()
+            'text' => $dependency->getStatus()->value
           ]
         ];
 
-        if (isset($subtitle[$dependency->getStatus()->getLabel()]) === false) {
-          $subtitle[$dependency->getStatus()->getLabel()] = 0;
+        if (isset($subtitle[$dependency->getStatus()->value]) === false) {
+          $subtitle[$dependency->getStatus()->value] = 0;
         }
 
-        $subtitle[$dependency->getStatus()->getLabel()]++;
+        $subtitle[$dependency->getStatus()->value]++;
       }
 
-      if (count($subtitle) === 1 && isset($subtitle[DependencyStatusEnum::UpToDate->getLabel()])) {
+      if (count($subtitle) === 1 && isset($subtitle[DependencyStatusEnum::UpToDate->value])) {
         $data['requiredDepsSubtitle'] = 'all up-to-date';
       } else {
         ksort($subtitle);
@@ -217,18 +217,18 @@ final class ViewPackageAction extends AbstractPackageAction {
           'unregistered' => $unregistered,
           'status' => [
             'type' => $dependency->getStatus()->getColor(),
-            'text' => $dependency->getStatus()->getLabel()
+            'text' => $dependency->getStatus()->value
           ]
         ];
 
-        if (isset($subtitle[$dependency->getStatus()->getLabel()]) === false) {
-          $subtitle[$dependency->getStatus()->getLabel()] = 0;
+        if (isset($subtitle[$dependency->getStatus()->value]) === false) {
+          $subtitle[$dependency->getStatus()->value] = 0;
         }
 
-        $subtitle[$dependency->getStatus()->getLabel()]++;
+        $subtitle[$dependency->getStatus()->value]++;
       }
 
-      if (count($subtitle) === 1 && isset($subtitle[DependencyStatusEnum::UpToDate->getLabel()])) {
+      if (count($subtitle) === 1 && isset($subtitle[DependencyStatusEnum::UpToDate->value])) {
         $data['requiredDevDepsSubtitle'] = 'all up-to-date';
       } else {
         ksort($subtitle);

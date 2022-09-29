@@ -47,7 +47,7 @@ final class ViewPackageBadgeAction extends AbstractPackageAction {
     PackageValidator::assertValidProject($project);
 
     $version = $this->resolveStringArg('version');
-    VersionValidator::assertValid($version);
+    VersionValidator::assertValidNumber($version);
 
     $item  = $this->cacheItemPool->getItem("/view/viewPackageBadge/{$vendor}/{$project}/{$version}");
     $badge = $item->get();

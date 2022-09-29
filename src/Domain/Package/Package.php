@@ -28,11 +28,14 @@ final class Package implements JsonSerializable {
     DateTimeImmutable $createdAt = new DateTimeImmutable(),
     DateTimeImmutable $updatedAt = null
   ) {
+    $name = trim($name);
+    PackageValidator::assertValid($name);
+
     $this->id            = $id;
     $this->name          = $name;
-    $this->description   = $description;
-    $this->latestVersion = $latestVersion;
-    $this->url           = $url;
+    $this->description   = trim($description);
+    $this->latestVersion = trim($latestVersion);
+    $this->url           = trim($url);
     $this->createdAt     = $createdAt;
     $this->updatedAt     = $updatedAt;
 
@@ -60,6 +63,7 @@ final class Package implements JsonSerializable {
   }
 
   public function withDescription(string $description): self {
+    $description = trim($description);
     if ($this->description === $description) {
       return $this;
     }
@@ -77,6 +81,7 @@ final class Package implements JsonSerializable {
   }
 
   public function withLatestVersion(string $latestVersion): self {
+    $latestVersion = trim($latestVersion);
     if ($this->latestVersion === $latestVersion) {
       return $this;
     }
@@ -94,6 +99,7 @@ final class Package implements JsonSerializable {
   }
 
   public function withUrl(string $url): self {
+    $url = trim($url);
     if ($this->url === $url) {
       return $this;
     }

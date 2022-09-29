@@ -360,7 +360,6 @@ final class PdoPackageRepository implements PackageRepositoryInterface {
         <<<SQL
           UPDATE "packages"
           SET
-            "name" = :name,
             "description" = :description,
             "latest_version" = :latest_version,
             "url" = :url,
@@ -378,7 +377,6 @@ final class PdoPackageRepository implements PackageRepositoryInterface {
       $stmt->execute(
         [
           'id'             => $package->getId(),
-          'name'           => $package->getName(),
           'description'    => $package->getDescription(),
           'latest_version' => $package->getLatestVersion(),
           'url'            => $package->getUrl(),

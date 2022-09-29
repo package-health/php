@@ -5,7 +5,7 @@ namespace PackageHealth\PHP\Domain\Package;
 
 final class PackageValidator {
   public static function isValidVendor(string $vendor): bool {
-    return preg_match('/^[a-z0-9][a-z0-9._-]+$/', $vendor) === 1;
+    return preg_match('/^[a-z0-9]([_.-]?[a-z0-9]+)*$/', $vendor) === 1;
   }
 
   public static function assertValidVendor(string $vendor): void {
@@ -15,7 +15,7 @@ final class PackageValidator {
   }
 
   public static function isValidProject(string $project): bool {
-    return preg_match('/^[a-z0-9][a-z0-9._-]+$/', $project) === 1;
+    return preg_match('/^[a-z0-9](([_.]?|-{0,2})[a-z0-9]+)*$/', $project) === 1;
   }
 
   public static function assertValidProject(string $project): void {
@@ -24,13 +24,16 @@ final class PackageValidator {
     }
   }
 
+  /**
+   * @link https://getcomposer.org/doc/04-schema.md#name
+   */
   public static function isValid(string $package): bool {
-    return preg_match('/^[a-z0-9][a-z0-9._-]+\/[a-z0-9][a-z0-9._-]+$/', $package) === 1;
+    return preg_match('/^[a-z0-9]([_.-]?[a-z0-9]+)*\/[a-z0-9](([_.]?|-{0,2})[a-z0-9]+)*$/', $package) === 1;
   }
 
   public static function assertValid(string $package): void {
     if (self::isValid($package) === false) {
-      throw new PackageValidationException('Invalid package name');
+      throw new PackageValidationException('Package names must follow the format "vendor/project"');
     }
   }
 }

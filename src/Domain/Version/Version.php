@@ -29,6 +29,12 @@ final class Version implements JsonSerializable {
     DateTimeImmutable $createdAt = new DateTimeImmutable(),
     DateTimeImmutable $updatedAt = null
   ) {
+    $number = trim($number);
+    VersionValidator::assertValidNumber($number);
+
+    $normalized = trim($normalized);
+    VersionValidator::assertValidNormalizedNumber($normalized);
+
     $this->id         = $id;
     $this->packageId  = $packageId;
     $this->number     = $number;
@@ -47,68 +53,16 @@ final class Version implements JsonSerializable {
     return $this->packageId;
   }
 
-  public function withPackageId(int $packageId): self {
-    if ($this->packageId === $packageId) {
-      return $this;
-    }
-
-    $clone = clone $this;
-    $clone->packageId = $packageId;
-    $clone->changes['packageId'] = $packageId;
-    $clone->updatedAt = new DateTimeImmutable();
-
-    return $clone;
-  }
-
   public function getNumber(): string {
     return $this->number;
-  }
-
-  public function withNumber(string $number): self {
-    if ($this->number === $number) {
-      return $this;
-    }
-
-    $clone = clone $this;
-    $clone->number = $number;
-    $clone->changes['number'] = $number;
-    $clone->updatedAt = new DateTimeImmutable();
-
-    return $clone;
   }
 
   public function getNormalized(): string {
     return $this->normalized;
   }
 
-  public function withNormalized(string $normalized): self {
-    if ($this->normalized === $normalized) {
-      return $this;
-    }
-
-    $clone = clone $this;
-    $clone->normalized = $normalized;
-    $clone->changes['normalized'] = $normalized;
-    $clone->updatedAt = new DateTimeImmutable();
-
-    return $clone;
-  }
-
   public function isRelease(): bool {
     return $this->release;
-  }
-
-  public function withRelease(bool $release): self {
-    if ($this->release === $release) {
-      return $this;
-    }
-
-    $clone = clone $this;
-    $clone->release = $release;
-    $clone->changes['release'] = $release;
-    $clone->updatedAt = new DateTimeImmutable();
-
-    return $clone;
   }
 
   public function getStatus(): VersionStatusEnum {

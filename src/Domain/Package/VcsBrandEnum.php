@@ -12,10 +12,6 @@ enum VcsBrandEnum: string {
   case Gitpod = 'cib-gitpod';
   case SourceForge = 'cib-sourceforge';
 
-  public function getLabel(): string {
-    return $this->value;
-  }
-
   public static function fromUrl(string $url): self {
     return match (1) {
       preg_match('/^https:\/\/bitbucket\.com\//', $url) => self::Bitbucket,

@@ -11,10 +11,6 @@ enum VersionStatusEnum: string {
   case UpToDate = 'up to date';
   case NoDeps = 'no deps';
 
-  public function getLabel(): string {
-    return $this->value;
-  }
-
   public function getColor(): string {
     return match ($this) {
       self::Unknown       => '',

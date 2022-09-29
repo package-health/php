@@ -28,6 +28,12 @@ final class Dependency implements JsonSerializable {
     DateTimeImmutable $createdAt = new DateTimeImmutable(),
     DateTimeImmutable $updatedAt = null
   ) {
+    $name = trim($name);
+    DependencyValidator::assertValidName($name);
+
+    $constraint = trim($constraint);
+    DependencyValidator::assertValidConstraint($constraint);
+
     $this->id          = $id;
     $this->versionId   = $versionId;
     $this->name        = $name;
@@ -46,55 +52,16 @@ final class Dependency implements JsonSerializable {
     return $this->versionId;
   }
 
-  public function withVersionId(int $versionId): self {
-    if ($this->versionId === $versionId) {
-      return $this;
-    }
-
-    $clone = clone $this;
-    $clone->versionId = $versionId;
-    $clone->changes['versionId'] = $versionId;
-    $clone->updatedAt = new DateTimeImmutable();
-
-    return $clone;
-  }
-
   public function getName(): string {
     return $this->name;
-  }
-
-  public function withName(string $name): self {
-    if ($this->name === $name) {
-      return $this;
-    }
-
-    $clone = clone $this;
-    $clone->name = $name;
-    $clone->changes['name'] = $name;
-    $clone->updatedAt = new DateTimeImmutable();
-
-    return $clone;
   }
 
   public function getConstraint(): string {
     return $this->constraint;
   }
 
-  public function withConstraint(string $constraint): self {
-    if ($this->constraint === $constraint) {
-      return $this;
-    }
-
-    $clone = clone $this;
-    $clone->constraint = $constraint;
-    $clone->changes['constraint'] = $constraint;
-    $clone->updatedAt = new DateTimeImmutable();
-
-    return $clone;
-  }
-
   public function isDevelopment(): bool {
-    return $this->development;
+    return $this->development === true;
   }
 
   public function getStatus(): DependencyStatusEnum {

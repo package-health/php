@@ -154,13 +154,13 @@ final class PdoVersionRepository implements VersionRepositoryInterface {
     $cols = array_keys($query);
 
     // handle "release" boolean column
-    $devPos = array_search('release', $cols, true);
-    if ($devPos !== false) {
+    $relPos = array_search('release', $cols, true);
+    if ($relPos !== false) {
       $where[] = sprintf(
         '"release" IS %s',
         $query['release'] ? 'TRUE' : 'FALSE'
       );
-      unset($cols[$devPos], $query['release']);
+      unset($cols[$relPos], $query['release']);
     }
 
     foreach ($cols as $col) {
@@ -243,7 +243,7 @@ final class PdoVersionRepository implements VersionRepositoryInterface {
         'number'     => $version->getNumber(),
         'normalized' => $version->getNormalized(),
         'release'    => $version->isRelease() ? 1 : 0,
-        'status'     => $version->getStatus()->getLabel(),
+        'status'     => $version->getStatus()->value,
         'created_at' => $version->getCreatedAt()->format(DateTimeInterface::ATOM)
       ]
     );
@@ -272,10 +272,6 @@ final class PdoVersionRepository implements VersionRepositoryInterface {
         <<<SQL
           UPDATE "versions"
           SET
-            "package_id" = :package_id,
-            "number" = :number,
-            "normalized" = :normalized,
-            "release" = :release,
             "status" = :status,
             "updated_at" = :updated_at
           WHERE "id" = :id
@@ -291,11 +287,7 @@ final class PdoVersionRepository implements VersionRepositoryInterface {
       $stmt->execute(
         [
           'id'         => $version->getId(),
-          'package_id' => $version->getPackageId(),
-          'number'     => $version->getNumber(),
-          'normalized' => $version->getNormalized(),
-          'release'    => $version->isRelease() ? 1 : 0,
-          'status'     => $version->getStatus()->getLabel(),
+          'status'     => $version->getStatus()->value,
           'updated_at' => $version->getUpdatedAt()?->format(DateTimeInterface::ATOM)
         ]
       );

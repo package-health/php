@@ -250,8 +250,6 @@ final class PdoPreferenceRepository implements PreferenceRepositoryInterface {
         <<<SQL
           UPDATE "preferences"
           SET
-            "category" = :category,
-            "property" = :property,
             "value" = :value,
             "type" = :type,
             "updated_at" = :updated_at
@@ -260,12 +258,14 @@ final class PdoPreferenceRepository implements PreferenceRepositoryInterface {
       );
     }
 
+    if ($preference->getId() === null) {
+      throw new InvalidArgumentException();
+    }
+
     if ($preference->isDirty()) {
       $stmt->execute(
         [
           'id'         => $preference->getId(),
-          'category'   => $preference->getCategory(),
-          'property'   => $preference->getProperty(),
           'value'      => $preference->getValueAsString(),
           'type'       => $preference->getType()->value,
           'updated_at' => $preference->getUpdatedAt()?->format(DateTimeInterface::ATOM)

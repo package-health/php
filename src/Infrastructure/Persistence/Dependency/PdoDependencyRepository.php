@@ -240,7 +240,7 @@ final class PdoDependencyRepository implements DependencyRepositoryInterface {
         'name'        => $dependency->getName(),
         'constraint'  => $dependency->getConstraint(),
         'development' => $dependency->isDevelopment() ? 1 : 0,
-        'status'      => $dependency->getStatus()->getLabel(),
+        'status'      => $dependency->getStatus()->value,
         'created_at'  => $dependency->getCreatedAt()->format(DateTimeInterface::ATOM)
       ]
     );
@@ -269,8 +269,6 @@ final class PdoDependencyRepository implements DependencyRepositoryInterface {
         <<<SQL
           UPDATE "dependencies"
           SET
-            "constraint" = :constraint,
-            "development" = :development,
             "status" = :status,
             "updated_at" = :updated_at
           WHERE "id" = :id
@@ -278,13 +276,15 @@ final class PdoDependencyRepository implements DependencyRepositoryInterface {
       );
     }
 
+    if ($dependency->getId() === null) {
+      throw new InvalidArgumentException();
+    }
+
     if ($dependency->isDirty()) {
       $stmt->execute(
         [
           'id'          => $dependency->getId(),
-          'constraint'  => $dependency->getConstraint(),
-          'development' => $dependency->isDevelopment() ? 1 : 0,
-          'status'      => $dependency->getStatus()->getLabel(),
+          'status'      => $dependency->getStatus()->value,
           'updated_at'  => $dependency->getUpdatedAt()?->format(DateTimeInterface::ATOM)
         ]
       );
