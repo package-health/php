@@ -480,12 +480,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/courier-php/courier.git",
-                "reference": "614e6e99d166bb21c2b5d1c32d31033a1875206d"
+                "reference": "f4674c13c6e7a297c6ede05548e0de04e43ba909"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/courier-php/courier/zipball/614e6e99d166bb21c2b5d1c32d31033a1875206d",
-                "reference": "614e6e99d166bb21c2b5d1c32d31033a1875206d",
+                "url": "https://api.github.com/repos/courier-php/courier/zipball/f4674c13c6e7a297c6ede05548e0de04e43ba909",
+                "reference": "f4674c13c6e7a297c6ede05548e0de04e43ba909",
                 "shasum": ""
             },
             "require": {
@@ -528,7 +528,7 @@
                 "issues": "https://github.com/courier-php/courier/issues",
                 "source": "https://github.com/courier-php/courier/tree/main"
             },
-            "time": "2022-08-11T14:57:47+00:00"
+            "time": "2022-10-02T20:00:30+00:00"
         },
         {
             "name": "courier/locator-container",

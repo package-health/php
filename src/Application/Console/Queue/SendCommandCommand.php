@@ -3,7 +3,7 @@ declare(strict_types = 1);
 
 namespace PackageHealth\PHP\Application\Console\Queue;
 
-use Courier\Client\Producer\ProducerInterface;
+use Courier\Client\Producer;
 use Exception;
 use InvalidArgumentException;
 use PackageHealth\PHP\Application\Message\Command\CheckDependencyStatusCommand;
@@ -24,7 +24,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand('queue:send-command', 'Send a command to the message bus')]
 final class SendCommandCommand extends Command {
-  private ProducerInterface $producer;
+  private Producer $producer;
   private DependencyRepositoryInterface $dependencyRepository;
   private PackageRepositoryInterface $packageRepository;
   private VersionRepositoryInterface $versionRepository;
@@ -248,7 +248,7 @@ final class SendCommandCommand extends Command {
   }
 
   public function __construct(
-    ProducerInterface $producer,
+    Producer $producer,
     DependencyRepositoryInterface $dependencyRepository,
     PackageRepositoryInterface $packageRepository,
     VersionRepositoryInterface $versionRepository

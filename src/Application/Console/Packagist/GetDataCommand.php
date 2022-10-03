@@ -6,7 +6,7 @@ namespace PackageHealth\PHP\Application\Console\Packagist;
 use Composer\Semver\Comparator;
 use Composer\Semver\Semver;
 use Composer\Semver\VersionParser;
-use Courier\Client\Producer\ProducerInterface;
+use Courier\Client\Producer;
 use Exception;
 use InvalidArgumentException;
 use PackageHealth\PHP\Application\Message\Event\Dependency\DependencyCreatedEvent;
@@ -43,7 +43,7 @@ final class GetDataCommand extends Command {
   private VersionRepositoryInterface $versionRepository;
   private DependencyRepositoryInterface $dependencyRepository;
   private StatsRepositoryInterface $statsRepository;
-  private ProducerInterface $producer;
+  private Producer $producer;
   private VersionParser $versionParser;
   private Packagist $packagist;
 
@@ -415,7 +415,7 @@ final class GetDataCommand extends Command {
     VersionRepositoryInterface $versionRepository,
     DependencyRepositoryInterface $dependencyRepository,
     StatsRepositoryInterface $statsRepository,
-    ProducerInterface $producer,
+    Producer $producer,
     VersionParser $versionParser,
     Packagist $packagist
   ) {

@@ -20,7 +20,6 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 #[AsCommand('queue:consume', 'Consume messages from a bus queue')]
 final class ConsumeCommand extends Command implements SignalableCommandInterface {
   private Consumer $consumer;
-  private bool $stopDaemon = false;
 
   /**
    * Command configuration.
@@ -49,9 +48,9 @@ final class ConsumeCommand extends Command implements SignalableCommandInterface
         1
       )
       ->addArgument(
-        'queueName',
+        'routeName',
         InputArgument::REQUIRED,
-        'Name of the bus queue'
+        'Name of the bus route'
       );
   }
 
@@ -77,35 +76,47 @@ final class ConsumeCommand extends Command implements SignalableCommandInterface
 
       $daemonize = (bool)$input->getOption('daemonize');
 
-      $queueName = $input->getArgument('queueName');
+      $routeName = $input->getArgument('routeName');
 
-      $messageCount = match ((bool)$input->getOption('all')) {
-        true  => $this->consumer->getMessageCount($queueName),
-        false => (int)$input->getOption('messageCount')
+      $messageCount = (int)$input->getOption('messageCount');
+      $predicate = static function (
+        int $accepted,
+        int $rejected,
+        int $requeued,
+        int $consumed
+      ) use ($messageCount) {
+        return $consumed >= $messageCount;
       };
+
+      if ((bool)$input->getOption('all')) {
+        $predicate = null;
+        $messageCount = INF;
+      }
 
       if ($output->isVerbose()) {
         $io->text(
           sprintf(
-            '[%s] Queue name: <options=bold;fg=green>%s</>',
+            '[%s] Route name: <options=bold;fg=green>%s</>',
             date('H:i:s'),
-            $queueName
+            $routeName
           )
         );
-        $io->text(
-          sprintf(
-            '[%s] Message count: <options=bold;fg=green>%d</>',
-            date('H:i:s'),
-            $messageCount
-          )
-        );
+        if (is_finite($messageCount)) {
+          $io->text(
+            sprintf(
+              '[%s] Message count: <options=bold;fg=green>%d</>',
+              date('H:i:s'),
+              $messageCount
+            )
+          );
+        }
       }
 
       $timer = new Timer();
       do {
         $timer->start();
 
-        $consumed = $this->consumer->consume($queueName, $messageCount);
+        $consumed = $this->consumer->consume($routeName, $predicate);
 
         $duration = $timer->stop();
         if ($output->isVerbose()) {
@@ -135,7 +146,7 @@ final class ConsumeCommand extends Command implements SignalableCommandInterface
           }
         }
 
-        if ($this->stopDaemon === true) {
+        if ($this->consumer->shouldStop() === true) {
           $io->text(
             sprintf(
               '[%s] Interrupted, leaving',
@@ -145,7 +156,7 @@ final class ConsumeCommand extends Command implements SignalableCommandInterface
 
           return Command::SUCCESS;
         }
-      } while ($daemonize && $this->stopDaemon === false);
+      } while ($daemonize && $this->consumer->shouldStop() === false);
 
       $io->text(
         sprintf(
@@ -182,7 +193,7 @@ final class ConsumeCommand extends Command implements SignalableCommandInterface
   }
 
   public function handleSignal(int $signal): void {
-    $this->stopDaemon = true;
+    $this->consumer->stop();
     echo 'Waiting to stop daemon..', PHP_EOL;
   }
 }

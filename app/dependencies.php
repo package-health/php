@@ -6,8 +6,7 @@ use Buzz\Client\Curl;
 use Composer\Semver\VersionParser;
 use Courier\Bus;
 use Courier\Client\Consumer;
-use Courier\Client\Producer\Producer;
-use Courier\Client\Producer\ProducerInterface;
+use Courier\Client\Producer;
 use Courier\Inflector\InterfaceInflector;
 use Courier\Locator\ContainerLocator;
 use Courier\Middleware\EnvelopeCompressionMiddleware;
@@ -51,9 +50,12 @@ return static function (ContainerBuilder $containerBuilder): void {
       Bus::class => function (ContainerInterface $container): Bus {
         $settings = $container->get(SettingsInterface::class);
 
+        $amqp = AmqpTransport::fromDsn($settings->getString('queue.dsn'));
+        $amqp->setPrefetchCount($settings->getInt('queue.prefetch', 25));
+
         return new Bus(
           new SimpleRouter(),
-          AmqpTransport::fromDsn($settings->getString('queue.dsn'))
+          $amqp
         );
       },
       CacheItemPoolInterface::class => function (ContainerInterface $container): Pool {
@@ -153,7 +155,7 @@ return static function (ContainerBuilder $containerBuilder): void {
           ]
         );
       },
-      ProducerInterface::class => function (ContainerInterface $container): ProducerInterface {
+      Producer::class => function (ContainerInterface $container): Producer {
         $producer = new Producer(
           $container->get(Bus::class),
           new IgBinarySerializer()

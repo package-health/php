@@ -3,7 +3,7 @@ declare(strict_types = 1);
 
 namespace PackageHealth\PHP\Application\Console\Queue;
 
-use Courier\Client\Producer\ProducerInterface;
+use Courier\Client\Producer;
 use Exception;
 use InvalidArgumentException;
 use PackageHealth\PHP\Application\Message\Event\Dependency\DependencyCreatedEvent;
@@ -26,7 +26,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand('queue:send-event', 'Send an event to the message bus')]
 final class SendEventCommand extends Command {
-  private ProducerInterface $producer;
+  private Producer $producer;
   private DependencyRepositoryInterface $dependencyRepository;
   private PackageRepositoryInterface $packageRepository;
   private VersionRepositoryInterface $versionRepository;
@@ -200,7 +200,7 @@ final class SendEventCommand extends Command {
   }
 
   public function __construct(
-    ProducerInterface $producer,
+    Producer $producer,
     DependencyRepositoryInterface $dependencyRepository,
     PackageRepositoryInterface $packageRepository,
     VersionRepositoryInterface $versionRepository

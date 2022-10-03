@@ -64,7 +64,7 @@ final class UpdateVersionStatusHandler implements InvokeHandlerInterface {
         )
       );
 
-      return HandlerResultEnum::Reject;
+      return HandlerResultEnum::REJECT;
     }
 
     try {
@@ -96,7 +96,7 @@ final class UpdateVersionStatusHandler implements InvokeHandlerInterface {
         );
 
         // shoud just accept so that it doesn't show as churn?
-        return HandlerResultEnum::Reject;
+        return HandlerResultEnum::REJECT;
       }
 
       // update deduplication guards
@@ -139,7 +139,7 @@ final class UpdateVersionStatusHandler implements InvokeHandlerInterface {
 
       $this->versionRepository->update($version);
 
-      return HandlerResultEnum::Accept;
+      return HandlerResultEnum::ACCEPT;
     } catch (Exception $exception) {
       $this->logger->error(
         $exception->getMessage(),
@@ -155,10 +155,10 @@ final class UpdateVersionStatusHandler implements InvokeHandlerInterface {
 
       // reject a command that has been requeued
       if ($attributes['isRedelivery'] ?? false) {
-        return HandlerResultEnum::Reject;
+        return HandlerResultEnum::REJECT;
       }
 
-      return HandlerResultEnum::Requeue;
+      return HandlerResultEnum::REQUEUE;
     }
   }
 }

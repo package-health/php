@@ -3,7 +3,7 @@ declare(strict_types = 1);
 
 namespace PackageHealth\PHP\Application\Console\Packagist;
 
-use Courier\Client\Producer\ProducerInterface;
+use Courier\Client\Producer;
 use Exception;
 use InvalidArgumentException;
 use PackageHealth\PHP\Application\Message\Command\PackageDiscoveryCommand;
@@ -22,7 +22,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 #[AsCommand('packagist:get-list', 'Get the complete list of packages from a Packagist mirror')]
 final class GetListCommand extends Command implements SignalableCommandInterface {
   private PackageRepositoryInterface $packageRepository;
-  private ProducerInterface $producer;
+  private Producer $producer;
   private Packagist $packagist;
   private bool $stopDaemon = false;
 
@@ -232,7 +232,7 @@ final class GetListCommand extends Command implements SignalableCommandInterface
 
   public function __construct(
     PackageRepositoryInterface $packageRepository,
-    ProducerInterface $producer,
+    Producer $producer,
     Packagist $packagist
   ) {
     $this->packageRepository = $packageRepository;

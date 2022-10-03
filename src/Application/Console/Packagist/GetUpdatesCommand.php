@@ -3,7 +3,7 @@ declare(strict_types = 1);
 
 namespace PackageHealth\PHP\Application\Console\Packagist;
 
-use Courier\Client\Producer\ProducerInterface;
+use Courier\Client\Producer;
 use Exception;
 use InvalidArgumentException;
 use PackageHealth\PHP\Application\Message\Command\PackageDiscoveryCommand;
@@ -25,7 +25,7 @@ final class GetUpdatesCommand extends Command {
   private PreferenceRepositoryInterface $preferenceRepository;
   private PackageRepositoryInterface $packageRepository;
   private Packagist $packagist;
-  private ProducerInterface $producer;
+  private Producer $producer;
 
   /**
    * Command configuration.
@@ -213,7 +213,7 @@ final class GetUpdatesCommand extends Command {
     PreferenceRepositoryInterface $preferenceRepository,
     PackageRepositoryInterface $packageRepository,
     Packagist $packagist,
-    ProducerInterface $producer
+    Producer $producer
   ) {
     $this->preferenceRepository = $preferenceRepository;
     $this->packageRepository    = $packageRepository;

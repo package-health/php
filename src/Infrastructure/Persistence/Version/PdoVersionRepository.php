@@ -3,7 +3,7 @@ declare(strict_types = 1);
 
 namespace PackageHealth\PHP\Infrastructure\Persistence\Version;
 
-use Courier\Client\Producer\ProducerInterface;
+use Courier\Client\Producer;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Iterator;
@@ -21,7 +21,7 @@ use PDOStatement;
 
 final class PdoVersionRepository implements VersionRepositoryInterface {
   private PDO $pdo;
-  private ProducerInterface $producer;
+  private Producer $producer;
   private bool $lazyFetch = false;
 
   /**
@@ -49,7 +49,7 @@ final class PdoVersionRepository implements VersionRepositoryInterface {
     );
   }
 
-  public function __construct(PDO $pdo, ProducerInterface $producer) {
+  public function __construct(PDO $pdo, Producer $producer) {
     $this->pdo      = $pdo;
     $this->producer = $producer;
   }

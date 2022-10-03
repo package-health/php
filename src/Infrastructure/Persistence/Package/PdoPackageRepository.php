@@ -3,7 +3,7 @@ declare(strict_types = 1);
 
 namespace PackageHealth\PHP\Infrastructure\Persistence\Package;
 
-use Courier\Client\Producer\ProducerInterface;
+use Courier\Client\Producer;
 use DateTimeImmutable;
 use DateTimeInterface;
 use InvalidArgumentException;
@@ -21,7 +21,7 @@ use PDOStatement;
 
 final class PdoPackageRepository implements PackageRepositoryInterface {
   private PDO $pdo;
-  private ProducerInterface $producer;
+  private Producer $producer;
   private bool $lazyFetch = false;
 
   /**
@@ -47,7 +47,7 @@ final class PdoPackageRepository implements PackageRepositoryInterface {
     );
   }
 
-  public function __construct(PDO $pdo, ProducerInterface $producer) {
+  public function __construct(PDO $pdo, Producer $producer) {
     $this->pdo      = $pdo;
     $this->producer = $producer;
   }

@@ -21,7 +21,8 @@ return static function (ContainerBuilder $containerBuilder): void {
               'dsn' => "pgsql://{$_ENV['POSTGRES_USER']}:{$_ENV['POSTGRES_PASSWORD']}@{$_ENV['POSTGRES_HOST']}:{$_ENV['POSTGRES_PORT']}/{$_ENV['POSTGRES_DB']}"
             ],
             'queue' => [
-              'dsn' => "amqp://{$_ENV['AMQP_USER']}:{$_ENV['AMQP_PASS']}@{$_ENV['AMQP_HOST']}:{$_ENV['AMQP_PORT']}"
+              'dsn'      => "amqp://{$_ENV['AMQP_USER']}:{$_ENV['AMQP_PASS']}@{$_ENV['AMQP_HOST']}:{$_ENV['AMQP_PORT']}",
+              'prefetch' => 100
             ],
             'displayErrorDetails' => (isset($_ENV['PHP_ENV']) === false || $_ENV['PHP_ENV'] === 'dev'),
             'logError'            => true,

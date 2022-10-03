@@ -59,7 +59,7 @@ class UpdateDependencyStatusHandler implements InvokeHandlerInterface {
         )
       );
 
-      return HandlerResultEnum::Reject;
+      return HandlerResultEnum::REJECT;
     }
 
     try {
@@ -91,7 +91,7 @@ class UpdateDependencyStatusHandler implements InvokeHandlerInterface {
         );
 
         // shoud just accept so that it doesn't show as churn?
-        return HandlerResultEnum::Reject;
+        return HandlerResultEnum::REJECT;
       }
 
       // update deduplication guards
@@ -107,7 +107,7 @@ class UpdateDependencyStatusHandler implements InvokeHandlerInterface {
       );
 
       if ($package->getLatestVersion() === '') {
-        return HandlerResultEnum::Reject;
+        return HandlerResultEnum::REJECT;
       }
 
       $dependencyCol = $this->dependencyRepository->withLazyFetch()->find(
@@ -144,7 +144,7 @@ class UpdateDependencyStatusHandler implements InvokeHandlerInterface {
         }
       } while ($dependencyCol->isEmpty() === false);
 
-      return HandlerResultEnum::Accept;
+      return HandlerResultEnum::ACCEPT;
     } catch (Exception $exception) {
       $this->logger->error(
         $exception->getMessage(),
@@ -160,10 +160,10 @@ class UpdateDependencyStatusHandler implements InvokeHandlerInterface {
 
       // reject a command that has been requeued
       if ($attributes['isRedelivery'] ?? false) {
-        return HandlerResultEnum::Reject;
+        return HandlerResultEnum::REJECT;
       }
 
-      return HandlerResultEnum::Requeue;
+      return HandlerResultEnum::REQUEUE;
     }
   }
 }
