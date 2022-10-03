@@ -150,11 +150,11 @@ abstract class AbstractAction {
   }
 
   protected function respondWithHtml(string $content, int $statusCode = 200): ResponseInterface {
-    return $this->respondWith('text/html', $content, $statusCode);
+    return $this->respondWith('text/html; charset=utf-8', $content, $statusCode);
   }
 
   protected function respondWithJson(array $content, int $statusCode = 200): ResponseInterface {
-    return $this->respondWith('application/json', json_encode($content, JSON_THROW_ON_ERROR), $statusCode);
+    return $this->respondWith('application/json; charset=utf-8', json_encode($content, JSON_THROW_ON_ERROR), $statusCode);
   }
 
   protected function respondWithRedirect(string $url, int $statusCode = 302): ResponseInterface {
@@ -177,7 +177,7 @@ abstract class AbstractAction {
     $this->response->getBody()->write($json);
 
     return $this->response
-      ->withHeader('Content-Type', 'application/json')
+      ->withHeader('Content-Type', 'application/json; charset=utf-8')
       ->withStatus($payload->getStatusCode());
   }
 }
