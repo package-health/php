@@ -230,7 +230,7 @@ RUN apk add --no-cache libpq --repository=https://dl-cdn.alpinelinux.org/alpine/
 # Other dependencies
 #============================================
 RUN apk add --no-cache dumb-init fcgi
-RUN wget -O /usr/local/bin/php-fpm-healthcheck https://raw.githubusercontent.com/renatomefi/php-fpm-healthcheck/master/php-fpm-healthcheck && \
+RUN wget -O /usr/local/bin/php-fpm-healthcheck https://raw.githubusercontent.com/package-health/php-fpm-healthcheck/master/php-fpm-healthcheck && \
     chmod +x /usr/local/bin/php-fpm-healthcheck
 
 #============================================
