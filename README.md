@@ -20,6 +20,10 @@ Project Idea:
 
 Documentation about running the project using Docker is available in [docker/README.md](docker/README.md).
 
+## Sponsors
+
+[![Blackfire.io](resources/images/blackfire-io.png)](https://www.blackfire.io)
+
 ## License
 
 This project is licensed under the [GNU AFFERO General Public License](LICENSE).
