@@ -83,20 +83,19 @@ final class ListPackageVersionsAction extends AbstractPackageAction {
           'package' => $package,
           'tagged'  => $taggedCol,
           'develop' => $developCol,
-          'dates'    => [
+          'dates'   => [
             'createdAt' => $package->getCreatedAt(),
             'updatedAt' => $taggedCol
               ->merge($developCol)
-              ->maxOr(
+              ->max(
                 static function (Version $version): DateTimeImmutable {
                   return max($version->getCreatedAt(), $version->getUpdatedAt());
-                },
-                new DateTimeImmutable()
-              )
+                }
+              ) ?? new DateTimeImmutable()
           ],
           'app' => [
             'canonicalUrl' => (string)$this->request->getUri(),
-            'version' => $_ENV['VERSION']
+            'version'      => $_ENV['VERSION']
           ]
         ]
       );

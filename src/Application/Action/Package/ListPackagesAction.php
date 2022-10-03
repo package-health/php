@@ -16,28 +16,27 @@ final class ListPackagesAction extends AbstractPackageAction {
       $twig = Twig::fromRequest($this->request);
 
       $packageCol = $this->packageRepository->findPopular();
+
       $this->logger->debug('Packages list was rendered.');
       $html = $twig->fetch(
         'index.twig',
         [
           'packages' => $packageCol,
           'dates'    => [
-            'createdAt' => $packageCol->minOr(
-                static function (Package $package): DateTimeImmutable {
-                  return $package->getCreatedAt();
-                },
-                ''
-              ),
-            'updatedAt' => $packageCol->maxOr(
-                static function (Package $package): DateTimeImmutable {
-                  return max($package->getCreatedAt(), $package->getUpdatedAt());
-                },
-                new DateTimeImmutable()
-              )
+            'createdAt' => $packageCol->min(
+              static function (Package $package): DateTimeImmutable {
+                return $package->getCreatedAt();
+              }
+            ) ?? '',
+            'updatedAt' => $packageCol->max(
+              static function (Package $package): DateTimeImmutable {
+                return max($package->getCreatedAt(), $package->getUpdatedAt());
+              }
+            ) ?? new DateTimeImmutable()
           ],
-          'app'      => [
+          'app' => [
             'canonicalUrl' => (string)$this->request->getUri(),
-            'version' => $_ENV['VERSION']
+            'version'      => $_ENV['VERSION']
           ]
         ]
       );

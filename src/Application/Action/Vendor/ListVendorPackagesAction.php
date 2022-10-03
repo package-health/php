@@ -59,9 +59,9 @@ final class ListVendorPackagesAction extends AbstractAction {
               }
             )
           ],
-          'app'      => [
+          'app' => [
             'canonicalUrl' => (string)$this->request->getUri(),
-            'version' => $_ENV['VERSION']
+            'version'      => $_ENV['VERSION']
           ]
         ]
       );

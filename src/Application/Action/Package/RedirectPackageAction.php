@@ -54,14 +54,19 @@ final class RedirectPackageAction extends AbstractPackageAction {
       $routeParser = RouteContext::fromRequest($this->request)->getRouteParser();
 
       if ($package->getLatestVersion() === '') {
+        // find the most recent version
         $versionCol = $this->versionRepository->find(
-          [
+          query: [
             'package_id' => $package->getId()
+          ],
+          limit: 1,
+          orderBy: [
+            'created_at' => 'DESC'
           ]
         );
 
         if (count($versionCol)) {
-          $release = $versionCol->last();
+          $release = $versionCol->first();
           $this->logger->debug(
             sprintf(
               'Package "%s" is being redirected to "%s"',
@@ -88,14 +93,14 @@ final class RedirectPackageAction extends AbstractPackageAction {
           $twig->fetch(
             'package.twig',
             [
-              'status'          => [
+              'status' => [
                 'type' => 'is-dark'
               ],
               'package'         => $package,
               'version'         => [],
               'requiredDeps'    => [],
               'requiredDevDeps' => [],
-              'notification' => [
+              'notification'    => [
                 'type' => 'is-warning',
                 'message' => 'This package has no public releases.'
               ],
@@ -107,7 +112,7 @@ final class RedirectPackageAction extends AbstractPackageAction {
               ],
               'app' => [
                 'canonicalUrl' => (string)$this->request->getUri(),
-                'version' => $_ENV['VERSION']
+                'version'      => $_ENV['VERSION']
               ]
             ]
           )

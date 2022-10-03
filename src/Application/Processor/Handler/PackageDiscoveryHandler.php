@@ -180,7 +180,7 @@ class PackageDiscoveryHandler implements InvokeHandlerInterface {
             return $version->getNormalized();
           }
         )
-        ->all();
+        ->toArray();
 
       $developList = $versionCol
         ->filter(
@@ -193,7 +193,7 @@ class PackageDiscoveryHandler implements InvokeHandlerInterface {
             return $version->getNormalized();
           }
         )
-        ->all();
+        ->toArray();
 
       $this->logger->debug(
         'Preloaded version list',

@@ -119,21 +119,23 @@ final class UpdateVersionStatusHandler implements InvokeHandlerInterface {
         ]
       );
 
-      $statuses = $reqDeps->map(
-        static function (Dependency $dependency): DependencyStatusEnum {
-          return $dependency->getStatus();
-        }
-      );
+      $statuses = $reqDeps
+        ->map(
+          static function (Dependency $dependency): DependencyStatusEnum {
+            return $dependency->getStatus();
+          }
+        )
+        ->toArray();
 
       $version = $version->withStatus(
         match (true) {
-          $statuses->contains(DependencyStatusEnum::Insecure)      => VersionStatusEnum::Insecure,
-          $statuses->contains(DependencyStatusEnum::MaybeInsecure) => VersionStatusEnum::MaybeInsecure,
-          $statuses->contains(DependencyStatusEnum::Outdated)      => VersionStatusEnum::Outdated,
-          $statuses->contains(DependencyStatusEnum::Unknown)       => VersionStatusEnum::Unknown,
-          $statuses->contains(DependencyStatusEnum::UpToDate)      => VersionStatusEnum::UpToDate,
-          $statuses->isEmpty()                                     => VersionStatusEnum::NoDeps,
-          default                                                  => $version->getStatus()
+          in_array(DependencyStatusEnum::Insecure, $statuses, true)      => VersionStatusEnum::Insecure,
+          in_array(DependencyStatusEnum::MaybeInsecure, $statuses, true) => VersionStatusEnum::MaybeInsecure,
+          in_array(DependencyStatusEnum::Outdated, $statuses, true)      => VersionStatusEnum::Outdated,
+          in_array(DependencyStatusEnum::Unknown, $statuses, true)       => VersionStatusEnum::Unknown,
+          in_array(DependencyStatusEnum::UpToDate, $statuses, true)      => VersionStatusEnum::UpToDate,
+          empty($statuses)                                               => VersionStatusEnum::NoDeps,
+          default                                                        => $version->getStatus()
         }
       );
 
