@@ -53,7 +53,7 @@ final class CachedDependencyRepository implements DependencyRepositoryInterface 
     $item = $this->cacheItemPool->getItem("/dependency/{$key}");
     $dependencyCol = $item->get();
     if ($item->isHit() === false) {
-      $dependencyCol = $this->dependencyRepository->all();
+      $dependencyCol = $this->dependencyRepository->all($orderBy);
       if ($dependencyCol instanceof LazyCollection) {
         return $dependencyCol;
       }
@@ -103,7 +103,7 @@ final class CachedDependencyRepository implements DependencyRepositoryInterface 
     $item = $this->cacheItemPool->getItem("/dependency/find/{$key}");
     $dependencyCol = $item->get();
     if ($item->isHit() === false) {
-      $dependencyCol = $this->dependencyRepository->find($query, $limit, $offset);
+      $dependencyCol = $this->dependencyRepository->find($query, $limit, $offset, $orderBy);
       if ($dependencyCol instanceof LazyCollection) {
         return $dependencyCol;
       }

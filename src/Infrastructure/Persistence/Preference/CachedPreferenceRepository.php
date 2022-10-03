@@ -51,7 +51,7 @@ final class CachedPreferenceRepository implements PreferenceRepositoryInterface 
     $item = $this->cacheItemPool->getItem("/preference/{$key}");
     $preferenceCol = $item->get();
     if ($item->isHit() === false) {
-      $preferenceCol = $this->preferenceRepository->all();
+      $preferenceCol = $this->preferenceRepository->all($orderBy);
       if ($preferenceCol instanceof LazyCollection) {
         return $preferenceCol;
       }
@@ -101,7 +101,7 @@ final class CachedPreferenceRepository implements PreferenceRepositoryInterface 
     $item = $this->cacheItemPool->getItem("/preference/find/{$key}");
     $preferenceCol = $item->get();
     if ($item->isHit() === false) {
-      $preferenceCol = $this->preferenceRepository->find($query, $limit, $offset);
+      $preferenceCol = $this->preferenceRepository->find($query, $limit, $offset, $orderBy);
       if ($preferenceCol instanceof LazyCollection) {
         return $preferenceCol;
       }

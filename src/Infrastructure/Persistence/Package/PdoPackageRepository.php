@@ -102,7 +102,7 @@ final class PdoPackageRepository implements PackageRepositoryInterface {
 
       return new LazyCollection(
         (function (PDOStatement $stmt): Iterator {
-          while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+          foreach ($stmt as $row) {
             yield $this->hydrate($row);
           }
         })->call($this, $stmt)
@@ -140,7 +140,7 @@ final class PdoPackageRepository implements PackageRepositoryInterface {
 
       return new LazyCollection(
         (function (PDOStatement $stmt): Iterator {
-          while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+          foreach ($stmt as $row) {
             yield $this->hydrate($row);
           }
         })->call($this, $stmt)
@@ -157,7 +157,7 @@ final class PdoPackageRepository implements PackageRepositoryInterface {
     if ($stmt === null) {
       $stmt = $this->pdo->prepare(
         <<<SQL
-          SELECT *
+          SELECT 1
           FROM "packages"
           WHERE "name" = :name
           LIMIT 1
@@ -167,7 +167,7 @@ final class PdoPackageRepository implements PackageRepositoryInterface {
 
     $stmt->execute(['name' => $name]);
 
-    return $stmt->rowCount() === 1;
+    return $stmt->fetchColumn() === 1;
   }
 
   public function get(int $id): Package {
@@ -184,11 +184,10 @@ final class PdoPackageRepository implements PackageRepositoryInterface {
     }
 
     $stmt->execute(['id' => $id]);
-    if ($stmt->rowCount() === 0) {
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    if ($row === false) {
       throw new PackageNotFoundException("Package '{$id}' not found");
     }
-
-    $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
     return $this->hydrate($row);
   }
@@ -245,7 +244,7 @@ final class PdoPackageRepository implements PackageRepositoryInterface {
 
       return new LazyCollection(
         (function (PDOStatement $stmt): Iterator {
-          while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+          foreach ($stmt as $row) {
             yield $this->hydrate($row);
           }
         })->call($this, $stmt)
@@ -297,7 +296,7 @@ final class PdoPackageRepository implements PackageRepositoryInterface {
 
       return new LazyCollection(
         (function (PDOStatement $stmt): Iterator {
-          while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+          foreach ($stmt as $row) {
             yield $this->hydrate($row);
           }
         })->call($this, $stmt)

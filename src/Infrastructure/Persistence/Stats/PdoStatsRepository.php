@@ -111,7 +111,7 @@ final class PdoStatsRepository implements StatsRepositoryInterface {
 
       return new LazyCollection(
         (function (PDOStatement $stmt): Iterator {
-          while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+          foreach ($stmt as $row) {
             yield $this->hydrate($row);
           }
         })->call($this, $stmt)
@@ -139,7 +139,7 @@ final class PdoStatsRepository implements StatsRepositoryInterface {
 
       return new LazyCollection(
         (function (PDOStatement $stmt): Iterator {
-          while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+          foreach ($stmt as $row) {
             yield $this->hydrate($row);
           }
         })->call($this, $stmt)
@@ -156,7 +156,7 @@ final class PdoStatsRepository implements StatsRepositoryInterface {
     if ($stmt === null) {
       $stmt = $this->pdo->prepare(
         <<<SQL
-          SELECT *
+          SELECT 1
           FROM "stats"
           WHERE "package_name" = :package_name
           LIMIT 1
@@ -166,7 +166,7 @@ final class PdoStatsRepository implements StatsRepositoryInterface {
 
     $stmt->execute(['package_name' => $packageName]);
 
-    return $stmt->rowCount() === 1;
+    return $stmt->fetchColumn() === 1;
   }
 
   public function get(string $packageName): Stats {
@@ -183,11 +183,10 @@ final class PdoStatsRepository implements StatsRepositoryInterface {
     }
 
     $stmt->execute(['package_name' => $packageName]);
-    if ($stmt->rowCount() === 0) {
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    if ($row === false) {
       throw new StatsNotFoundException("Stats '{$packageName}' not found");
     }
-
-    $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
     return $this->hydrate($row);
   }
@@ -229,7 +228,7 @@ final class PdoStatsRepository implements StatsRepositoryInterface {
 
       return new LazyCollection(
         (function (PDOStatement $stmt): Iterator {
-          while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+          foreach ($stmt as $row) {
             yield $this->hydrate($row);
           }
         })->call($this, $stmt)

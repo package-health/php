@@ -53,7 +53,7 @@ final class CachedVersionRepository implements VersionRepositoryInterface {
     $item = $this->cacheItemPool->getItem("/version/{$key}");
     $versionCol = $item->get();
     if ($item->isHit() === false) {
-      $versionCol = $this->versionRepository->all();
+      $versionCol = $this->versionRepository->all($orderBy);
       if ($versionCol instanceof LazyCollection) {
         return $versionCol;
       }
@@ -103,7 +103,7 @@ final class CachedVersionRepository implements VersionRepositoryInterface {
     $item = $this->cacheItemPool->getItem("/version/find/{$key}");
     $versionCol = $item->get();
     if ($item->isHit() === false) {
-      $versionCol = $this->versionRepository->find($query, $limit, $offset);
+      $versionCol = $this->versionRepository->find($query, $limit, $offset, $orderBy);
       if ($versionCol instanceof LazyCollection) {
         return $versionCol;
       }

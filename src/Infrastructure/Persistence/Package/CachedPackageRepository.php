@@ -44,7 +44,7 @@ final class CachedPackageRepository implements PackageRepositoryInterface {
     $item = $this->cacheItemPool->getItem("/package/{$key}");
     $packageCol = $item->get();
     if ($item->isHit() === false) {
-      $packageCol = $this->packageRepository->all();
+      $packageCol = $this->packageRepository->all($orderBy);
 
       $item->set($packageCol);
       $item->expiresAfter(3600);
@@ -124,7 +124,7 @@ final class CachedPackageRepository implements PackageRepositoryInterface {
     $item = $this->cacheItemPool->getItem("/package/find/{$key}");
     $packageCol = $item->get();
     if ($item->isHit() === false) {
-      $packageCol = $this->packageRepository->find($query, $limit, $offset);
+      $packageCol = $this->packageRepository->find($query, $limit, $offset, $orderBy);
       if ($packageCol instanceof LazyCollection) {
         return $packageCol;
       }
@@ -149,7 +149,7 @@ final class CachedPackageRepository implements PackageRepositoryInterface {
     $item = $this->cacheItemPool->getItem("/package/matching/{$key}");
     $packageCol = $item->get();
     if ($item->isHit() === false) {
-      $packageCol = $this->packageRepository->findMatching($query);
+      $packageCol = $this->packageRepository->findMatching($query, $orderBy);
       if ($packageCol instanceof LazyCollection) {
         return $packageCol;
       }

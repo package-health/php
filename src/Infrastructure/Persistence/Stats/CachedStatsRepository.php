@@ -62,7 +62,7 @@ final class CachedStatsRepository implements StatsRepositoryInterface {
     $item = $this->cacheItemPool->getItem("/stats/{$key}");
     $statsCol = $item->get();
     if ($item->isHit() === false) {
-      $statsCol = $this->statsRepository->all();
+      $statsCol = $this->statsRepository->all($orderBy);
       if ($statsCol instanceof LazyCollection) {
         return $statsCol;
       }
@@ -145,7 +145,7 @@ final class CachedStatsRepository implements StatsRepositoryInterface {
     $item = $this->cacheItemPool->getItem("/stats/find/{$key}");
     $statsCol = $item->get();
     if ($item->isHit() === false) {
-      $statsCol = $this->statsRepository->find($query, $limit, $offset);
+      $statsCol = $this->statsRepository->find($query, $limit, $offset, $orderBy);
       if ($statsCol instanceof LazyCollection) {
         return $statsCol;
       }

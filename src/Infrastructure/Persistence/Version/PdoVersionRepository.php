@@ -109,7 +109,7 @@ final class PdoVersionRepository implements VersionRepositoryInterface {
 
       return new LazyCollection(
         (function (PDOStatement $stmt): Iterator {
-          while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+          foreach ($stmt as $row) {
             yield $this->hydrate($row);
           }
         })->call($this, $stmt)
@@ -135,11 +135,10 @@ final class PdoVersionRepository implements VersionRepositoryInterface {
     }
 
     $stmt->execute(['id' => $id]);
-    if ($stmt->rowCount() === 0) {
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    if ($row === false) {
       throw new VersionNotFoundException("Version '{$id}' not found");
     }
-
-    $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
     return $this->hydrate($row);
   }
@@ -208,7 +207,7 @@ final class PdoVersionRepository implements VersionRepositoryInterface {
 
       return new LazyCollection(
         (function (PDOStatement $stmt): Iterator {
-          while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+          foreach ($stmt as $row) {
             yield $this->hydrate($row);
           }
         })->call($this, $stmt)
