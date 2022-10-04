@@ -109,13 +109,17 @@ final class ViewPackageBadgeAction extends AbstractPackageAction {
             ]
           );
 
-          $outdated = count($dependencyCol->filter(
-            static function (Dependency $dependency): bool {
-              return $dependency->getStatus() === DependencyStatusEnum::Outdated;
-            }
-          ));
+          $outdated = count(
+            $dependencyCol
+              ->filter(
+                static function (Dependency $dependency): bool {
+                  return $dependency->getStatus() === DependencyStatusEnum::Outdated;
+                }
+              )
+              ->toArray()
+          );
 
-          $total = count($dependencyCol);
+          $total = count($dependencyCol->toArray());
 
           $status = [
             'text'  => "{$outdated} of {$total} outdated",

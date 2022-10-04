@@ -65,7 +65,7 @@ final class RedirectPackageAction extends AbstractPackageAction {
           ]
         );
 
-        if (count($versionCol)) {
+        if ($versionCol->isEmpty() === false) {
           $release = $versionCol->first();
           $this->logger->debug(
             sprintf(

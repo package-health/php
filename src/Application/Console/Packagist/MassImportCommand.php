@@ -69,13 +69,13 @@ final class MassImportCommand extends Command {
 
       $command = $this->getApplication()->find('packagist:get-data');
 
-      $packages = $this->packageRepository->findMatching(
+      $packageCol = $this->packageRepository->findMatching(
         [
           'name' => $pattern
         ]
       );
 
-      if (count($packages) === 0) {
+      if ($packageCol->isEmpty()) {
         $io->text(
           sprintf(
             '[%s] Could not find any packages that matches the pattern "%s"',
@@ -92,12 +92,12 @@ final class MassImportCommand extends Command {
           sprintf(
             '[%s] Found <options=bold;fg=cyan>%d</> packages',
             date('H:i:s'),
-            count($packages)
+            count($packageCol)
           )
         );
       }
 
-      foreach ($packages as $package) {
+      foreach ($packageCol as $package) {
         if ($output->isVerbose()) {
           $io->text(
             sprintf(

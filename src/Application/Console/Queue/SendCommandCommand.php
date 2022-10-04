@@ -129,7 +129,7 @@ final class SendCommandCommand extends Command {
             sprintf(
               '[%s] Found <options=bold;fg=cyan>%d</> packages matching the name "<options=bold;fg=cyan>%s</>"',
               date('H:i:s'),
-              count($packageCol),
+              count($packageCol->toArray()),
               $packageName
             )
           );
@@ -185,7 +185,7 @@ final class SendCommandCommand extends Command {
             sprintf(
               '[%s] Found <options=bold;fg=cyan>%d</> packages matching the name "<options=bold;fg=cyan>%s</>"',
               date('H:i:s'),
-              count($packageCol),
+              count($packageCol->toArray()),
               $packageName
             )
           );
