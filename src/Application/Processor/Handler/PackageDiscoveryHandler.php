@@ -387,16 +387,7 @@ class PackageDiscoveryHandler implements InvokeHandlerInterface {
             }
 
             $version = $versionCol->first();
-            $dependencyCol = $this->dependencyRepository->find(
-              [
-                'version_id'  => $version->getId()
-              ]
-            );
-
-            foreach ($dependencyCol as $dependency) {
-              $this->dependencyRepository->delete($dependency);
-            }
-
+            // this will remove dependencies due to "ON DELETE CASCADE" defined in the FKey
             $this->versionRepository->delete($version);
           }
         }
