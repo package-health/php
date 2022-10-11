@@ -10,6 +10,7 @@ use PackageHealth\PHP\Application\Message\Event\Dependency\DependencyCreatedEven
 use PackageHealth\PHP\Application\Message\Event\Dependency\DependencyDeletedEvent;
 use PackageHealth\PHP\Application\Message\Event\Dependency\DependencyUpdatedEvent;
 use PackageHealth\PHP\Application\Message\Event\Package\PackageCreatedEvent;
+use PackageHealth\PHP\Application\Message\Event\Package\PackageDeletedEvent;
 use PackageHealth\PHP\Application\Message\Event\Package\PackageUpdatedEvent;
 use PackageHealth\PHP\Application\Message\Event\Version\VersionCreatedEvent;
 use PackageHealth\PHP\Application\Message\Event\Version\VersionDeletedEvent;
@@ -100,6 +101,7 @@ final class SendEventCommand extends Command {
         'DependencyDeleted' => DependencyDeletedEvent::class,
         'DependencyUpdated' => DependencyUpdatedEvent::class,
         'PackageCreated' => PackageCreatedEvent::class,
+        'PackageDeleted' => PackageDeletedEvent::class,
         'PackageUpdated' => PackageUpdatedEvent::class,
         'VersionCreated' => VersionCreatedEvent::class,
         'VersionDeleted' => VersionDeletedEvent::class,
@@ -136,6 +138,7 @@ final class SendEventCommand extends Command {
 
           break;
         case PackageCreatedEvent::class:
+        case PackageDeletedEvent::class:
         case PackageUpdatedEvent::class:
           $packageName = $input->getOption('packageName');
           if ($packageName === null) {

@@ -36,4 +36,6 @@ interface PackageRepositoryInterface extends RepositoryInterface {
   public function save(Package $package): Package;
 
   public function update(Package $package): Package;
+
+  public function delete(Package $package): void;
 }

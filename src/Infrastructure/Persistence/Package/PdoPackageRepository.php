@@ -12,6 +12,7 @@ use Kolekto\CollectionInterface;
 use Kolekto\EagerCollection;
 use Kolekto\LazyCollection;
 use PackageHealth\PHP\Application\Message\Event\Package\PackageCreatedEvent;
+use PackageHealth\PHP\Application\Message\Event\Package\PackageDeletedEvent;
 use PackageHealth\PHP\Application\Message\Event\Package\PackageUpdatedEvent;
 use PackageHealth\PHP\Domain\Package\Package;
 use PackageHealth\PHP\Domain\Package\PackageNotFoundException;
@@ -393,5 +394,31 @@ final class PdoPackageRepository implements PackageRepositoryInterface {
     }
 
     return $package;
+  }
+
+  public function delete(Package $package): void {
+    static $stmt = null;
+    if ($stmt === null) {
+      $stmt = $this->pdo->prepare(
+        <<<SQL
+          DELETE FROM "packages"
+          WHERE "id" = :id
+        SQL
+      );
+    }
+
+    if ($package->getId() === null) {
+      throw new InvalidArgumentException();
+    }
+
+    $stmt->execute(
+      [
+        'id' => $package->getId()
+      ]
+    );
+
+    $this->producer->sendEvent(
+      new PackageDeletedEvent($package)
+    );
   }
 }

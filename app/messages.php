@@ -4,6 +4,7 @@ declare(strict_types = 1);
 use Courier\Bus;
 use PackageHealth\PHP\Application\Message\Command\CheckDependencyStatusCommand;
 use PackageHealth\PHP\Application\Message\Command\PackageDiscoveryCommand;
+use PackageHealth\PHP\Application\Message\Command\PackagePurgeCommand;
 use PackageHealth\PHP\Application\Message\Command\UpdateDependencyStatusCommand;
 use PackageHealth\PHP\Application\Message\Command\UpdateVersionStatusCommand;
 use PackageHealth\PHP\Application\Message\Event\Dependency\DependencyCreatedEvent;
@@ -13,6 +14,7 @@ use PackageHealth\PHP\Application\Message\Event\Package\PackageUpdatedEvent;
 use PackageHealth\PHP\Application\Message\Event\Version\VersionCreatedEvent;
 use PackageHealth\PHP\Application\Processor\Handler\CheckDependencyStatusHandler;
 use PackageHealth\PHP\Application\Processor\Handler\PackageDiscoveryHandler;
+use PackageHealth\PHP\Application\Processor\Handler\PackagePurgeHandler;
 use PackageHealth\PHP\Application\Processor\Handler\UpdateDependencyStatusHandler;
 use PackageHealth\PHP\Application\Processor\Handler\UpdateVersionStatusHandler;
 use PackageHealth\PHP\Application\Processor\Listener\Dependency\DependencyCreatedListener;
@@ -54,11 +56,17 @@ return static function (ContainerInterface $container): void {
   );
 
   /* PACKAGE COMMANDS */
-  $router->addRoute(
-    PackageDiscoveryCommand::class,
-    PackageDiscoveryHandler::class,
-    'PackageDiscovery'
-  );
+  $router
+    ->addRoute(
+      PackageDiscoveryCommand::class,
+      PackageDiscoveryHandler::class,
+      'PackageDiscovery'
+    )
+    ->addRoute(
+      PackagePurgeCommand::class,
+      PackagePurgeHandler::class,
+      'PackagePurge'
+    );
 
   /* DEPENDENCY COMMANDS */
   $router

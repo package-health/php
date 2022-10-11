@@ -178,4 +178,13 @@ final class CachedPackageRepository implements PackageRepositoryInterface {
 
     return $package;
   }
+
+  public function delete(Package $package): void {
+    if ($package->getId() === null) {
+      throw new InvalidArgumentException();
+    }
+
+    $this->cacheItemPool->deleteItem('/package/' . $package->getName());
+    $this->versionRepository->delete($package);
+  }
 }

@@ -3,6 +3,7 @@ declare(strict_types = 1);
 
 use DI\ContainerBuilder;
 use PackageHealth\PHP\Application\Processor\Handler\PackageDiscoveryHandler;
+use PackageHealth\PHP\Application\Processor\Handler\PackagePurgeHandler;
 use PackageHealth\PHP\Application\Processor\Handler\UpdateDependencyStatusHandler;
 use PackageHealth\PHP\Application\Processor\Handler\UpdateVersionStatusHandler;
 use PackageHealth\PHP\Application\Processor\Listener\Dependency\DependencyUpdatedListener;
@@ -14,9 +15,10 @@ return static function (ContainerBuilder $containerBuilder): void {
   /* HANDLERS */
   $containerBuilder->addDefinitions(
     [
-      PackageDiscoveryHandler::class => autowire(PackageDiscoveryHandler::class),
+      PackageDiscoveryHandler::class       => autowire(PackageDiscoveryHandler::class),
+      PackagePurgeHandler::class           => autowire(PackagePurgeHandler::class),
       UpdateDependencyStatusHandler::class => autowire(UpdateDependencyStatusHandler::class),
-      UpdateVersionStatusHandler::class => autowire(UpdateVersionStatusHandler::class)
+      UpdateVersionStatusHandler::class    => autowire(UpdateVersionStatusHandler::class)
     ]
   );
 

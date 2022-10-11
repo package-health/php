@@ -7,6 +7,7 @@ use Courier\Client\Producer;
 use Exception;
 use InvalidArgumentException;
 use PackageHealth\PHP\Application\Message\Command\PackageDiscoveryCommand;
+use PackageHealth\PHP\Application\Message\Command\PackagePurgeCommand;
 use PackageHealth\PHP\Application\Service\Packagist;
 use PackageHealth\PHP\Domain\Package\Package;
 use PackageHealth\PHP\Domain\Package\PackageRepositoryInterface;
@@ -38,6 +39,18 @@ final class GetListCommand extends Command implements SignalableCommandInterface
         'r',
         InputOption::VALUE_NONE,
         'Resync the list'
+      )
+      ->addOption(
+        'skipAdd',
+        null,
+        InputOption::VALUE_NONE,
+        'Skip adding new packages'
+      )
+      ->addOption(
+        'skipRem',
+        null,
+        InputOption::VALUE_NONE,
+        'Skip removing packages'
       )
       ->addOption(
         'offline',
@@ -172,38 +185,44 @@ final class GetListCommand extends Command implements SignalableCommandInterface
         )
       );
 
-      foreach ($addList as $packageName) {
-        $this->producer->sendCommand(
-          new PackageDiscoveryCommand($packageName, workOffline: $workOffline)
-        );
-
-        if ($this->stopDaemon === true) {
-          $io->text(
-            sprintf(
-              '[%s] Interrupted, leaving',
-              date('H:i:s')
-            )
+      $skipAdd = (bool)$input->getOption('skipAdd');
+      if ($skipAdd === false) {
+        foreach ($addList as $packageName) {
+          $this->producer->sendCommand(
+            new PackageDiscoveryCommand($packageName, workOffline: $workOffline)
           );
 
-          return Command::SUCCESS;
+          if ($this->stopDaemon === true) {
+            $io->text(
+              sprintf(
+                '[%s] Interrupted, leaving',
+                date('H:i:s')
+              )
+            );
+
+            return Command::SUCCESS;
+          }
         }
       }
 
-      foreach ($remList as $packageName) {
-        // $this->producer->sendCommand(
-        //   new PackageRemovalCommand($packageName)
-        // );
+      $skipRem = (bool)$input->getOption('skipRem');
+      if ($skipRem === false) {
+        foreach ($remList as $packageName) {
+          $this->producer->sendCommand(
+            new PackagePurgeCommand($packageName)
+          );
 
-        // if ($this->stopDaemon === true) {
-        //   $io->text(
-        //     sprintf(
-        //       '[%s] Interrupted, leaving',
-        //       date('H:i:s')
-        //     )
-        //   );
+          if ($this->stopDaemon === true) {
+            $io->text(
+              sprintf(
+                '[%s] Interrupted, leaving',
+                date('H:i:s')
+              )
+            );
 
-        //   return Command::SUCCESS;
-        // }
+            return Command::SUCCESS;
+          }
+        }
       }
 
       $io->text(
