@@ -11,6 +11,7 @@ use Kolekto\CollectionInterface;
 use Kolekto\EagerCollection;
 use Kolekto\LazyCollection;
 use PackageHealth\PHP\Application\Message\Event\Version\VersionCreatedEvent;
+use PackageHealth\PHP\Application\Message\Event\Version\VersionDeletedEvent;
 use PackageHealth\PHP\Application\Message\Event\Version\VersionUpdatedEvent;
 use PackageHealth\PHP\Domain\Version\Version;
 use PackageHealth\PHP\Domain\Version\VersionNotFoundException;
@@ -301,5 +302,31 @@ final class PdoVersionRepository implements VersionRepositoryInterface {
     }
 
     return $version;
+  }
+
+  public function delete(Version $version): void {
+    static $stmt = null;
+    if ($stmt === null) {
+      $stmt = $this->pdo->prepare(
+        <<<SQL
+          DELETE FROM "versions"
+          WHERE "id" = :id
+        SQL
+      );
+    }
+
+    if ($version->getId() === null) {
+      throw new InvalidArgumentException();
+    }
+
+    $stmt->execute(
+      [
+        'id' => $version->getId()
+      ]
+    );
+
+    $this->producer->sendEvent(
+      new VersionDeletedEvent($version)
+    );
   }
 }

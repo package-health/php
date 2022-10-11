@@ -132,4 +132,13 @@ final class CachedDependencyRepository implements DependencyRepositoryInterface 
 
     return $dependency;
   }
+
+  public function delete(Dependency $dependency): void {
+    if ($dependency->getId() === null) {
+      throw new InvalidArgumentException();
+    }
+
+    $this->cacheItemPool->deleteItem('/dependency/' . $dependency->getId());
+    $this->versionRepository->delete($dependency);
+  }
 }

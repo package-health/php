@@ -34,4 +34,6 @@ interface DependencyRepositoryInterface extends RepositoryInterface {
   public function save(Dependency $dependency): Dependency;
 
   public function update(Dependency $dependency): Dependency;
+
+  public function delete(Dependency $dependency): void;
 }

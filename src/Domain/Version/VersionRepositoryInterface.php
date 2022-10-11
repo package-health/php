@@ -34,4 +34,6 @@ interface VersionRepositoryInterface extends RepositoryInterface {
   public function save(Version $version): Version;
 
   public function update(Version $version): Version;
+
+  public function delete(Version $version): void;
 }

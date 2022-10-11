@@ -12,6 +12,7 @@ use Kolekto\CollectionInterface;
 use Kolekto\EagerCollection;
 use Kolekto\LazyCollection;
 use PackageHealth\PHP\Application\Message\Event\Dependency\DependencyCreatedEvent;
+use PackageHealth\PHP\Application\Message\Event\Dependency\DependencyDeletedEvent;
 use PackageHealth\PHP\Application\Message\Event\Dependency\DependencyUpdatedEvent;
 use PackageHealth\PHP\Domain\Dependency\Dependency;
 use PackageHealth\PHP\Domain\Dependency\DependencyNotFoundException;
@@ -298,5 +299,31 @@ final class PdoDependencyRepository implements DependencyRepositoryInterface {
     }
 
     return $dependency;
+  }
+
+  public function delete(Dependency $dependency): void {
+    static $stmt = null;
+    if ($stmt === null) {
+      $stmt = $this->pdo->prepare(
+        <<<SQL
+          DELETE FROM "dependencies"
+          WHERE "id" = :id
+        SQL
+      );
+    }
+
+    if ($dependency->getId() === null) {
+      throw new InvalidArgumentException();
+    }
+
+    $stmt->execute(
+      [
+        'id' => $dependency->getId()
+      ]
+    );
+
+    $this->producer->sendEvent(
+      new DependencyDeletedEvent($dependency)
+    );
   }
 }

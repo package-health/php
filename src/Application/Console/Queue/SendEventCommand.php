@@ -7,10 +7,12 @@ use Courier\Client\Producer;
 use Exception;
 use InvalidArgumentException;
 use PackageHealth\PHP\Application\Message\Event\Dependency\DependencyCreatedEvent;
+use PackageHealth\PHP\Application\Message\Event\Dependency\DependencyDeletedEvent;
 use PackageHealth\PHP\Application\Message\Event\Dependency\DependencyUpdatedEvent;
 use PackageHealth\PHP\Application\Message\Event\Package\PackageCreatedEvent;
 use PackageHealth\PHP\Application\Message\Event\Package\PackageUpdatedEvent;
 use PackageHealth\PHP\Application\Message\Event\Version\VersionCreatedEvent;
+use PackageHealth\PHP\Application\Message\Event\Version\VersionDeletedEvent;
 use PackageHealth\PHP\Application\Message\Event\Version\VersionUpdatedEvent;
 use PackageHealth\PHP\Domain\Dependency\DependencyRepositoryInterface;
 use PackageHealth\PHP\Domain\Package\PackageRepositoryInterface;
@@ -95,10 +97,12 @@ final class SendEventCommand extends Command {
 
       $eventClass = match ($eventName) {
         'DependencyCreated' => DependencyCreatedEvent::class,
+        'DependencyDeleted' => DependencyDeletedEvent::class,
         'DependencyUpdated' => DependencyUpdatedEvent::class,
         'PackageCreated' => PackageCreatedEvent::class,
         'PackageUpdated' => PackageUpdatedEvent::class,
         'VersionCreated' => VersionCreatedEvent::class,
+        'VersionDeleted' => VersionDeletedEvent::class,
         'VersionUpdated' => VersionUpdatedEvent::class,
         default => throw new InvalidArgumentException(
           sprintf(
@@ -118,6 +122,7 @@ final class SendEventCommand extends Command {
 
       switch ($eventClass) {
         case DependencyCreatedEvent::class:
+        case DependencyDeletedEvent::class:
         case DependencyUpdatedEvent::class:
           $dependencyId = $input->getOption('dependencyId');
           if ($dependencyId === null) {
@@ -158,6 +163,7 @@ final class SendEventCommand extends Command {
 
           break;
         case VersionCreatedEvent::class:
+        case VersionDeletedEvent::class:
         case VersionUpdatedEvent::class:
           $versionId = $input->getOption('versionId');
           if ($versionId === null) {

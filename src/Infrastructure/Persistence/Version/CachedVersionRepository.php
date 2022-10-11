@@ -132,4 +132,13 @@ final class CachedVersionRepository implements VersionRepositoryInterface {
 
     return $version;
   }
+
+  public function delete(Version $version): void {
+    if ($version->getId() === null) {
+      throw new InvalidArgumentException();
+    }
+
+    $this->cacheItemPool->deleteItem('/version/' . $version->getId());
+    $this->versionRepository->delete($version);
+  }
 }

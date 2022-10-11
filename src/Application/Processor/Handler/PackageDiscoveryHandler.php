@@ -360,6 +360,46 @@ class PackageDiscoveryHandler implements InvokeHandlerInterface {
             }
           }
         }
+
+        // clean "development releases" (aka. branches)
+        $currReleases = array_column($metadata, 'version_normalized');
+        $releaseDiff  = array_diff($developList, $currReleases);
+        if (count($releaseDiff)) {
+          $this->logger->debug(
+            'Cleaning up invalid branches',
+            [
+              'package' => $pkg,
+              'count'   => count($releaseDiff)
+            ]
+          );
+          foreach ($releaseDiff as $release) {
+            $versionCol = $this->versionRepository->find(
+              [
+                'package_id' => $package->getId(),
+                'normalized' => $release
+              ],
+              1
+            );
+
+            if ($versionCol->isEmpty() === true) {
+              // if this branch has been removed by someone else, just skip
+              continue;
+            }
+
+            $version = $versionCol->first();
+            $dependencyCol = $this->dependencyRepository->find(
+              [
+                'version_id'  => $version->getId()
+              ]
+            );
+
+            foreach ($dependencyCol as $dependency) {
+              $this->dependencyRepository->delete($dependency);
+            }
+
+            $this->versionRepository->delete($version);
+          }
+        }
       }
 
       return HandlerResultEnum::ACCEPT;
