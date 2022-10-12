@@ -18,7 +18,7 @@ use Psr\Log\LoggerInterface;
 use Slim\HttpCache\CacheProvider;
 use Slim\Views\Twig;
 
-final class ViewPackageAction extends AbstractPackageAction {
+final class ViewPackageVersionAction extends AbstractPackageAction {
   private DependencyRepositoryInterface $dependencyRepository;
   private VersionRepositoryInterface $versionRepository;
 
@@ -45,7 +45,7 @@ final class ViewPackageAction extends AbstractPackageAction {
     $version = $this->resolveStringArg('version');
     VersionValidator::assertValidNumber($version);
 
-    $item = $this->cacheItemPool->getItem("/view/viewPackage/{$vendor}/{$project}/{$version}");
+    $item = $this->cacheItemPool->getItem("/view/viewPackageVersion/{$vendor}/{$project}/{$version}");
     $html = $item->get();
     if ($item->isHit() === false) {
       $twig = Twig::fromRequest($this->request);
@@ -255,7 +255,7 @@ final class ViewPackageAction extends AbstractPackageAction {
 
       $this->logger->debug("Package '{$vendor}/{$project}:{$version}' was rendered.");
       $html = $twig->fetch(
-        'package/view.twig',
+        'package/viewVersion.twig',
         $data
       );
 

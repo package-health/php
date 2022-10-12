@@ -4,10 +4,10 @@ declare(strict_types = 1);
 use PackageHealth\PHP\Application\Action\Package\ListPackagesAction;
 use PackageHealth\PHP\Application\Action\Package\ListPackageVersionsAction;
 use PackageHealth\PHP\Application\Action\Package\RedirectListPackagesAction;
-use PackageHealth\PHP\Application\Action\Package\RedirectPackageAction;
 use PackageHealth\PHP\Application\Action\Package\RedirectPackageBadgeAction;
-use PackageHealth\PHP\Application\Action\Package\ViewPackageAction;
+use PackageHealth\PHP\Application\Action\Package\RedirectPackageVersionAction;
 use PackageHealth\PHP\Application\Action\Package\ViewPackageBadgeAction;
+use PackageHealth\PHP\Application\Action\Package\ViewPackageVersionAction;
 use PackageHealth\PHP\Application\Action\System\HealthAction;
 use PackageHealth\PHP\Application\Action\Vendor\ListVendorPackagesAction;
 use Psr\Http\Message\ResponseInterface;
@@ -35,24 +35,42 @@ return static function (App $app): void {
     function (Group $group) {
       $group
         ->get('', RedirectListPackagesAction::class);
-      $group
-        ->get('/{vendor}', ListVendorPackagesAction::class)
-        ->setName('listVendorPackages');
-      $group
-        ->get('/{vendor}/{project}/status.svg', RedirectPackageBadgeAction::class)
-        ->setName('redirectPackageBadge');
-      $group
-        ->get('/{vendor}/{project}/{version}/status.svg', ViewPackageBadgeAction::class)
-        ->setName('viewPackageBadge');
-      $group
-        ->get('/{vendor}/{project}', ListPackageVersionsAction::class)
-        ->setName('listPackageVersions');
-      $group
-        ->get('/{vendor}/{project}/latest', RedirectPackageAction::class)
-        ->setName('redirectPackage');
-      $group
-        ->get('/{vendor}/{project}/{version}', ViewPackageAction::class)
-        ->setName('viewPackage');
+
+      $group->group(
+        '/{vendor}',
+        function (Group $group) {
+          $group
+            ->get('', ListVendorPackagesAction::class)
+            ->setName('listVendorPackages');
+
+          $group->group(
+            '/{project}',
+            function (Group $group) {
+              $group
+                ->get('', ListPackageVersionsAction::class)
+                ->setName('listPackageVersions');
+              $group
+                ->get('/latest', RedirectPackageVersionAction::class)
+                ->setName('redirectPackageVersion');
+              $group
+                ->get('/status.svg', RedirectPackageBadgeAction::class)
+                ->setName('redirectPackageBadge');
+
+              $group->group(
+                '/{version}',
+                function (Group $group) {
+                  $group
+                    ->get('', ViewPackageVersionAction::class)
+                    ->setName('viewPackageVersion');
+                  $group
+                    ->get('/status.svg', ViewPackageBadgeAction::class)
+                    ->setName('viewPackageBadge');
+                }
+              );
+            }
+          );
+        }
+      );
     }
   );
 

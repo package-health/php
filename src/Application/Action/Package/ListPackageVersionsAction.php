@@ -78,7 +78,7 @@ final class ListPackageVersionsAction extends AbstractPackageAction {
 
       $this->logger->debug("Package '{$vendor}/{$project}' version list was rendered.");
       $html = $twig->fetch(
-        'package/list.twig',
+        'package/listVersions.twig',
         [
           'package' => $package,
           'tagged'  => $taggedCol,

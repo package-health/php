@@ -43,7 +43,7 @@ final class ListVendorPackagesAction extends AbstractAction {
 
       $this->logger->debug("Vendor '{$vendor}' package list was rendered.");
       $html = $twig->fetch(
-        'vendor/list.twig',
+        'vendor/listPackages.twig',
         [
           'vendor'   => $vendor,
           'packages' => $packageCol,

@@ -29,7 +29,7 @@
           <tbody>
             {% for version in tagged %}
               <tr>
-                <td><a href="{{ url_for('viewPackage', {vendor: package.vendor, project: package.project, version: version.number}) }}">{{ version.number }}</a></td>
+                <td><a href="{{ url_for('viewPackageVersion', {vendor: package.vendor, project: package.project, version: version.number}) }}">{{ version.number }}</a></td>
                 <td class="has-text-right">{{ version.createdAt | date('d-m-Y') }}</td>
               </tr>
             {% endfor %}
@@ -53,7 +53,7 @@
           <tbody>
             {% for version in develop %}
               <tr>
-                <td><a href="{{ url_for('viewPackage', {vendor: package.vendor, project: package.project, version: version.number}) }}">{{ version.number }}</a></td>
+                <td><a href="{{ url_for('viewPackageVersion', {vendor: package.vendor, project: package.project, version: version.number}) }}">{{ version.number }}</a></td>
                 <td class="has-text-right">{{ version.createdAt | date('d-m-Y') }}</td>
               </tr>
             {% endfor %}

@@ -6,6 +6,7 @@ namespace PackageHealth\PHP\Application\Action\Package;
 use PackageHealth\PHP\Domain\Package\PackageNotFoundException;
 use PackageHealth\PHP\Domain\Package\PackageRepositoryInterface;
 use PackageHealth\PHP\Domain\Package\PackageValidator;
+use PackageHealth\PHP\Domain\Version\Version;
 use PackageHealth\PHP\Domain\Version\VersionRepositoryInterface;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -14,7 +15,7 @@ use Slim\HttpCache\CacheProvider;
 use Slim\Routing\RouteContext;
 use Slim\Views\Twig;
 
-final class RedirectPackageAction extends AbstractPackageAction {
+final class RedirectPackageVersionAction extends AbstractPackageAction {
   private VersionRepositoryInterface $versionRepository;
 
   public function __construct(
@@ -35,7 +36,7 @@ final class RedirectPackageAction extends AbstractPackageAction {
     $project = $this->resolveStringArg('project');
     PackageValidator::assertValidProject($project);
 
-    $item = $this->cacheItemPool->getItem("/view/redirectPackage/{$vendor}/{$project}");
+    $item = $this->cacheItemPool->getItem("/view/redirectPackageVersion/{$vendor}/{$project}");
     $url  = $item->get();
     if ($item->isHit() === false) {
       $packageCol = $this->packageRepository->find(
@@ -59,10 +60,16 @@ final class RedirectPackageAction extends AbstractPackageAction {
           query: [
             'package_id' => $package->getId()
           ],
-          limit: 1,
           orderBy: [
             'created_at' => 'DESC'
           ]
+        );
+
+        // remove branches that starts with "dev-dependabot/"
+        $versionCol = $versionCol->filter(
+          static function (Version $version): bool {
+            return str_starts_with($version->getNumber(), 'dev-dependabot/') === false;
+          }
         );
 
         if ($versionCol->isEmpty() === false) {
@@ -77,7 +84,7 @@ final class RedirectPackageAction extends AbstractPackageAction {
 
           return $this->respondWithRedirect(
             $routeParser->urlFor(
-              'viewPackage',
+              'viewPackageVersion',
               [
                 'vendor'  => $vendor,
                 'project' => $project,
@@ -127,7 +134,7 @@ final class RedirectPackageAction extends AbstractPackageAction {
         )
       );
       $url = $routeParser->urlFor(
-        'viewPackage',
+        'viewPackageVersion',
         [
           'vendor'  => $vendor,
           'project' => $project,
