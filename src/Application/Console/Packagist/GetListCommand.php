@@ -11,7 +11,6 @@ use PackageHealth\PHP\Application\Message\Command\PackagePurgeCommand;
 use PackageHealth\PHP\Application\Service\Packagist;
 use PackageHealth\PHP\Domain\Package\Package;
 use PackageHealth\PHP\Domain\Package\PackageRepositoryInterface;
-use RuntimeException;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Command\SignalableCommandInterface;

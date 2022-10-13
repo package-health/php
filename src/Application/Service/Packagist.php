@@ -6,7 +6,6 @@ namespace PackageHealth\PHP\Application\Service;
 use Buzz\Browser;
 use Composer\MetadataMinifier\MetadataMinifier;
 use PackageHealth\PHP\Application\Service\Storage\FileStorageInterface;
-use Psr\Http\Message\ResponseInterface;
 use RuntimeException;
 
 final class Packagist {

@@ -5,7 +5,6 @@ namespace PackageHealth\PHP\Infrastructure\Persistence\Preference;
 
 use DateTimeImmutable;
 use Kolekto\CollectionInterface;
-use Kolekto\EagerCollection;
 use Kolekto\LazyCollection;
 use PackageHealth\PHP\Domain\Preference\Preference;
 use PackageHealth\PHP\Domain\Preference\PreferenceRepositoryInterface;

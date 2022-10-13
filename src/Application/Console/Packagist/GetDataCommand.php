@@ -9,21 +9,14 @@ use Composer\Semver\VersionParser;
 use Courier\Client\Producer;
 use Exception;
 use InvalidArgumentException;
-use PackageHealth\PHP\Application\Message\Event\Dependency\DependencyCreatedEvent;
-use PackageHealth\PHP\Application\Message\Event\Dependency\DependencyUpdatedEvent;
-use PackageHealth\PHP\Application\Message\Event\Package\PackageUpdatedEvent;
-use PackageHealth\PHP\Application\Message\Event\Stats\StatsCreatedEvent;
-use PackageHealth\PHP\Application\Message\Event\Stats\StatsUpdatedEvent;
-use PackageHealth\PHP\Application\Message\Event\Version\VersionCreatedEvent;
-use PackageHealth\PHP\Application\Message\Event\Version\VersionUpdatedEvent;
 use PackageHealth\PHP\Application\Service\Packagist;
 use PackageHealth\PHP\Domain\Dependency\DependencyRepositoryInterface;
 use PackageHealth\PHP\Domain\Dependency\DependencyStatusEnum;
+use PackageHealth\PHP\Domain\Package\PackageNotFoundException;
 use PackageHealth\PHP\Domain\Package\PackageRepositoryInterface;
 use PackageHealth\PHP\Domain\Stats\StatsRepositoryInterface;
 use PackageHealth\PHP\Domain\Version\VersionRepositoryInterface;
 use PackageHealth\PHP\Domain\Version\VersionStatusEnum;
-use RuntimeException;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -244,7 +237,7 @@ final class GetDataCommand extends Command {
               1
             );
 
-            $packageList[$dependencyName] = $packageCol[0]->getLatestVersion() ?? '';
+            $packageList[$dependencyName] = $packageCol->first()->getLatestVersion() ?? '';
           }
 
           $dependencyCol = $this->dependencyRepository->find(
@@ -324,7 +317,7 @@ final class GetDataCommand extends Command {
               1
             );
 
-            $packageList[$dependencyName] = $packageCol[0]->getLatestVersion() ?? '';
+            $packageList[$dependencyName] = $packageCol->first()->getLatestVersion() ?? '';
           }
 
           $dependencyCol = $this->dependencyRepository->find(

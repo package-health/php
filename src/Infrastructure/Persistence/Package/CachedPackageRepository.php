@@ -4,8 +4,8 @@ declare(strict_types = 1);
 namespace PackageHealth\PHP\Infrastructure\Persistence\Package;
 
 use DateTimeImmutable;
+use InvalidArgumentException;
 use Kolekto\CollectionInterface;
-use Kolekto\EagerCollection;
 use Kolekto\LazyCollection;
 use PackageHealth\PHP\Domain\Package\Package;
 use PackageHealth\PHP\Domain\Package\PackageRepositoryInterface;

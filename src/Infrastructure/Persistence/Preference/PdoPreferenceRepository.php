@@ -6,6 +6,7 @@ namespace PackageHealth\PHP\Infrastructure\Persistence\Preference;
 use Courier\Client\Producer;
 use DateTimeImmutable;
 use DateTimeInterface;
+use InvalidArgumentException;
 use Iterator;
 use Kolekto\CollectionInterface;
 use Kolekto\EagerCollection;

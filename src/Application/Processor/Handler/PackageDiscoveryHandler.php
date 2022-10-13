@@ -13,7 +13,6 @@ use Exception;
 use PackageHealth\PHP\Application\Message\Command\PackageDiscoveryCommand;
 use PackageHealth\PHP\Application\Service\Packagist;
 use PackageHealth\PHP\Domain\Dependency\DependencyRepositoryInterface;
-use PackageHealth\PHP\Domain\Dependency\DependencyStatusEnum;
 use PackageHealth\PHP\Domain\Package\PackageRepositoryInterface;
 use PackageHealth\PHP\Domain\Version\Version;
 use PackageHealth\PHP\Domain\Version\VersionRepositoryInterface;

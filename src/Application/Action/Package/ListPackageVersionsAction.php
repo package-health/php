@@ -8,8 +8,6 @@ use PackageHealth\PHP\Domain\Package\PackageNotFoundException;
 use PackageHealth\PHP\Domain\Package\PackageRepositoryInterface;
 use PackageHealth\PHP\Domain\Package\PackageValidator;
 use PackageHealth\PHP\Domain\Version\Version;
-use PackageHealth\PHP\Domain\Version\VersionCollection;
-use PackageHealth\PHP\Domain\Version\VersionNotFoundException;
 use PackageHealth\PHP\Domain\Version\VersionRepositoryInterface;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Message\ResponseInterface;

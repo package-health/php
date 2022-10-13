@@ -4,7 +4,6 @@ declare(strict_types = 1);
 namespace PackageHealth\PHP\Domain\Preference;
 
 use DateTimeImmutable;
-use InvalidArgumentException;
 use JsonSerializable;
 use ReturnTypeWillChange;
 

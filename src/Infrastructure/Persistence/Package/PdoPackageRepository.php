@@ -370,7 +370,7 @@ final class PdoPackageRepository implements PackageRepositoryInterface {
     }
 
     if ($package->getId() === null) {
-      throw InvalidArgumentException();
+      throw new InvalidArgumentException();
     }
 
     if ($package->isDirty()) {

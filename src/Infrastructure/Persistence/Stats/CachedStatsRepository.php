@@ -5,7 +5,6 @@ namespace PackageHealth\PHP\Infrastructure\Persistence\Stats;
 
 use DateTimeImmutable;
 use Kolekto\CollectionInterface;
-use Kolekto\EagerCollection;
 use Kolekto\LazyCollection;
 use PackageHealth\PHP\Domain\Stats\Stats;
 use PackageHealth\PHP\Domain\Stats\StatsRepositoryInterface;

@@ -9,7 +9,6 @@ use PackageHealth\PHP\Application\Message\Command\UpdateDependencyStatusCommand;
 use PackageHealth\PHP\Application\Message\Command\UpdateVersionStatusCommand;
 use PackageHealth\PHP\Application\Message\Event\Dependency\DependencyCreatedEvent;
 use PackageHealth\PHP\Application\Message\Event\Dependency\DependencyUpdatedEvent;
-use PackageHealth\PHP\Application\Message\Event\Package\PackageCreatedEvent;
 use PackageHealth\PHP\Application\Message\Event\Package\PackageUpdatedEvent;
 use PackageHealth\PHP\Application\Message\Event\Version\VersionCreatedEvent;
 use PackageHealth\PHP\Application\Processor\Handler\CheckDependencyStatusHandler;
@@ -19,7 +18,6 @@ use PackageHealth\PHP\Application\Processor\Handler\UpdateDependencyStatusHandle
 use PackageHealth\PHP\Application\Processor\Handler\UpdateVersionStatusHandler;
 use PackageHealth\PHP\Application\Processor\Listener\Dependency\DependencyCreatedListener;
 use PackageHealth\PHP\Application\Processor\Listener\Dependency\DependencyUpdatedListener;
-use PackageHealth\PHP\Application\Processor\Listener\Package\PackageCreatedListener;
 use PackageHealth\PHP\Application\Processor\Listener\Package\PackageUpdatedListener;
 use PackageHealth\PHP\Application\Processor\Listener\Version\VersionCreatedListener;
 use Psr\Container\ContainerInterface;

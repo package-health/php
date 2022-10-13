@@ -3,7 +3,6 @@ declare(strict_types = 1);
 
 namespace PackageHealth\PHP\Application\Processor\Handler;
 
-use Composer\Semver\VersionParser;
 use Courier\Message\CommandInterface;
 use Courier\Processor\Handler\HandlerResultEnum;
 use Courier\Processor\Handler\InvokeHandlerInterface;
