@@ -14,6 +14,7 @@ use PackageHealth\PHP\Application\Message\Command\PackageDiscoveryCommand;
 use PackageHealth\PHP\Application\Service\Packagist;
 use PackageHealth\PHP\Domain\Dependency\DependencyRepositoryInterface;
 use PackageHealth\PHP\Domain\Package\PackageRepositoryInterface;
+use PackageHealth\PHP\Domain\Package\PackageValidator;
 use PackageHealth\PHP\Domain\Version\Version;
 use PackageHealth\PHP\Domain\Version\VersionRepositoryInterface;
 use PackageHealth\PHP\Domain\Version\VersionStatusEnum;
@@ -42,17 +43,6 @@ class PackageDiscoveryHandler implements InvokeHandlerInterface {
     }
 
     return '';
-  }
-
-  private function filterDeps(array $deps): array {
-    return array_filter(
-      $deps,
-      static function (string $key): bool {
-        return preg_match('/^(php|hhvm|ext-.*|lib-.*|pear-.*)$/', $key) !== 1 &&
-          preg_match('/^[^\/]+\/[^\/]+$/', $key) === 1;
-      },
-      ARRAY_FILTER_USE_KEY
-    );
   }
 
   public function __construct(
@@ -273,7 +263,11 @@ class PackageDiscoveryHandler implements InvokeHandlerInterface {
           };
 
           // track "require" dependencies
-          $filteredRequire = $this->filterDeps($release['require'] ?? []);
+          $filteredRequire = array_filter(
+            $release['require'] ?? [],
+            [PackageValidator::class, 'isValid'],
+            ARRAY_FILTER_USE_KEY
+          );
 
           // flag packages without require dependencies with VersionStatusEnum::NoDeps
           if (empty($filteredRequire)) {
@@ -318,7 +312,11 @@ class PackageDiscoveryHandler implements InvokeHandlerInterface {
           }
 
           // track "require-dev" dependencies
-          $filteredRequireDev = $this->filterDeps($release['require-dev'] ?? []);
+          $filteredRequireDev = array_filter(
+            $release['require-dev'] ?? [],
+            [PackageValidator::class, 'isValid'],
+            ARRAY_FILTER_USE_KEY
+          );
           if (empty($filteredRequireDev)) {
             continue;
           }
