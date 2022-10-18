@@ -87,7 +87,7 @@ jobs:
 
     - name: Send update to infrastructure repository
       if: ${{ github.ref_type == 'tag' || github.ref_name != 'main' }}
-      uses: peter-evans/repository-dispatch@11ba7d3f32dc7cc919d1c43f1fec1c05260c26b5
+      uses: peter-evans/repository-dispatch@b8601598d81a169e6e83657904679c500a0af9b8
       with:
         # personal access token with "repo" scope
         token: ${{ secrets.INFRA_REPO_ACCESS_TOKEN }}
