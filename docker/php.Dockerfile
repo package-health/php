@@ -82,7 +82,7 @@ COPY composer.json composer.json
 COPY composer.lock composer.lock
 
 ARG COMPOSER_AUTH
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+COPY --from=composer/composer:latest-bin /composer /usr/bin/composer
 RUN composer install --no-progress --ignore-platform-reqs --no-dev --prefer-dist --optimize-autoloader --no-interaction
 
 #============================================
