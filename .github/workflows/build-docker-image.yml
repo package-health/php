@@ -40,11 +40,11 @@ jobs:
       - name: Prepare build variables
         id: prepare-build
         run: |
-            echo "::set-output name=short::${GITHUB_SHA:0:7}"
+            echo "short=${GITHUB_SHA:0:7}" >> $GITHUB_OUTPUT
             if [[ "${{ github.ref_name }}" == "main" ]]; then
-              echo "::set-output name=environment::prod"
+              echo "environment=prod" >> $GITHUB_OUTPUT
             else
-              echo "::set-output name=environment::dev"
+              echo "environment=dev" >> $GITHUB_OUTPUT
             fi
 
       - name: Set up Docker Buildx
