@@ -15,7 +15,7 @@ interface PackageRepositoryInterface extends RepositoryInterface {
 
   public function all(array $orderBy = []): CollectionInterface;
 
-  public function findPopular(int $limit = 10): CollectionInterface;
+  public function findPopular(bool $runtime = true, int $limit = 10): CollectionInterface;
 
   public function exists(string $name): bool;
 

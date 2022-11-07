@@ -115,7 +115,8 @@ final class PdoPackageRepository implements PackageRepositoryInterface {
     );
   }
 
-  public function findPopular(int $limit = 10): CollectionInterface {
+  public function findPopular(bool $runtime = true, int $limit = 10): CollectionInterface {
+    $devel = $runtime ? 'FALSE' : 'TRUE';
     $stmt = $this->pdo->query(
       <<<SQL
         SELECT *
@@ -128,7 +129,10 @@ final class PdoPackageRepository implements PackageRepositoryInterface {
             "versions"."number" = "packages"."latest_version"
           )
           INNER JOIN "dependencies" ON ("dependencies"."version_id" = "versions"."id")
-          WHERE "packages"."latest_version" != '' AND "versions"."release" IS TRUE
+          WHERE
+            "packages"."latest_version" != '' AND
+            "versions"."release" IS TRUE AND
+            "dependencies"."development" IS {$devel}
           GROUP BY "dependencies"."name"
           ORDER BY "total" DESC
           LIMIT {$limit}

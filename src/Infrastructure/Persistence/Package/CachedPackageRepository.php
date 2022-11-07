@@ -55,11 +55,12 @@ final class CachedPackageRepository implements PackageRepositoryInterface {
     return $packageCol;
   }
 
-  public function findPopular(int $limit = 10): CollectionInterface {
-    $item = $this->cacheItemPool->getItem("/package/popular/{$limit}");
+  public function findPopular(bool $runtime = true, int $limit = 10): CollectionInterface {
+    $devel = $runtime ? 'runtime' : 'devel';
+    $item = $this->cacheItemPool->getItem("/package/popular/{$devel}/{$limit}");
     $packageCol = $item->get();
     if ($item->isHit() === false) {
-      $packageCol = $this->packageRepository->findPopular($limit);
+      $packageCol = $this->packageRepository->findPopular($runtime, $limit);
       if ($packageCol instanceof LazyCollection) {
         return $packageCol;
       }

@@ -10,23 +10,44 @@
 {% block hero_subtitle %}Package.Health uses semantic versioning to detect outdated or insecure dependencies in your project's <code>composer.json</code>.{% endblock %}
 
 {% block content %}
-  <h2 class="title is-3">Popular Packages</h2>
-  <table class="table is-fullwidth is-striped is-hoverable">
-    <thead>
-      <tr>
-        <th>Package</th>
-        <th></th>
-        <th class="has-text-right">Status</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for package in packages %}
-        <tr>
-          <td><a href="{{ url_for('redirectPackageVersion', {vendor: package.vendor, project: package.project}) }}">{{ package.name }}</a></td>
-          <td class="has-text-grey">{{ package.description }}</td>
-          <td class="has-text-right"><img src="{{ url_for('redirectPackageBadge', {vendor: package.vendor, project: package.project}) }}" height="20" alt="Dependency Badge" decoding="async" role="img"></td>
-        </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+  <div class="columns">
+    <div class="column">
+      <h2 class="title is-3">Popular Runtime Packages</h2>
+      <table class="table is-fullwidth is-striped is-hoverable">
+        <thead>
+          <tr>
+            <th>Package</th>
+            <th class="has-text-right">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for package in packages %}
+            <tr>
+              <td><a href="{{ url_for('redirectPackageVersion', {vendor: package.vendor, project: package.project}) }}">{{ package.name }}</a></td>
+              <td class="has-text-right"><img src="{{ url_for('redirectPackageBadge', {vendor: package.vendor, project: package.project}) }}" height="20" alt="Dependency Badge" decoding="async" role="img"></td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div class="column">
+      <h2 class="title is-3">Popular Development Packages</h2>
+      <table class="table is-fullwidth is-striped is-hoverable">
+        <thead>
+          <tr>
+            <th>Package</th>
+            <th class="has-text-right">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for package in devPackages %}
+            <tr>
+              <td><a href="{{ url_for('redirectPackageVersion', {vendor: package.vendor, project: package.project}) }}">{{ package.name }}</a></td>
+              <td class="has-text-right"><img src="{{ url_for('redirectPackageBadge', {vendor: package.vendor, project: package.project}) }}" height="20" alt="Dependency Badge" decoding="async" role="img"></td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
 {% endblock %}

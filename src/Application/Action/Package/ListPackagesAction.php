@@ -15,13 +15,15 @@ final class ListPackagesAction extends AbstractPackageAction {
     if ($item->isHit() === false) {
       $twig = Twig::fromRequest($this->request);
 
-      $packageCol = $this->packageRepository->findPopular();
+      $packageCol = $this->packageRepository->findPopular(true);
+      $devPackageCol = $this->packageRepository->findPopular(false);
 
       $this->logger->debug('Packages list was rendered.');
       $html = $twig->fetch(
         'index.twig',
         [
           'packages' => $packageCol,
+          'devPackages' => $devPackageCol,
           'dates'    => [
             'createdAt' => $packageCol->min(
               static function (Package $package): DateTimeImmutable {
