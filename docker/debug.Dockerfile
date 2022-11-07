@@ -34,8 +34,7 @@ RUN echo "xdebug.mode=develop,debug,profile" > /usr/local/etc/php/conf.d/xdebug.
 #============================================
 # Disable Opcache/JIT (https://xdebug.org/docs/compat#compat)
 #============================================
-RUN rm /usr/local/etc/php/conf.d/docker-php-ext-opcache.ini && \
-    rm /usr/local/etc/php/conf.d/opcache.ini
+RUN rm /usr/local/etc/php/conf.d/docker-php-ext-opcache.ini
 
 #============================================
 # Metadata
@@ -81,8 +80,7 @@ RUN echo "xdebug.mode=develop,debug,profile" > /usr/local/etc/php/conf.d/xdebug.
 #============================================
 # Disable Opcache/JIT (https://xdebug.org/docs/compat#compat)
 #============================================
-RUN rm /usr/local/etc/php/conf.d/docker-php-ext-opcache.ini && \
-    rm /usr/local/etc/php/conf.d/opcache.ini
+RUN rm /usr/local/etc/php/conf.d/docker-php-ext-opcache.ini
 
 #============================================
 # Metadata

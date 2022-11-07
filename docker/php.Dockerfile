@@ -63,17 +63,17 @@ RUN docker-php-source extract && \
 # Opcache
 #============================================
 RUN docker-php-ext-enable opcache && \
-    echo "opcache.enabled=1" > /usr/local/etc/php/conf.d/opcache.ini && \
-    echo "opcache.enable_cli=1" >> /usr/local/etc/php/conf.d/opcache.ini && \
-    echo "opcache.memory_consumption=192" >> /usr/local/etc/php/conf.d/opcache.ini && \
-    echo "opcache.interned_strings_buffer=16" >> /usr/local/etc/php/conf.d/opcache.ini && \
-    echo "opcache.max_accelerated_files=4000" >> /usr/local/etc/php/conf.d/opcache.ini && \
-    echo "opcache.validate_timestamps=0" >> /usr/local/etc/php/conf.d/opcache.ini && \
-    echo "opcache.fast_shutdown=0" >> /usr/local/etc/php/conf.d/opcache.ini && \
-    echo "opcache.use_cwd=1" >> /usr/local/etc/php/conf.d/opcache.ini && \
-    echo "opcache.save_comments=0" >> /usr/local/etc/php/conf.d/opcache.ini && \
-    echo "opcache.jit_buffer_size=100M" >> /usr/local/etc/php/conf.d/opcache.ini && \
-    echo "opcache.jit=1255" >> /usr/local/etc/php/conf.d/opcache.ini
+    echo "opcache.enabled=1"                  > /usr/local/etc/php/conf.d/docker-php-ext-opcache.ini && \
+    echo "opcache.enable_cli=1"               >> /usr/local/etc/php/conf.d/docker-php-ext-opcache.ini && \
+    echo "opcache.memory_consumption=192"     >> /usr/local/etc/php/conf.d/docker-php-ext-opcache.ini && \
+    echo "opcache.interned_strings_buffer=16" >> /usr/local/etc/php/conf.d/docker-php-ext-opcache.ini && \
+    echo "opcache.max_accelerated_files=4000" >> /usr/local/etc/php/conf.d/docker-php-ext-opcache.ini && \
+    echo "opcache.validate_timestamps=0"      >> /usr/local/etc/php/conf.d/docker-php-ext-opcache.ini && \
+    echo "opcache.fast_shutdown=0"            >> /usr/local/etc/php/conf.d/docker-php-ext-opcache.ini && \
+    echo "opcache.use_cwd=1"                  >> /usr/local/etc/php/conf.d/docker-php-ext-opcache.ini && \
+    echo "opcache.save_comments=0"            >> /usr/local/etc/php/conf.d/docker-php-ext-opcache.ini && \
+    echo "opcache.jit_buffer_size=100M"       >> /usr/local/etc/php/conf.d/docker-php-ext-opcache.ini && \
+    echo "opcache.jit=1255"                   >> /usr/local/etc/php/conf.d/docker-php-ext-opcache.ini
 
 #============================================
 # Dependencies
@@ -105,24 +105,9 @@ RUN apk add --no-cache --upgrade apk-tools && \
 #============================================
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" && \
     rm "$PHP_INI_DIR/php.ini-development" && \
-    echo "memory_limit = -1" > /usr/local/etc/php/conf.d/memory.ini && \
+    echo "memory_limit = -1"       > /usr/local/etc/php/conf.d/memory.ini && \
     echo "variables_order = EGPCS" > /usr/local/etc/php/conf.d/variables_order.ini && \
-    echo "zend.assertions = -1" > /usr/local/etc/php/conf.d/zend.ini
-
-#============================================
-# Application
-#============================================
-COPY --chown=www-data:www-data ./app/ /var/www/html/app/
-COPY --chown=www-data:www-data ./bin/ /var/www/html/bin/
-COPY --chown=www-data:www-data ./db/ /var/www/html/db/
-COPY --chown=www-data:www-data ./src/ /var/www/html/src/
-COPY --chown=www-data:www-data ./phinx.php /var/www/html/phinx.php
-COPY --chown=www-data:www-data --from=builder /usr/src/vendor/ /var/www/html/vendor/
-COPY --from=builder /usr/local/lib/php/extensions/no-debug-non-zts-20210902 /usr/local/lib/php/extensions/no-debug-non-zts-20210902
-COPY --from=builder /usr/local/etc/php/conf.d/*.ini /usr/local/etc/php/conf.d/
-
-RUN mkdir /var/www/html/run && \
-    chown -R www-data:www-data /var/www/html/run
+    echo "zend.assertions = -1"    > /usr/local/etc/php/conf.d/zend.ini
 
 #============================================
 # Library dependencies
@@ -131,8 +116,15 @@ RUN apk add --no-cache libpq --repository=https://dl-cdn.alpinelinux.org/alpine/
     apk add --no-cache freetype libjpeg-turbo libpng libwebp libxml2 libxpm libzip rabbitmq-c
 
 #============================================
+# Other dependencies
+#============================================
+RUN apk add --no-cache dumb-init
+
+#============================================
 # CLI Extensions
 #============================================
+COPY --from=builder /usr/local/lib/php/extensions/no-debug-non-zts-20210902 /usr/local/lib/php/extensions/no-debug-non-zts-20210902
+COPY --from=builder /usr/local/etc/php/conf.d/*.ini /usr/local/etc/php/conf.d/
 RUN docker-php-ext-enable amqp && \
     docker-php-ext-enable igbinary && \
     docker-php-ext-enable opcache && \
@@ -143,9 +135,17 @@ RUN docker-php-ext-enable amqp && \
     docker-php-ext-enable zip
 
 #============================================
-# Other dependencies
+# Application
 #============================================
-RUN apk add --no-cache dumb-init
+COPY --chown=www-data:www-data ./app/         /var/www/html/app/
+COPY --chown=www-data:www-data ./bin/         /var/www/html/bin/
+COPY --chown=www-data:www-data ./db/          /var/www/html/db/
+COPY --chown=www-data:www-data ./src/         /var/www/html/src/
+COPY --chown=www-data:www-data ./phinx.php    /var/www/html/phinx.php
+COPY --chown=www-data:www-data --from=builder /usr/src/vendor/        /var/www/html/vendor/
+
+RUN mkdir /var/www/html/run && \
+    chown -R www-data:www-data /var/www/html/run
 
 #============================================
 # User
@@ -192,36 +192,24 @@ RUN apk add --no-cache --upgrade apk-tools && \
 #============================================
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" && \
     rm "$PHP_INI_DIR/php.ini-development" && \
-    echo "memory_limit = 256M" > /usr/local/etc/php/conf.d/memory.ini && \
-    echo "variables_order = EGPCS" > /usr/local/etc/php/conf.d/variables_order.ini && \
-    echo "expose_php = Off" > /usr/local/etc/php/conf.d/expose_php.ini && \
-    echo "allow_url_fopen = Off" > /usr/local/etc/php/conf.d/security.ini && \
-    echo "allow_url_include = Off" >> /usr/local/etc/php/conf.d/security.ini && \
-    echo "cgi.fix_pathinfo = Off" >> /usr/local/etc/php/conf.d/security.ini && \
-    echo "cgi.force_redirect = On" >> /usr/local/etc/php/conf.d/security.ini && \
-    echo "file_uploads = Off" >> /usr/local/etc/php/conf.d/security.ini && \
-    echo "max_input_vars = 100" >> /usr/local/etc/php/conf.d/security.ini && \
+    echo "memory_limit = 256M"          > /usr/local/etc/php/conf.d/memory.ini && \
+    echo "variables_order = EGPCS"      > /usr/local/etc/php/conf.d/variables_order.ini && \
+    echo "expose_php = Off"             > /usr/local/etc/php/conf.d/expose_php.ini && \
+    echo "allow_url_fopen = Off"        > /usr/local/etc/php/conf.d/security.ini && \
+    echo "allow_url_include = Off"      >> /usr/local/etc/php/conf.d/security.ini && \
+    echo "cgi.fix_pathinfo = Off"       >> /usr/local/etc/php/conf.d/security.ini && \
+    echo "cgi.force_redirect = On"      >> /usr/local/etc/php/conf.d/security.ini && \
+    echo "file_uploads = Off"           >> /usr/local/etc/php/conf.d/security.ini && \
+    echo "max_input_vars = 100"         >> /usr/local/etc/php/conf.d/security.ini && \
     echo "open_basedir = /var/www/html" >> /usr/local/etc/php/conf.d/security.ini && \
-    echo "post_max_size = 256K" >> /usr/local/etc/php/conf.d/security.ini
+    echo "post_max_size = 256K"         >> /usr/local/etc/php/conf.d/security.ini
 
 # https://tideways.com/profiler/blog/an-introduction-to-php-fpm-tuning
 RUN echo "pm.status_path = /status" >> /usr/local/etc/php-fpm.d/zz-docker.conf && \
-    echo "pm.max_children = 30" >> /usr/local/etc/php-fpm.d/zz-docker.conf && \
-    echo "pm.start_servers = 8" >> /usr/local/etc/php-fpm.d/zz-docker.conf && \
+    echo "pm.max_children = 30"     >> /usr/local/etc/php-fpm.d/zz-docker.conf && \
+    echo "pm.start_servers = 8"     >> /usr/local/etc/php-fpm.d/zz-docker.conf && \
     echo "pm.min_spare_servers = 4" >> /usr/local/etc/php-fpm.d/zz-docker.conf && \
     echo "pm.max_spare_servers = 8" >> /usr/local/etc/php-fpm.d/zz-docker.conf
-
-#============================================
-# Application
-#============================================
-COPY --chown=www-data:www-data ./app/ /var/www/html/app/
-COPY --chown=www-data:www-data ./public/index.php /var/www/html/public/index.php
-COPY --chown=www-data:www-data ./resources/ /var/www/html/resources/
-COPY --chown=www-data:www-data ./src/ /var/www/html/src/
-COPY --chown=www-data:www-data ./var/ /var/www/html/var/
-COPY --chown=www-data:www-data --from=builder /usr/src/vendor/ /var/www/html/vendor/
-COPY --from=builder /usr/local/lib/php/extensions/no-debug-non-zts-20210902 /usr/local/lib/php/extensions/no-debug-non-zts-20210902
-COPY --from=builder /usr/local/etc/php/conf.d/*.ini /usr/local/etc/php/conf.d/
 
 #============================================
 # Library dependencies
@@ -239,6 +227,8 @@ RUN wget -O /usr/local/bin/php-fpm-healthcheck https://raw.githubusercontent.com
 #============================================
 # FPM Extensions
 #============================================
+COPY --from=builder /usr/local/lib/php/extensions/no-debug-non-zts-20210902 /usr/local/lib/php/extensions/no-debug-non-zts-20210902
+COPY --from=builder /usr/local/etc/php/conf.d/*.ini /usr/local/etc/php/conf.d/
 RUN docker-php-ext-enable gd && \
     docker-php-ext-enable opcache && \
     docker-php-ext-enable pdo_pgsql && \
@@ -248,6 +238,16 @@ RUN rm /usr/local/etc/php/conf.d/docker-php-ext-igbinary.ini && \
     rm /usr/local/etc/php/conf.d/docker-php-ext-pcntl.ini && \
     rm /usr/local/etc/php/conf.d/docker-php-ext-sockets.ini && \
     rm /usr/local/etc/php/conf.d/docker-php-ext-zip.ini
+
+#============================================
+# Application
+#============================================
+COPY --chown=www-data:www-data ./app/             /var/www/html/app/
+COPY --chown=www-data:www-data ./public/index.php /var/www/html/public/index.php
+COPY --chown=www-data:www-data ./resources/       /var/www/html/resources/
+COPY --chown=www-data:www-data ./src/             /var/www/html/src/
+COPY --chown=www-data:www-data ./var/             /var/www/html/var/
+COPY --chown=www-data:www-data --from=builder     /usr/src/vendor/               /var/www/html/vendor/
 
 #============================================
 # User
