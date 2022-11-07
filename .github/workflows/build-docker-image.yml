@@ -41,7 +41,7 @@ jobs:
         id: prepare-build
         run: |
             echo "short=${GITHUB_SHA:0:7}" >> $GITHUB_OUTPUT
-            if [[ "${{ github.ref_name }}" == "main" ]]; then
+            if [[ "${{ github.ref_type }}" == "tag" ]]; then
               echo "environment=prod" >> $GITHUB_OUTPUT
             else
               echo "environment=dev" >> $GITHUB_OUTPUT
