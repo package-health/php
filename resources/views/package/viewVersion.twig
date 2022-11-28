@@ -51,7 +51,7 @@
             {% else %}
               <td><a href="{{ url_for('redirectPackageVersion', {vendor: dep.package.vendor, project: dep.package.project}) }}">{{ dep.package.name }}</a></td>
             {% endif %}
-            <td class="has-text-grey">{{ dep.package.description }}</td>
+            <td class="has-text-grey">{{ dep.package.description | escape }}</td>
             <td class="has-text-right"><code>{{ dep.requiredVersion }}</code></td>
             <td class="has-text-right"><code>{{ dep.package.latestVersion }}</code></td>
             <td class="has-text-right"><span class="tag {{ dep.status.type }}">{{ dep.status.text }}</span></td>
@@ -85,7 +85,7 @@
             {% else %}
               <td><a href="{{ url_for('redirectPackageVersion', {vendor: dep.package.vendor, project: dep.package.project}) }}">{{ dep.package.name }}</a></td>
             {% endif %}
-            <td class="has-text-grey">{{ dep.package.description }}</td>
+            <td class="has-text-grey">{{ dep.package.description | escape }}</td>
             <td class="has-text-right"><code>{{ dep.requiredVersion }}</code></td>
             <td class="has-text-right"><code>{{ dep.package.latestVersion }}</code></td>
             <td class="has-text-right"><span class="tag {{ dep.status.type }}">{{ dep.status.text }}</span></td>
