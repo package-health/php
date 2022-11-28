@@ -2,7 +2,7 @@
 
 {% block title %}{{ package.name }} @ {{ version.number }} - PHP.Package.Health{% endblock %}
 
-{% block description %}{{ package.description }}{% endblock %}
+{% block description %}{{ package.description | escape }}{% endblock %}
 
 {% block hero_type %}{{ status.type }}{% endblock %}
 
