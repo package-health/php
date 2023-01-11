@@ -251,6 +251,7 @@ final class PdoStatsRepository implements StatsRepositoryInterface {
           VALUES
           (:package_name, :github_stars, :github_watchers, :github_forks, :dependents, :suggesters, :favers,
             :total_downloads, :monthly_downloads, :daily_downloads, :created_at)
+          RETURNING *
         SQL
       );
     }
@@ -270,6 +271,8 @@ final class PdoStatsRepository implements StatsRepositoryInterface {
         'created_at'        => $stats->getCreatedAt()->format(DateTimeInterface::ATOM)
       ]
     );
+
+    $stats = $this->hydrate($stmt->fetch(PDO::FETCH_ASSOC));
 
     $this->producer->sendEvent(
       new StatsCreatedEvent($stats)
@@ -296,6 +299,7 @@ final class PdoStatsRepository implements StatsRepositoryInterface {
             "daily_downloads" = :daily_downloads,
             "updated_at" = :updated_at
           WHERE "package_name" = :package_name
+          RETURNING *
         SQL
       );
     }
@@ -317,7 +321,7 @@ final class PdoStatsRepository implements StatsRepositoryInterface {
         ]
       );
 
-      $stats = $this->get($stats->getPackageName());
+      $stats = $this->hydrate($stmt->fetch(PDO::FETCH_ASSOC));
 
       $this->producer->sendEvent(
         new StatsUpdatedEvent($stats)

@@ -230,6 +230,7 @@ final class PdoDependencyRepository implements DependencyRepositoryInterface {
           ("version_id", "name", "constraint", "development", "status", "created_at")
           VALUES
           (:version_id, :name, :constraint, :development, :status, :created_at)
+          RETURNING *
         SQL
       );
     }
@@ -245,15 +246,7 @@ final class PdoDependencyRepository implements DependencyRepositoryInterface {
       ]
     );
 
-    $dependency = new Dependency(
-      (int)$this->pdo->lastInsertId('dependencies_id_seq'),
-      $dependency->getVersionId(),
-      $dependency->getName(),
-      $dependency->getConstraint(),
-      $dependency->isDevelopment(),
-      $dependency->getStatus(),
-      $dependency->getCreatedAt()
-    );
+    $dependency = $this->hydrate($stmt->fetch(PDO::FETCH_ASSOC));
 
     $this->producer->sendEvent(
       new DependencyCreatedEvent($dependency)
@@ -272,6 +265,7 @@ final class PdoDependencyRepository implements DependencyRepositoryInterface {
             "status" = :status,
             "updated_at" = :updated_at
           WHERE "id" = :id
+          RETURNING *
         SQL
       );
     }
@@ -289,7 +283,7 @@ final class PdoDependencyRepository implements DependencyRepositoryInterface {
         ]
       );
 
-      $dependency = $this->get($dependency->getId());
+      $dependency = $this->hydrate($stmt->fetch(PDO::FETCH_ASSOC));
 
       $this->producer->sendEvent(
         new DependencyUpdatedEvent($dependency)

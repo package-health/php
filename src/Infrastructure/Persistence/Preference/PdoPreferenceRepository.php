@@ -213,6 +213,7 @@ final class PdoPreferenceRepository implements PreferenceRepositoryInterface {
           ("category", "property", "value", "type", "created_at")
           VALUES
           (:category, :property, :value, :type, :created_at)
+          RETURNING *
         SQL
       );
     }
@@ -227,14 +228,7 @@ final class PdoPreferenceRepository implements PreferenceRepositoryInterface {
       ]
     );
 
-    $preference = new Preference(
-      (int)$this->pdo->lastInsertId('preferences_id_seq'),
-      $preference->getCategory(),
-      $preference->getProperty(),
-      $preference->getValueAsString(),
-      $preference->getType(),
-      $preference->getCreatedAt()
-    );
+    $preference = $this->hydrate($stmt->fetch(PDO::FETCH_ASSOC));
 
     $this->producer->sendEvent(
       new PreferenceCreatedEvent($preference)
@@ -254,6 +248,7 @@ final class PdoPreferenceRepository implements PreferenceRepositoryInterface {
             "type" = :type,
             "updated_at" = :updated_at
           WHERE "id" = :id
+          RETURNING *
         SQL
       );
     }
@@ -272,7 +267,7 @@ final class PdoPreferenceRepository implements PreferenceRepositoryInterface {
         ]
       );
 
-      $preference = $this->get($preference->getId());
+      $preference = $this->hydrate($stmt->fetch(PDO::FETCH_ASSOC));
 
       $this->producer->sendEvent(
         new PreferenceUpdatedEvent($preference)

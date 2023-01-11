@@ -230,6 +230,7 @@ final class PdoVersionRepository implements VersionRepositoryInterface {
           ("package_id", "number", "normalized", "release", "status", "created_at")
           VALUES
           (:package_id, :number, :normalized, :release, :status, :created_at)
+          RETURNING *
         SQL
       );
     }
@@ -249,15 +250,7 @@ final class PdoVersionRepository implements VersionRepositoryInterface {
       ]
     );
 
-    $version = new Version(
-      (int)$this->pdo->lastInsertId('versions_id_seq'),
-      $version->getPackageId(),
-      $version->getNumber(),
-      $version->getNormalized(),
-      $version->isRelease(),
-      $version->getStatus(),
-      $version->getCreatedAt()
-    );
+    $version = $this->hydrate($stmt->fetch(PDO::FETCH_ASSOC));
 
     $this->producer->sendEvent(
       new VersionCreatedEvent($version)
@@ -276,6 +269,7 @@ final class PdoVersionRepository implements VersionRepositoryInterface {
             "status" = :status,
             "updated_at" = :updated_at
           WHERE "id" = :id
+          RETURNING *
         SQL
       );
     }
@@ -293,7 +287,7 @@ final class PdoVersionRepository implements VersionRepositoryInterface {
         ]
       );
 
-      $version = $this->get($version->getId());
+      $version = $this->hydrate($stmt->fetch(PDO::FETCH_ASSOC));
 
       $this->producer->sendEvent(
         new VersionUpdatedEvent($version)

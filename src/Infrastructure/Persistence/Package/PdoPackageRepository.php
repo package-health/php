@@ -322,6 +322,7 @@ final class PdoPackageRepository implements PackageRepositoryInterface {
           ("name", "description", "latest_version", "url", "created_at")
           VALUES
           (:name, :description, :latest_version, :url, :created_at)
+          RETURNING *
         SQL
       );
     }
@@ -341,14 +342,7 @@ final class PdoPackageRepository implements PackageRepositoryInterface {
       ]
     );
 
-    $package = new Package(
-      (int)$this->pdo->lastInsertId('packages_id_seq'),
-      $package->getName(),
-      $package->getDescription(),
-      $package->getLatestVersion(),
-      $package->getUrl(),
-      $package->getCreatedAt()
-    );
+    $package = $this->hydrate($stmt->fetch(PDO::FETCH_ASSOC));
 
     $this->producer->sendEvent(
       new PackageCreatedEvent($package)
@@ -369,6 +363,7 @@ final class PdoPackageRepository implements PackageRepositoryInterface {
             "url" = :url,
             "updated_at" = :updated_at
           WHERE "id" = :id
+          RETURNING *
         SQL
       );
     }
@@ -388,7 +383,7 @@ final class PdoPackageRepository implements PackageRepositoryInterface {
         ]
       );
 
-      $package = $this->get($package->getId());
+      $package = $this->hydrate($stmt->fetch(PDO::FETCH_ASSOC));
 
       $this->producer->sendEvent(
         new PackageUpdatedEvent($package)
