@@ -2,7 +2,7 @@
   "name": "package-health/php",
   "description": "Keep your dependencies up-to-date",
   "type": "project",
-  "license": "agpl",
+  "license": "AGPL-3.0-or-later",
   "authors": [
     {
       "name": "Flavio Heleno",
