@@ -77,38 +77,5 @@
     "roave/security-advisories": "dev-latest",
     "squizlabs/php_codesniffer": "^3.7",
     "vimeo/psalm": "^4.30"
-  },
-  "scripts": {
-    "console": "vendor/bin/psysh",
-    "infection": "vendor/bin/infection",
-    "lint": "vendor/bin/parallel-lint --exclude vendor .",
-    "phpcs": "vendor/bin/phpcs --standard=ruleset.xml app/ bin/ public/ src/ tests/",
-    "phpcbf": "vendor/bin/phpcbf --standard=ruleset.xml app/ bin/ public/ src/ tests/",
-    "phpstan": "vendor/bin/phpstan analyse --level=max --autoload-file=vendor/autoload.php app/ bin/ public/ src/",
-    "phpunit": "vendor/bin/phpunit ./tests/ --coverage-html=./report/coverage/ --whitelist=./src/ --testdox-html=./report/testdox.html --disallow-test-output --process-isolation",
-    "psalm": "vendor/bin/psalm --taint-analysis",
-    "test-ci": "vendor/bin/phpunit ./tests/ --disallow-test-output --process-isolation",
-    "test-coverage": "vendor/bin/phpunit ./tests/ --whitelist=./src/ --coverage-clover=clover.xml",
-    "test": [
-      "@infection",
-      "@lint",
-      "@phpunit",
-      "@phpstan",
-      "@psalm",
-      "@phpcs"
-    ]
-  },
-  "scripts-descriptions": {
-    "console": "Runs PsySH Console",
-    "infection": "Runs mutation test framework",
-    "lint": "Runs complete codebase lint testing",
-    "phpcs": "Runs coding style checking",
-    "phpcbf": "Runs coding style fixer",
-    "phpstan": "Runs complete codebase static analysis",
-    "phpunit": "Runs unit and integration testing",
-    "psalm": "Runs complete codebase taint analysis",
-    "test-ci": "Runs library test suite (for continuous integration)",
-    "test-coverage": "Runs test-coverage analysis",
-    "test": "Runs all tests"
   }
 }
