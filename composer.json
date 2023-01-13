@@ -54,7 +54,7 @@
     "nyholm/dsn": "^2.0",
     "nyholm/psr7": "^1.5",
     "nyholm/psr7-server": "^1.0",
-    "php-di/php-di": "^6.4",
+    "php-di/php-di": "^7.0",
     "phpunit/php-timer": "^5.0",
     "psr/cache": "^1.0",
     "psr/container": "^1.1",
