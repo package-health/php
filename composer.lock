@@ -1853,16 +1853,16 @@
         },
         {
             "name": "php-di/php-di",
-            "version": "7.0.0",
+            "version": "7.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHP-DI/PHP-DI.git",
-                "reference": "f0ca9a0e0fb800974fcaf7b2f896ca1e840fd15b"
+                "reference": "1c7f1cc9cf6f51ff7f5f44bb1fa59243fcb7474a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHP-DI/PHP-DI/zipball/f0ca9a0e0fb800974fcaf7b2f896ca1e840fd15b",
-                "reference": "f0ca9a0e0fb800974fcaf7b2f896ca1e840fd15b",
+                "url": "https://api.github.com/repos/PHP-DI/PHP-DI/zipball/1c7f1cc9cf6f51ff7f5f44bb1fa59243fcb7474a",
+                "reference": "1c7f1cc9cf6f51ff7f5f44bb1fa59243fcb7474a",
                 "shasum": ""
             },
             "require": {
@@ -1910,7 +1910,7 @@
             ],
             "support": {
                 "issues": "https://github.com/PHP-DI/PHP-DI/issues",
-                "source": "https://github.com/PHP-DI/PHP-DI/tree/7.0.0"
+                "source": "https://github.com/PHP-DI/PHP-DI/tree/7.0.1"
             },
             "funding": [
                 {
@@ -1922,7 +1922,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-01-12T14:08:11+00:00"
+            "time": "2023-01-13T22:30:45+00:00"
         },
         {
             "name": "php-http/httplug",
