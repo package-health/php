@@ -45,34 +45,34 @@ if (isset($_ENV['PHP_ENV']) && $_ENV['PHP_ENV'] === 'prod') {
 }
 
 // Set up settings
-$settings = require __DIR__ . '/../app/settings.php';
+$settings = require_once __DIR__ . '/../app/settings.php';
 $settings($containerBuilder);
 
 // Set up dependencies
-$dependencies = require __DIR__ . '/../app/dependencies.php';
+$dependencies = require_once __DIR__ . '/../app/dependencies.php';
 $dependencies($containerBuilder);
 
 // Set up repositories
-$repositories = require __DIR__ . '/../app/repositories.php';
+$repositories = require_once __DIR__ . '/../app/repositories.php';
 $repositories($containerBuilder);
 
 // Set up console commands
-$console = require __DIR__ . '/../app/console.php';
+$console = require_once __DIR__ . '/../app/console.php';
 $console($containerBuilder);
 
 // Set up processors (handlers and listeners)
-$processors = require __DIR__ . '/../app/processors.php';
+$processors = require_once __DIR__ . '/../app/processors.php';
 $processors($containerBuilder);
 
 // Set up services
-$services = require __DIR__ . '/../app/services.php';
+$services = require_once __DIR__ . '/../app/services.php';
 $services($containerBuilder);
 
 // Build PHP-DI Container instance
 $container = $containerBuilder->build();
 
 // Register messages (commands and events)
-$messages = require __DIR__ . '/../app/messages.php';
+$messages = require_once __DIR__ . '/../app/messages.php';
 $messages($container);
 
 $app = new Application('php.package.health console', __VERSION__);
