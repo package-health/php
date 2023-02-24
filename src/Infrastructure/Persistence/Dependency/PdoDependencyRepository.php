@@ -235,6 +235,10 @@ final class PdoDependencyRepository implements DependencyRepositoryInterface {
       );
     }
 
+    if ($dependency->getId() !== null) {
+      throw new InvalidArgumentException('Cannot save a dependency that has already been stored, update it instead');
+    }
+
     $stmt->execute(
       [
         'version_id'  => $dependency->getVersionId(),
@@ -271,7 +275,7 @@ final class PdoDependencyRepository implements DependencyRepositoryInterface {
     }
 
     if ($dependency->getId() === null) {
-      throw new InvalidArgumentException();
+      throw new InvalidArgumentException('Cannot update a dependency that has not been stored yet, save it instead');
     }
 
     if ($dependency->isDirty()) {
@@ -307,7 +311,7 @@ final class PdoDependencyRepository implements DependencyRepositoryInterface {
     }
 
     if ($dependency->getId() === null) {
-      throw new InvalidArgumentException();
+      throw new InvalidArgumentException('Cannot delete a dependency that has not been stored yet');
     }
 
     $stmt->execute(

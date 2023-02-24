@@ -328,8 +328,7 @@ final class PdoPackageRepository implements PackageRepositoryInterface {
     }
 
     if ($package->getId() !== null) {
-      throw new InvalidArgumentException(
-      );
+      throw new InvalidArgumentException('Cannot save a package that has already been stored, update it instead');
     }
 
     $stmt->execute(
@@ -369,7 +368,7 @@ final class PdoPackageRepository implements PackageRepositoryInterface {
     }
 
     if ($package->getId() === null) {
-      throw new InvalidArgumentException();
+      throw new InvalidArgumentException('Cannot update a package that has not been stored yet, save it instead');
     }
 
     if ($package->isDirty()) {
@@ -407,7 +406,7 @@ final class PdoPackageRepository implements PackageRepositoryInterface {
     }
 
     if ($package->getId() === null) {
-      throw new InvalidArgumentException();
+      throw new InvalidArgumentException('Cannot delete a package that has not been stored yet');
     }
 
     $stmt->execute(

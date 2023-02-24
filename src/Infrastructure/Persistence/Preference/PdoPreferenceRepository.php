@@ -218,6 +218,10 @@ final class PdoPreferenceRepository implements PreferenceRepositoryInterface {
       );
     }
 
+    if ($preference->getId() !== null) {
+      throw new InvalidArgumentException('Cannot save a preference that has already been stored, update it instead');
+    }
+
     $stmt->execute(
       [
         'category'   => $preference->getCategory(),
@@ -254,7 +258,7 @@ final class PdoPreferenceRepository implements PreferenceRepositoryInterface {
     }
 
     if ($preference->getId() === null) {
-      throw new InvalidArgumentException();
+      throw new InvalidArgumentException('Cannot update a preference that has not been stored yet, save it instead');
     }
 
     if ($preference->isDirty()) {

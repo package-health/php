@@ -236,7 +236,7 @@ final class PdoVersionRepository implements VersionRepositoryInterface {
     }
 
     if ($version->getId() !== null) {
-      throw new InvalidArgumentException();
+      throw new InvalidArgumentException('Cannot save a version that has already been stored, update it instead');
     }
 
     $stmt->execute(
@@ -275,7 +275,7 @@ final class PdoVersionRepository implements VersionRepositoryInterface {
     }
 
     if ($version->getId() === null) {
-      throw new InvalidArgumentException();
+      throw new InvalidArgumentException('Cannot update a version that has not been stored yet, save it instead');
     }
 
     if ($version->isDirty()) {
@@ -311,7 +311,7 @@ final class PdoVersionRepository implements VersionRepositoryInterface {
     }
 
     if ($version->getId() === null) {
-      throw new InvalidArgumentException();
+      throw new InvalidArgumentException('Cannot delete a version that has not been stored yet');
     }
 
     $stmt->execute(
