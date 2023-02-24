@@ -94,7 +94,7 @@ final class ConsumeCommand extends Command implements SignalableCommandInterface
       if ($output->isVerbose()) {
         $io->text(
           sprintf(
-            '[%s] Route name: <options=bold;fg=green>%s</>',
+            '[%s] Queue name: <options=bold;fg=green>%s</>',
             date('H:i:s'),
             $routeName
           )
