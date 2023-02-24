@@ -10,6 +10,7 @@ chdir(dirname($argv[0]));
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
+use Composer\InstalledVersions;
 use DI\ContainerBuilder;
 use PackageHealth\PHP\Application\Console\Packagist\GetDataCommand;
 use PackageHealth\PHP\Application\Console\Packagist\GetListCommand;
@@ -26,6 +27,15 @@ if (is_file(__DIR__ . '/../.env')) {
   $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
   $dotenv->safeLoad();
 }
+
+define(
+  '__VERSION__',
+  sprintf(
+    '%s@%s',
+    InstalledVersions::getPrettyVersion('package-health/php'),
+    substr(InstalledVersions::getReference('package-health/php'), 0, 7)
+  )
+);
 
 // Instantiate PHP-DI ContainerBuilder
 $containerBuilder = new ContainerBuilder();
@@ -65,7 +75,7 @@ $container = $containerBuilder->build();
 $messages = require __DIR__ . '/../app/messages.php';
 $messages($container);
 
-$app = new Application('php.package.health console', $_ENV['VERSION'] ?? '');
+$app = new Application('php.package.health console', __VERSION__);
 $app->setCommandLoader(
   new FactoryCommandLoader(
     [

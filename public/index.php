@@ -1,6 +1,7 @@
 <?php
 declare(strict_types = 1);
 
+use Composer\InstalledVersions;
 use DI\ContainerBuilder;
 use PackageHealth\PHP\Application\Handler\HttpErrorHandler;
 use PackageHealth\PHP\Application\Handler\ShutdownHandler;
@@ -15,6 +16,15 @@ if (is_file(__DIR__ . '/../.env')) {
   $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
   $dotenv->safeLoad();
 }
+
+define(
+  '__VERSION__',
+  sprintf(
+    '%s@%s',
+    InstalledVersions::getPrettyVersion('package-health/php'),
+    substr(InstalledVersions::getReference('package-health/php'), 0, 7)
+  )
+);
 
 // Instantiate PHP-DI ContainerBuilder
 $containerBuilder = new ContainerBuilder();

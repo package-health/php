@@ -120,7 +120,7 @@ final class ViewPackageVersionAction extends AbstractPackageAction {
         ],
         'app' => [
           'canonicalUrl' => (string)$this->request->getUri(),
-          'version'      => $_ENV['VERSION']
+          'version'      => __VERSION__
         ]
       ];
 
