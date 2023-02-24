@@ -31,11 +31,11 @@ use PUGX\Poser\Render\SvgFlatSquareRender;
 use PUGX\Poser\Render\SvgPlasticRender;
 use Slim\HttpCache\CacheProvider;
 use Slim\Views\Twig;
-use Stash\Driver\BlackHole;
-use Stash\Driver\Composite;
-use Stash\Driver\Ephemeral;
-use Stash\Driver\Redis;
-use Stash\Pool;
+use Symfony\Component\Cache\Adapter\ApcuAdapter;
+use Symfony\Component\Cache\Adapter\ArrayAdapter;
+use Symfony\Component\Cache\Adapter\ChainAdapter;
+use Symfony\Component\Cache\Adapter\RedisAdapter;
+
 use function DI\autowire;
 
 return static function (ContainerBuilder $containerBuilder): void {
@@ -58,44 +58,45 @@ return static function (ContainerBuilder $containerBuilder): void {
           $amqp
         );
       },
-      CacheItemPoolInterface::class => function (ContainerInterface $container): Pool {
+      CacheItemPoolInterface::class => function (ContainerInterface $container): CacheItemPoolInterface {
         $settings = $container->get(SettingsInterface::class);
 
         // disables cache by using a black hole driver
         if ($settings->has('cache') === false || $settings->getBool('cache.enabled', false) === false) {
-          return new Pool(
-            new BlackHole()
+          return new ArrayAdapter(
+            // the default lifetime (in seconds) for cache items that do not define their
+            // own lifetime, with a value 0 causing items to be stored indefinitely (i.e.
+            // until the current PHP process finishes)
+            defaultLifetime: 0,
+
+            // if ``true``, the values saved in the cache are serialized before storing them
+            storeSerialized: true,
+
+            // the maximum lifetime (in seconds) of the entire cache (after this time, the
+            // entire cache is deleted to avoid stale data from consuming memory)
+            maxLifetime: 0,
+
+            // the maximum number of items that can be stored in the cache. When the limit
+            // is reached, cache follows the LRU model (least recently used items are deleted)
+            maxItems: 0
           );
         }
 
-        $drivers = [
-          new Ephemeral()
+        $adapters = [
+          new ArrayAdapter()
         ];
 
-        if ($settings->has('cache.redis')) {
-          $dsn = DsnParser::parse($settings->getString('cache.redis'));
+        if ($settings->has('cache.apcu') && $settings->getBool('cache.apcu.enabled', false)) {
+          $adapters[] = new ApcuAdapter();
+        }
 
-          $drivers[] = new Redis(
-            [
-              'servers' => [
-                [
-                  'server' => $dsn->getHost() ?? 'localhost',
-                  'port'   => $dsn->getPort() ?? 6379
-                ]
-              ],
-              'username' => $dsn->getUser() ?? null,
-              'password' => $dsn->getPassword() ?? null
-            ]
+        if ($settings->has('cache.redis') && $settings->getBool('cache.redis.enabled', false)) {
+          $adapters[] = new RedisAdapter(
+            RedisAdapter::createConnection($settings->getString('cache.redis.dsn'))
           );
         }
 
-        return new Pool(
-          new Composite(
-            [
-              'drivers' => $drivers
-            ]
-          )
-        );
+        return new ChainAdapter($adapters);
       },
       CacheProvider::class => autowire(CacheProvider::class),
       Consumer::class => function (ContainerInterface $container): Consumer {

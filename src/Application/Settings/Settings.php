@@ -75,8 +75,8 @@ final class Settings implements SettingsInterface {
   }
 
   public function has(string $entry): bool {
-    $entry = $this->getPathEntry($entry);
-    if ($entry === null) {
+    $value = $this->getPathEntry($entry);
+    if ($value === null) {
       $varName = $this->normalize($entry);
 
       return isset($this->envVar[$varName]);
