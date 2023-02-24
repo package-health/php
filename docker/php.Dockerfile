@@ -1,7 +1,7 @@
 #============================================
 # BUILD
 #============================================
-FROM php:8.1.13-cli-alpine3.16 AS builder
+FROM php:8.2.3-cli-alpine3.17 AS builder
 
 # https://blog.packagecloud.io/eng/2017/02/21/set-environment-variable-save-thousands-of-system-calls/
 ENV TZ=:UTC
@@ -17,7 +17,7 @@ RUN apk add --no-cache --upgrade apk-tools && \
 #============================================
 # Dist dependencies
 #============================================
-RUN apk add --no-cache $PHPIZE_DEPS curl-dev freetype-dev libjpeg-turbo-dev libpng-dev libpq-dev libwebp-dev libxml2-dev libxpm-dev libzip-dev openssl-dev pcre-dev pcre2-dev postgresql-dev rabbitmq-c-dev zlib-dev && \
+RUN apk add --no-cache $PHPIZE_DEPS curl-dev freetype-dev libjpeg-turbo-dev libpng-dev libpq-dev libwebp-dev libxml2-dev libxpm-dev libzip-dev linux-headers openssl-dev pcre-dev pcre2-dev postgresql-dev rabbitmq-c-dev zlib-dev && \
     apk add --no-cache wget ca-certificates git unzip
 
 #============================================
@@ -88,7 +88,7 @@ RUN composer install --no-progress --ignore-platform-reqs --no-dev --prefer-dist
 #============================================
 # COMMAND LINE INTERFACE
 #============================================
-FROM php:8.1.13-cli-alpine3.16 as cli
+FROM php:8.2.3-cli-alpine3.17 as cli
 
 # https://blog.packagecloud.io/eng/2017/02/21/set-environment-variable-save-thousands-of-system-calls/
 ENV TZ=:UTC
@@ -123,7 +123,7 @@ RUN apk add --no-cache dumb-init
 #============================================
 # CLI Extensions
 #============================================
-COPY --from=builder /usr/local/lib/php/extensions/no-debug-non-zts-20210902 /usr/local/lib/php/extensions/no-debug-non-zts-20210902
+COPY --from=builder /usr/local/lib/php/extensions/no-debug-non-zts-20220829 /usr/local/lib/php/extensions/no-debug-non-zts-20220829
 COPY --from=builder /usr/local/etc/php/conf.d/*.ini /usr/local/etc/php/conf.d/
 RUN docker-php-ext-enable amqp && \
     docker-php-ext-enable igbinary && \
@@ -175,7 +175,7 @@ CMD ["php"]
 #============================================
 # FPM SAPI
 #============================================
-FROM php:8.1.13-fpm-alpine3.16 as fpm
+FROM php:8.2.3-fpm-alpine3.17 as fpm
 
 # https://blog.packagecloud.io/eng/2017/02/21/set-environment-variable-save-thousands-of-system-calls/
 ENV TZ=:UTC
@@ -227,7 +227,7 @@ RUN wget -O /usr/local/bin/php-fpm-healthcheck https://raw.githubusercontent.com
 #============================================
 # FPM Extensions
 #============================================
-COPY --from=builder /usr/local/lib/php/extensions/no-debug-non-zts-20210902 /usr/local/lib/php/extensions/no-debug-non-zts-20210902
+COPY --from=builder /usr/local/lib/php/extensions/no-debug-non-zts-20220829 /usr/local/lib/php/extensions/no-debug-non-zts-20220829
 COPY --from=builder /usr/local/etc/php/conf.d/*.ini /usr/local/etc/php/conf.d/
 RUN docker-php-ext-enable gd && \
     docker-php-ext-enable opcache && \
