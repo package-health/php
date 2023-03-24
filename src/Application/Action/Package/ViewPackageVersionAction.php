@@ -146,7 +146,10 @@ final class ViewPackageVersionAction extends AbstractPackageAction {
         $unregistered = $packageCol->isEmpty();
         $dependencyPackage = match ($packageCol->isEmpty()) {
           true  => [
-            'name' => $dependency->getName()
+            'name' => $dependency->getName(),
+            'description' => str_ends_with($dependency->getName(), '-implementation') ?
+              'Virtual implementation package for ' . substr($dependency->getName(), 0, strlen($dependency->getName()) - 15) :
+              ''
           ],
           false => $packageCol->first()
         };
@@ -206,7 +209,10 @@ final class ViewPackageVersionAction extends AbstractPackageAction {
         $unregistered = $packageCol->isEmpty();
         $dependencyPackage = match ($packageCol->isEmpty()) {
           true  => [
-            'name' => $dependency->getName()
+            'name' => $dependency->getName(),
+            'description' => str_ends_with($dependency->getName(), '-implementation') ?
+              'Virtual implementation package for ' . substr($dependency->getName(), 0, strlen($dependency->getName()) - 15) :
+              ''
           ],
           false => $packageCol->first()
         };
