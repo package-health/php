@@ -6,7 +6,8 @@
   "authors": [
     {
       "name": "Flavio Heleno",
-      "email": "flaviohbatista@gmail.com"
+      "email": "flaviohbatista@gmail.com",
+      "homepage": "https://flavioheleno.com"
     }
   ],
   "autoload": {
