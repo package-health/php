@@ -56,7 +56,6 @@
     "nyholm/dsn": "^2.0",
     "nyholm/psr7": "^1.5",
     "nyholm/psr7-server": "^1.0",
-    "ocramius/package-versions": "*",
     "php-di/php-di": "^7.0",
     "phpunit/php-timer": "^6.0",
     "psr/cache": "^3.0",

@@ -28,14 +28,19 @@ if (is_file(__DIR__ . '/../.env')) {
   $dotenv->safeLoad();
 }
 
-define(
-  '__VERSION__',
-  sprintf(
-    '%s@%s',
-    InstalledVersions::getPrettyVersion('package-health/php'),
-    substr(InstalledVersions::getReference('package-health/php'), 0, 7)
-  )
-);
+$version = $_ENV['VERSION'] ?? '';
+if ($version === '') {
+  $version = InstalledVersions::getVersion('package-health/php');
+  if (str_starts_with(InstalledVersions::getPrettyVersion('package-health/php'), 'dev-')) {
+    $version = sprintf(
+      '%s-%s',
+      substr(InstalledVersions::getPrettyVersion('package-health/php'), 4),
+      substr(InstalledVersions::getReference('package-health/php'), 0, 7)
+    );
+  }
+}
+
+define('__VERSION__', $version);
 
 // Instantiate PHP-DI ContainerBuilder
 $containerBuilder = new ContainerBuilder();
