@@ -28,7 +28,9 @@ COPY public/robots.txt /usr/share/nginx/html/
 #============================================
 # Healthcheck
 #============================================
-HEALTHCHECK --interval=1m30s --timeout=10s --retries=3 --start-period=40s CMD curl -f http://localhost/status || exit 1
+RUN apk add --no-cache curl
+
+HEALTHCHECK --interval=1m30s --timeout=10s --retries=3 --start-period=40s CMD curl --fail http://localhost/status || exit 1
 
 #============================================
 # Metadata
