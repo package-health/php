@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8957d450d59ad22826e5257452ef8e85",
+    "content-hash": "372a8e04611489425f905cca1c18fc46",
     "packages": [
         {
             "name": "badges/poser",
@@ -526,13 +526,13 @@
             "description": "Set of interfaces that define the services provided by Courier.",
             "support": {
                 "issues": "https://github.com/courier-php/contracts/issues",
-                "source": "https://github.com/courier-php/contracts/tree/main"
+                "source": "https://github.com/courier-php/contracts/tree/legacy"
             },
             "time": "2023-02-10T13:48:46+00:00"
         },
         {
             "name": "courier/courier",
-            "version": "dev-main",
+            "version": "dev-legacy",
             "source": {
                 "type": "git",
                 "url": "https://github.com/courier-php/courier.git",
@@ -559,7 +559,6 @@
                 "squizlabs/php_codesniffer": "^3.6",
                 "vimeo/psalm": "^4.8"
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -583,13 +582,13 @@
             ],
             "support": {
                 "issues": "https://github.com/courier-php/courier/issues",
-                "source": "https://github.com/courier-php/courier/tree/main"
+                "source": "https://github.com/courier-php/courier/tree/legacy"
             },
             "time": "2023-02-10T13:58:45+00:00"
         },
         {
             "name": "courier/locator-container",
-            "version": "dev-main",
+            "version": "dev-legacy",
             "source": {
                 "type": "git",
                 "url": "https://github.com/courier-php/locator-container.git",
@@ -616,7 +615,6 @@
                 "squizlabs/php_codesniffer": "^3.6",
                 "vimeo/psalm": "^4.8"
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -640,13 +638,13 @@
             ],
             "support": {
                 "issues": "https://github.com/courier-php/locator-container/issues",
-                "source": "https://github.com/courier-php/locator-container/tree/main"
+                "source": "https://github.com/courier-php/locator-container/tree/legacy"
             },
             "time": "2023-02-10T14:14:11+00:00"
         },
         {
             "name": "courier/middleware-envelope-compression",
-            "version": "dev-main",
+            "version": "dev-legacy",
             "source": {
                 "type": "git",
                 "url": "https://github.com/courier-php/middleware-envelope-compression.git",
@@ -672,7 +670,6 @@
                 "squizlabs/php_codesniffer": "^3.6",
                 "vimeo/psalm": "^4.8"
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -697,13 +694,13 @@
             ],
             "support": {
                 "issues": "https://github.com/courier-php/middleware-envelope-compression/issues",
-                "source": "https://github.com/courier-php/middleware-envelope-compression/tree/main"
+                "source": "https://github.com/courier-php/middleware-envelope-compression/tree/legacy"
             },
             "time": "2023-02-10T14:01:01+00:00"
         },
         {
             "name": "courier/serializer-igbinary",
-            "version": "dev-main",
+            "version": "dev-legacy",
             "source": {
                 "type": "git",
                 "url": "https://github.com/courier-php/serializer-igbinary.git",
@@ -730,7 +727,6 @@
                 "squizlabs/php_codesniffer": "^3.6",
                 "vimeo/psalm": "^4.8"
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -754,13 +750,13 @@
             ],
             "support": {
                 "issues": "https://github.com/courier-php/serializer-igbinary/issues",
-                "source": "https://github.com/courier-php/serializer-igbinary/tree/main"
+                "source": "https://github.com/courier-php/serializer-igbinary/tree/legacy"
             },
             "time": "2023-02-10T14:03:35+00:00"
         },
         {
             "name": "courier/transport-amqp",
-            "version": "dev-main",
+            "version": "dev-legacy",
             "source": {
                 "type": "git",
                 "url": "https://github.com/courier-php/transport-amqp.git",
@@ -788,7 +784,6 @@
                 "squizlabs/php_codesniffer": "^3.6",
                 "vimeo/psalm": "^4.8"
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -811,7 +806,7 @@
             ],
             "support": {
                 "issues": "https://github.com/courier-php/transport-amqp/issues",
-                "source": "https://github.com/courier-php/transport-amqp/tree/main"
+                "source": "https://github.com/courier-php/transport-amqp/tree/legacy"
             },
             "time": "2023-02-10T14:07:28+00:00"
         },
