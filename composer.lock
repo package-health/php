@@ -480,7 +480,7 @@
         },
         {
             "name": "courier/contracts",
-            "version": "dev-main",
+            "version": "dev-legacy",
             "source": {
                 "type": "git",
                 "url": "https://github.com/courier-php/contracts.git",
@@ -506,7 +506,6 @@
                 "squizlabs/php_codesniffer": "^3.6",
                 "vimeo/psalm": "^5.4"
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -536,16 +535,16 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/courier-php/courier.git",
-                "reference": "0395afbdc984a5f974b7c557ec82561f1bc7fe65"
+                "reference": "76927aeb0c8ef9d7458f8b47cd998501b4aa1640"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/courier-php/courier/zipball/0395afbdc984a5f974b7c557ec82561f1bc7fe65",
-                "reference": "0395afbdc984a5f974b7c557ec82561f1bc7fe65",
+                "url": "https://api.github.com/repos/courier-php/courier/zipball/76927aeb0c8ef9d7458f8b47cd998501b4aa1640",
+                "reference": "76927aeb0c8ef9d7458f8b47cd998501b4aa1640",
                 "shasum": ""
             },
             "require": {
-                "courier/contracts": "dev-main",
+                "courier/contracts": "self.version",
                 "php": "^8.2",
                 "ramsey/collection": "^2.0"
             },
@@ -584,7 +583,7 @@
                 "issues": "https://github.com/courier-php/courier/issues",
                 "source": "https://github.com/courier-php/courier/tree/legacy"
             },
-            "time": "2023-02-10T13:58:45+00:00"
+            "time": "2023-05-08T13:15:57+00:00"
         },
         {
             "name": "courier/locator-container",
@@ -592,16 +591,16 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/courier-php/locator-container.git",
-                "reference": "1731ed553b6d39d86ca8e10d5b8a873175dea6d3"
+                "reference": "6511f8b6b5867ce39f1f2ee7f1f3cd7bc36bb468"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/courier-php/locator-container/zipball/1731ed553b6d39d86ca8e10d5b8a873175dea6d3",
-                "reference": "1731ed553b6d39d86ca8e10d5b8a873175dea6d3",
+                "url": "https://api.github.com/repos/courier-php/locator-container/zipball/6511f8b6b5867ce39f1f2ee7f1f3cd7bc36bb468",
+                "reference": "6511f8b6b5867ce39f1f2ee7f1f3cd7bc36bb468",
                 "shasum": ""
             },
             "require": {
-                "courier/contracts": "dev-main",
+                "courier/contracts": "self.version",
                 "php": "^8.2",
                 "psr/container": "^2.0"
             },
@@ -640,7 +639,7 @@
                 "issues": "https://github.com/courier-php/locator-container/issues",
                 "source": "https://github.com/courier-php/locator-container/tree/legacy"
             },
-            "time": "2023-02-10T14:14:11+00:00"
+            "time": "2023-05-08T13:16:17+00:00"
         },
         {
             "name": "courier/middleware-envelope-compression",
@@ -648,16 +647,16 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/courier-php/middleware-envelope-compression.git",
-                "reference": "5ec17da3318c6025d9f87fe65c13c0a9a0351f3c"
+                "reference": "d14164827ef305c09bbc5208046d22e3cb6a32ea"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/courier-php/middleware-envelope-compression/zipball/5ec17da3318c6025d9f87fe65c13c0a9a0351f3c",
-                "reference": "5ec17da3318c6025d9f87fe65c13c0a9a0351f3c",
+                "url": "https://api.github.com/repos/courier-php/middleware-envelope-compression/zipball/d14164827ef305c09bbc5208046d22e3cb6a32ea",
+                "reference": "d14164827ef305c09bbc5208046d22e3cb6a32ea",
                 "shasum": ""
             },
             "require": {
-                "courier/contracts": "dev-main",
+                "courier/contracts": "self.version",
                 "php": "^8.2"
             },
             "require-dev": {
@@ -696,7 +695,7 @@
                 "issues": "https://github.com/courier-php/middleware-envelope-compression/issues",
                 "source": "https://github.com/courier-php/middleware-envelope-compression/tree/legacy"
             },
-            "time": "2023-02-10T14:01:01+00:00"
+            "time": "2023-05-08T13:16:37+00:00"
         },
         {
             "name": "courier/serializer-igbinary",
@@ -704,16 +703,16 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/courier-php/serializer-igbinary.git",
-                "reference": "259c9e51875e1a4bf3fcc92b88d751770658352c"
+                "reference": "f5531811c9331b2ef4a5fec477112b1fde356ab7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/courier-php/serializer-igbinary/zipball/259c9e51875e1a4bf3fcc92b88d751770658352c",
-                "reference": "259c9e51875e1a4bf3fcc92b88d751770658352c",
+                "url": "https://api.github.com/repos/courier-php/serializer-igbinary/zipball/f5531811c9331b2ef4a5fec477112b1fde356ab7",
+                "reference": "f5531811c9331b2ef4a5fec477112b1fde356ab7",
                 "shasum": ""
             },
             "require": {
-                "courier/contracts": "dev-main",
+                "courier/contracts": "self.version",
                 "ext-igbinary": "*",
                 "php": "^8.2"
             },
@@ -752,7 +751,7 @@
                 "issues": "https://github.com/courier-php/serializer-igbinary/issues",
                 "source": "https://github.com/courier-php/serializer-igbinary/tree/legacy"
             },
-            "time": "2023-02-10T14:03:35+00:00"
+            "time": "2023-05-08T13:16:51+00:00"
         },
         {
             "name": "courier/transport-amqp",
@@ -760,16 +759,16 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/courier-php/transport-amqp.git",
-                "reference": "f47f0f07ee556cf10cba5973ef443f0a1d972667"
+                "reference": "68b75ac6473b5b5a58390bf04e55dfe3b9ace3bc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/courier-php/transport-amqp/zipball/f47f0f07ee556cf10cba5973ef443f0a1d972667",
-                "reference": "f47f0f07ee556cf10cba5973ef443f0a1d972667",
+                "url": "https://api.github.com/repos/courier-php/transport-amqp/zipball/68b75ac6473b5b5a58390bf04e55dfe3b9ace3bc",
+                "reference": "68b75ac6473b5b5a58390bf04e55dfe3b9ace3bc",
                 "shasum": ""
             },
             "require": {
-                "courier/contracts": "dev-main",
+                "courier/contracts": "self.version",
                 "ext-amqp": "*",
                 "nyholm/dsn": "^2.0",
                 "php": "^8.2"
@@ -808,7 +807,7 @@
                 "issues": "https://github.com/courier-php/transport-amqp/issues",
                 "source": "https://github.com/courier-php/transport-amqp/tree/legacy"
             },
-            "time": "2023-02-10T14:07:28+00:00"
+            "time": "2023-05-08T13:17:05+00:00"
         },
         {
             "name": "flavioheleno/kolekto",
@@ -4716,16 +4715,16 @@
         },
         {
             "name": "twig/twig",
-            "version": "v3.5.1",
+            "version": "v3.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "a6e0510cc793912b451fd40ab983a1d28f611c15"
+                "reference": "106c170d08e8415d78be2d16c3d057d0d108262b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/a6e0510cc793912b451fd40ab983a1d28f611c15",
-                "reference": "a6e0510cc793912b451fd40ab983a1d28f611c15",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/106c170d08e8415d78be2d16c3d057d0d108262b",
+                "reference": "106c170d08e8415d78be2d16c3d057d0d108262b",
                 "shasum": ""
             },
             "require": {
@@ -4734,15 +4733,10 @@
                 "symfony/polyfill-mbstring": "^1.3"
             },
             "require-dev": {
-                "psr/container": "^1.0",
+                "psr/container": "^1.0|^2.0",
                 "symfony/phpunit-bridge": "^4.4.9|^5.0.9|^6.0"
             },
             "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "3.5-dev"
-                }
-            },
             "autoload": {
                 "psr-4": {
                     "Twig\\": "src/"
@@ -4776,7 +4770,7 @@
             ],
             "support": {
                 "issues": "https://github.com/twigphp/Twig/issues",
-                "source": "https://github.com/twigphp/Twig/tree/v3.5.1"
+                "source": "https://github.com/twigphp/Twig/tree/v3.6.0"
             },
             "funding": [
                 {
@@ -4788,7 +4782,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-02-08T07:49:20+00:00"
+            "time": "2023-05-03T19:06:57+00:00"
         },
         {
             "name": "vlucas/phpdotenv",
@@ -7212,16 +7206,16 @@
         },
         {
             "name": "phpunit/php-file-iterator",
-            "version": "4.0.1",
+            "version": "4.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-file-iterator.git",
-                "reference": "fd9329ab3368f59fe1fe808a189c51086bd4b6bd"
+                "reference": "5647d65443818959172645e7ed999217360654b6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-file-iterator/zipball/fd9329ab3368f59fe1fe808a189c51086bd4b6bd",
-                "reference": "fd9329ab3368f59fe1fe808a189c51086bd4b6bd",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-file-iterator/zipball/5647d65443818959172645e7ed999217360654b6",
+                "reference": "5647d65443818959172645e7ed999217360654b6",
                 "shasum": ""
             },
             "require": {
@@ -7260,7 +7254,8 @@
             ],
             "support": {
                 "issues": "https://github.com/sebastianbergmann/php-file-iterator/issues",
-                "source": "https://github.com/sebastianbergmann/php-file-iterator/tree/4.0.1"
+                "security": "https://github.com/sebastianbergmann/php-file-iterator/security/policy",
+                "source": "https://github.com/sebastianbergmann/php-file-iterator/tree/4.0.2"
             },
             "funding": [
                 {
@@ -7268,7 +7263,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-02-10T16:53:14+00:00"
+            "time": "2023-05-07T09:13:23+00:00"
         },
         {
             "name": "phpunit/php-invoker",
@@ -7495,16 +7490,16 @@
         },
         {
             "name": "psy/psysh",
-            "version": "v0.11.16",
+            "version": "v0.11.17",
             "source": {
                 "type": "git",
                 "url": "https://github.com/bobthecow/psysh.git",
-                "reference": "151b145906804eea8e5d71fea23bfb470c904bfb"
+                "reference": "3dc5d4018dabd80bceb8fe1e3191ba8460569f0a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/bobthecow/psysh/zipball/151b145906804eea8e5d71fea23bfb470c904bfb",
-                "reference": "151b145906804eea8e5d71fea23bfb470c904bfb",
+                "url": "https://api.github.com/repos/bobthecow/psysh/zipball/3dc5d4018dabd80bceb8fe1e3191ba8460569f0a",
+                "reference": "3dc5d4018dabd80bceb8fe1e3191ba8460569f0a",
                 "shasum": ""
             },
             "require": {
@@ -7565,9 +7560,9 @@
             ],
             "support": {
                 "issues": "https://github.com/bobthecow/psysh/issues",
-                "source": "https://github.com/bobthecow/psysh/tree/v0.11.16"
+                "source": "https://github.com/bobthecow/psysh/tree/v0.11.17"
             },
-            "time": "2023-04-26T12:53:57+00:00"
+            "time": "2023-05-05T20:02:42+00:00"
         },
         {
             "name": "roave/security-advisories",
@@ -7575,12 +7570,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Roave/SecurityAdvisories.git",
-                "reference": "a4fe21553eb3bbf33bbecf26cb0e2f0973f50c83"
+                "reference": "f86a07b7eb07f9297e939d8c5f97178b2c189dfe"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/a4fe21553eb3bbf33bbecf26cb0e2f0973f50c83",
-                "reference": "a4fe21553eb3bbf33bbecf26cb0e2f0973f50c83",
+                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/f86a07b7eb07f9297e939d8c5f97178b2c189dfe",
+                "reference": "f86a07b7eb07f9297e939d8c5f97178b2c189dfe",
                 "shasum": ""
             },
             "conflict": {
@@ -7608,7 +7603,7 @@
                 "automad/automad": "<1.8",
                 "awesome-support/awesome-support": "<=6.0.7",
                 "aws/aws-sdk-php": ">=3,<3.2.1",
-                "azuracast/azuracast": "<0.18",
+                "azuracast/azuracast": "<0.18.3",
                 "backdrop/backdrop": "<1.24.2",
                 "badaso/core": "<2.7",
                 "bagisto/bagisto": "<0.1.5",
@@ -7656,7 +7651,7 @@
                 "contao/core-bundle": "<4.9.40|>=4.10,<4.11.7|>=4.13,<4.13.21|>=5.1,<5.1.4|= 4.10.0",
                 "contao/listing-bundle": ">=4,<4.4.8",
                 "contao/managed-edition": "<=1.5",
-                "craftcms/cms": "<3.7.68|>= 4.0.0-RC1, < 4.3.7|>= 4.0.0-RC1, < 4.2.1",
+                "craftcms/cms": "<=3.8.3|>=4,<=4.4.3|>= 4.0.0-RC1, < 4.3.7|>= 4.0.0-RC1, < 4.2.1",
                 "croogo/croogo": "<3.0.7",
                 "cuyz/valinor": "<0.12",
                 "czproject/git-php": "<4.0.3",
@@ -7855,7 +7850,7 @@
                 "netgen/tagsbundle": ">=3.4,<3.4.11|>=4,<4.0.15",
                 "nette/application": ">=2,<2.0.19|>=2.1,<2.1.13|>=2.2,<2.2.10|>=2.3,<2.3.14|>=2.4,<2.4.16|>=3,<3.0.6",
                 "nette/nette": ">=2,<2.0.19|>=2.1,<2.1.13",
-                "nilsteampassnet/teampass": "<3.0.3",
+                "nilsteampassnet/teampass": "<3.0.7",
                 "notrinos/notrinos-erp": "<=0.7",
                 "noumo/easyii": "<=0.9",
                 "nukeviet/nukeviet": "<4.5.2",
@@ -8173,7 +8168,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-05-03T00:13:26+00:00"
+            "time": "2023-05-06T00:13:11+00:00"
         },
         {
             "name": "sanmai/later",
@@ -9593,16 +9588,16 @@
         },
         {
             "name": "vimeo/psalm",
-            "version": "5.10.0",
+            "version": "5.11.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/vimeo/psalm.git",
-                "reference": "a5effd2d2dddd1a7ea7a0f6a051ce63ff979e356"
+                "reference": "c9b192ab8400fdaf04b2b13d110575adc879aa90"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/vimeo/psalm/zipball/a5effd2d2dddd1a7ea7a0f6a051ce63ff979e356",
-                "reference": "a5effd2d2dddd1a7ea7a0f6a051ce63ff979e356",
+                "url": "https://api.github.com/repos/vimeo/psalm/zipball/c9b192ab8400fdaf04b2b13d110575adc879aa90",
+                "reference": "c9b192ab8400fdaf04b2b13d110575adc879aa90",
                 "shasum": ""
             },
             "require": {
@@ -9693,9 +9688,9 @@
             ],
             "support": {
                 "issues": "https://github.com/vimeo/psalm/issues",
-                "source": "https://github.com/vimeo/psalm/tree/5.10.0"
+                "source": "https://github.com/vimeo/psalm/tree/5.11.0"
             },
-            "time": "2023-05-02T17:20:34+00:00"
+            "time": "2023-05-04T21:35:44+00:00"
         },
         {
             "name": "webmozart/assert",
