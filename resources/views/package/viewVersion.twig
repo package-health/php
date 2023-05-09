@@ -13,6 +13,7 @@
 {% block hero_footer %}[![dependency status]({{ full_url_for('viewPackageBadge', {vendor: package.vendor, project: package.project, version: version.number}) }})]({{ full_url_for('viewPackageVersion', {vendor: package.vendor, project: package.project, version: version.number}) }}){% endblock %}
 
 {% block navbar_menu %}
+  <a class="navbar-item" href="{{ url_for('listVendorPackages', {vendor: package.vendor}) }}">View other packages from {{ package.vendor }}</a>
   {% if package.latestVersion == version.number %}
     <a class="navbar-item" href="{{ url_for('listPackageVersions', {vendor: package.vendor, project: package.project}) }}">View other package releases</a>
   {% else %}
