@@ -118,7 +118,7 @@ class UpdateDependencyStatusHandler implements InvokeHandlerInterface {
 
       foreach ($dependencyCol as $dependency) {
         if ($dependency->getConstraint() === 'self.version') {
-          // need to find out how to handle this
+          // should never happen as PackageDiscovery sets it to release version, but just in case
           continue;
         }
 
@@ -130,7 +130,7 @@ class UpdateDependencyStatusHandler implements InvokeHandlerInterface {
 
         foreach ($dependencyCol as $dependency) {
           if ($dependency->getConstraint() === 'self.version') {
-            // need to find out how to handle this
+            // should never happen as PackageDiscovery sets it to release version, but just in case
             continue;
           }
 

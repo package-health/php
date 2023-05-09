@@ -111,7 +111,7 @@ final class CheckDependencyStatusHandler implements InvokeHandlerInterface {
       );
 
       if ($dependency->getConstraint() === 'self.version') {
-        // need to find out how to handle this
+        // should never happen as PackageDiscovery sets it to release version, but just in case
         return HandlerResultEnum::REJECT;
       }
 

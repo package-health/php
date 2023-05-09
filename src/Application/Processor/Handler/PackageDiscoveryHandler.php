@@ -286,8 +286,7 @@ class PackageDiscoveryHandler implements InvokeHandlerInterface {
 
           foreach ($filteredRequire as $dependencyName => $constraint) {
             if ($constraint === 'self.version') {
-              // need to find out how to handle this
-              continue;
+              $constraint = $release['version'];
             }
 
             // find by the unique constraint (version_id, name, development)
@@ -332,8 +331,7 @@ class PackageDiscoveryHandler implements InvokeHandlerInterface {
 
           foreach ($filteredRequireDev as $dependencyName => $constraint) {
             if ($constraint === 'self.version') {
-              // need to find out how to handle this
-              continue;
+              $constraint = $release['version'];
             }
 
             // find by the unique constraint (version_id, name, development)
