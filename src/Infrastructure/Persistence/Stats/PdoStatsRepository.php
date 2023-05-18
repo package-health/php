@@ -185,7 +185,7 @@ final class PdoStatsRepository implements StatsRepositoryInterface {
     $stmt->execute(['package_name' => $packageName]);
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
     if ($row === false) {
-      throw new StatsNotFoundException("Stats '{$packageName}' not found");
+      throw new StatsNotFoundException("Stats for '{$packageName}' not found");
     }
 
     return $this->hydrate($row);
@@ -321,7 +321,12 @@ final class PdoStatsRepository implements StatsRepositoryInterface {
         ]
       );
 
-      $stats = $this->hydrate($stmt->fetch(PDO::FETCH_ASSOC));
+      $row = $stmt->fetch(PDO::FETCH_ASSOC);
+      if ($row === false) {
+        throw new StatsNotFoundException('Stats for package "' . $stats->getPackageName() . '" not found');
+      }
+
+      $stats = $this->hydrate($row);
 
       $this->producer->sendEvent(
         new StatsUpdatedEvent($stats)

@@ -382,7 +382,12 @@ final class PdoPackageRepository implements PackageRepositoryInterface {
         ]
       );
 
-      $package = $this->hydrate($stmt->fetch(PDO::FETCH_ASSOC));
+      $row = $stmt->fetch(PDO::FETCH_ASSOC);
+      if ($row === false) {
+        throw new PackageNotFoundException('Package "' . $package->getId() . '" not found');
+      }
+
+      $package = $this->hydrate($row);
 
       $this->producer->sendEvent(
         new PackageUpdatedEvent($package)

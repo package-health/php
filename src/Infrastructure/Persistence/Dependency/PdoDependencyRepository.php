@@ -287,7 +287,12 @@ final class PdoDependencyRepository implements DependencyRepositoryInterface {
         ]
       );
 
-      $dependency = $this->hydrate($stmt->fetch(PDO::FETCH_ASSOC));
+      $row = $stmt->fetch(PDO::FETCH_ASSOC);
+      if ($row === false) {
+        throw new DependencyNotFoundException('Dependency "' . $dependency->getId() . '" not found');
+      }
+
+      $dependency = $this->hydrate($row);
 
       $this->producer->sendEvent(
         new DependencyUpdatedEvent($dependency)

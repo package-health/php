@@ -271,7 +271,12 @@ final class PdoPreferenceRepository implements PreferenceRepositoryInterface {
         ]
       );
 
-      $preference = $this->hydrate($stmt->fetch(PDO::FETCH_ASSOC));
+      $row = $stmt->fetch(PDO::FETCH_ASSOC);
+      if ($row === false) {
+        throw new PreferenceNotFoundException('Preference "' . $preference->getId() . '" not found');
+      }
+
+      $preference = $this->hydrate($row);
 
       $this->producer->sendEvent(
         new PreferenceUpdatedEvent($preference)

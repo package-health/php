@@ -287,7 +287,12 @@ final class PdoVersionRepository implements VersionRepositoryInterface {
         ]
       );
 
-      $version = $this->hydrate($stmt->fetch(PDO::FETCH_ASSOC));
+      $row = $stmt->fetch(PDO::FETCH_ASSOC);
+      if ($row === false) {
+        throw new VersionNotFoundException('Version "' . $version->getId() . '" not found');
+      }
+
+      $version = $this->hydrate($row);
 
       $this->producer->sendEvent(
         new VersionUpdatedEvent($version)
