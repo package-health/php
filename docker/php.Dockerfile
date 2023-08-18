@@ -1,7 +1,7 @@
 #============================================
 # BUILD
 #============================================
-FROM php:8.2.8-cli-alpine3.18 AS builder
+FROM php:8.2.9-cli-alpine3.18 AS builder
 
 # https://blog.packagecloud.io/eng/2017/02/21/set-environment-variable-save-thousands-of-system-calls/
 ENV TZ=:UTC
@@ -88,7 +88,7 @@ RUN composer install --no-progress --ignore-platform-reqs --no-dev --prefer-dist
 #============================================
 # COMMAND LINE INTERFACE
 #============================================
-FROM php:8.2.8-cli-alpine3.18 as cli
+FROM php:8.2.9-cli-alpine3.18 as cli
 
 # https://blog.packagecloud.io/eng/2017/02/21/set-environment-variable-save-thousands-of-system-calls/
 ENV TZ=:UTC
@@ -175,7 +175,7 @@ CMD ["php"]
 #============================================
 # FPM SAPI
 #============================================
-FROM php:8.2.8-fpm-alpine3.18 as fpm
+FROM php:8.2.9-fpm-alpine3.18 as fpm
 
 # https://blog.packagecloud.io/eng/2017/02/21/set-environment-variable-save-thousands-of-system-calls/
 ENV TZ=:UTC
