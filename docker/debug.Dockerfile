@@ -15,7 +15,7 @@ USER root
 #============================================
 
 RUN docker-php-source extract && \
-    wget -O xdebug.tar.gz https://github.com/xdebug/xdebug/archive/refs/tags/3.1.5.tar.gz && \
+    wget -O xdebug.tar.gz https://github.com/xdebug/xdebug/archive/refs/tags/3.2.2.tar.gz && \
     mkdir /usr/src/php/ext/xdebug && \
     tar --extract --file xdebug.tar.gz --directory /usr/src/php/ext/xdebug --strip 1 && \
     docker-php-ext-install -j$(nproc) xdebug && \
@@ -61,7 +61,7 @@ USER root
 #============================================
 
 RUN docker-php-source extract && \
-    wget -O xdebug.tar.gz https://github.com/xdebug/xdebug/archive/refs/tags/3.1.5.tar.gz && \
+    wget -O xdebug.tar.gz https://github.com/xdebug/xdebug/archive/refs/tags/3.2.2.tar.gz && \
     mkdir /usr/src/php/ext/xdebug && \
     tar --extract --file xdebug.tar.gz --directory /usr/src/php/ext/xdebug --strip 1 && \
     docker-php-ext-install -j$(nproc) xdebug && \
