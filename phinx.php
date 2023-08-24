@@ -15,10 +15,24 @@ return [
     'default_migration_table' => 'phinxlog',
     'default_environment' => 'dev',
     'prod' => [
-      'dsn' => "pgsql://{$_ENV['POSTGRES_USER']}:{$_ENV['POSTGRES_PASSWORD']}@{$_ENV['POSTGRES_HOST']}/{$_ENV['POSTGRES_DB']}"
+      'dsn' => sprintf(
+        'pgsql://%s:%s@%s:%d/%s',
+        $_ENV['POSTGRES_USER'],
+        $_ENV['POSTGRES_PASSWORD'],
+        $_ENV['POSTGRES_HOST'],
+        $_ENV['POSTGRES_PORT'] ?? 5432,
+        $_ENV['POSTGRES_DB']
+      )
     ],
     'dev' => [
-      'dsn' => "pgsql://{$_ENV['POSTGRES_USER']}:{$_ENV['POSTGRES_PASSWORD']}@{$_ENV['POSTGRES_HOST']}/{$_ENV['POSTGRES_DB']}"
+      'dsn' => sprintf(
+        'pgsql://%s:%s@%s:%d/%s',
+        $_ENV['POSTGRES_USER'],
+        $_ENV['POSTGRES_PASSWORD'],
+        $_ENV['POSTGRES_HOST'],
+        $_ENV['POSTGRES_PORT'] ?? 5432,
+        $_ENV['POSTGRES_DB']
+      )
     ],
     'test' => []
   ],

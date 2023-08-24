@@ -16,15 +16,34 @@ return static function (ContainerBuilder $containerBuilder): void {
             'cache' => [
               'enabled' => PHP_SAPI !== 'cli',
               'redis' => [
-                'enabled' => true,
-                'dsn' => "redis://{$_ENV['REDIS_USERNAME']}:{$_ENV['REDIS_PASSWORD']}@{$_ENV['REDIS_HOST']}:{$_ENV['REDIS_PORT']}"
+                'enabled' => extension_loaded('redis') === true,
+                'dsn' => sprintf(
+                  'redis://%s:%s@%s:%d',
+                  $_ENV['REDIS_USERNAME'],
+                  $_ENV['REDIS_PASSWORD'],
+                  $_ENV['REDIS_HOST'],
+                  $_ENV['REDIS_PORT'] ?? 6379
+                )
               ]
             ],
             'db' => [
-              'dsn' => "pgsql://{$_ENV['POSTGRES_USER']}:{$_ENV['POSTGRES_PASSWORD']}@{$_ENV['POSTGRES_HOST']}:{$_ENV['POSTGRES_PORT']}/{$_ENV['POSTGRES_DB']}"
+              'dsn' => sprintf(
+                'pgsql://%s:%s@%s:%d/%s',
+                $_ENV['POSTGRES_USER'],
+                $_ENV['POSTGRES_PASSWORD'],
+                $_ENV['POSTGRES_HOST'],
+                $_ENV['POSTGRES_PORT'] ?? 5432,
+                $_ENV['POSTGRES_DB']
+              )
             ],
             'queue' => [
-              'dsn'      => "amqp://{$_ENV['AMQP_USER']}:{$_ENV['AMQP_PASS']}@{$_ENV['AMQP_HOST']}:{$_ENV['AMQP_PORT']}",
+              'dsn' => sprintf(
+                'amqp://%s:%s@%s:%d',
+                $_ENV['AMQP_USER'],
+                $_ENV['AMQP_PASS'],
+                $_ENV['AMQP_HOST'],
+                $_ENV['AMQP_PORT'] ?? 5672
+              ),
               'prefetch' => 100
             ],
             'displayErrorDetails' => (isset($_ENV['PHP_ENV']) === false || $_ENV['PHP_ENV'] === 'dev'),
