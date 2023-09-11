@@ -51,6 +51,7 @@
     "courier/transport-amqp": "dev-legacy",
     "flavioheleno/kolekto": "dev-main",
     "kriswallsmith/buzz": "^1.2",
+    "league/config": "^1.2",
     "middlewares/minifier": "^2.0",
     "middlewares/trailing-slash": "^2.0",
     "monolog/monolog": "^3.2",

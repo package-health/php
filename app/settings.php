@@ -2,19 +2,81 @@
 declare(strict_types = 1);
 
 use DI\ContainerBuilder;
-use PackageHealth\PHP\Application\Settings\Settings;
-use PackageHealth\PHP\Application\Settings\SettingsInterface;
+use League\Config\Configuration;
+use League\Config\ConfigurationInterface;
+use Nette\Schema\Expect;
 use Psr\Log\LogLevel;
 
 return static function (ContainerBuilder $containerBuilder): void {
   // Global Settings Object
   $containerBuilder->addDefinitions(
     [
-      SettingsInterface::class => static function (): SettingsInterface {
-        return new Settings(
+      ConfigurationInterface::class => static function (): ConfigurationInterface {
+        // config schema
+        $config = new Configuration(
+          [
+            'cache' => Expect::structure(
+              [
+                'enabled' => Expect::bool(false),
+                'apcu' => Expect::structure(
+                  [
+                    'enabled' => Expect::bool(false)
+                  ]
+                ),
+                'redis' => Expect::structure(
+                  [
+                    'enabled' => Expect::bool(false),
+                    'dsn' => Expect::string('redis://localhost:6379')
+                  ]
+                )
+              ]
+            ),
+            'db' => Expect::structure(
+              [
+                'dsn' => Expect::string('pgsql://postgres@localhost:5432/postgres')
+              ]
+            ),
+            'logging' => Expect::structure(
+              [
+                'enabled' => Expect::bool(false),
+                'level' => Expect::string(LogLevel::INFO),
+                'path' => Expect::string()->assert(
+                  static function (string $file): bool {
+                    return $file === 'php://stdout' || is_writeable(dirname($file));
+                  }
+                )
+              ]
+            ),
+            'queue' => Expect::structure(
+              [
+                'dsn' => Expect::string('amqp://guest:guest@localhost:5672/'),
+                'prefetch' => Expect::int(100)
+              ]
+            ),
+            'slim' => Expect::structure(
+              [
+                // Returns a detailed HTML page with error details and
+                // a stack trace. Should be disabled in production.
+                'displayErrorDetails' => Expect::bool(false),
+                // Whether to display errors on the internal PHP log or not.
+                'logErrors' => Expect::bool(true),
+                // If true, display full errors with message and stack trace on the PHP log.
+                // If false, display only "Slim Application Error" on the PHP log.
+                // Doesn't do anything when "logErrors" is false.
+                'logErrorDetails' => Expect::bool(true)
+              ]
+            )
+          ]
+        );
+
+        // actual values
+        $config->merge(
           [
             'cache' => [
               'enabled' => PHP_SAPI !== 'cli',
+              'apcu' => [
+                'enabled' => extension_loaded('apcu') === true && apcu_enabled() && PHP_SAPI === 'fpm-fcgi'
+              ],
               'redis' => [
                 'enabled' => extension_loaded('redis') === true,
                 'dsn' => sprintf(
@@ -46,16 +108,25 @@ return static function (ContainerBuilder $containerBuilder): void {
               ),
               'prefetch' => 100
             ],
-            'displayErrorDetails' => (isset($_ENV['PHP_ENV']) === false || $_ENV['PHP_ENV'] === 'dev'),
-            'logError'            => true,
-            'logErrorDetails'     => true,
-            'logger' => [
-              'name' => 'slim-app',
-              'path' => isset($_ENV['DOCKER']) ? 'php://stdout' : __DIR__ . '/../logs/app.log',
-              'level' => isset($_ENV['PHP_ENV']) === false || $_ENV['PHP_ENV'] === 'dev' ? LogLevel::DEBUG : LogLevel::INFO
+            'logging' => [
+              'path' => (
+                isset($_ENV['DOCKER']) === true
+                ? 'php://stdout'
+                : dirname(__DIR__) . '/application.log'
+              ),
+              'level' => (
+                $_ENV['PHP_ENV'] === 'prod'
+                ? LogLevel::INFO
+                : LogLevel::DEBUG
+              )
+            ],
+            'slim' => [
+              'displayErrorDetails' => (isset($_ENV['PHP_ENV']) === false || $_ENV['PHP_ENV'] === 'dev')
             ]
           ]
         );
+
+        return $config->reader();
       }
     ]
   );

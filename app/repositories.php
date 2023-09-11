@@ -2,7 +2,6 @@
 declare(strict_types = 1);
 
 use DI\ContainerBuilder;
-use PackageHealth\PHP\Application\Settings\SettingsInterface;
 use PackageHealth\PHP\Domain\Dependency\DependencyRepositoryInterface;
 use PackageHealth\PHP\Domain\Package\PackageRepositoryInterface;
 use PackageHealth\PHP\Domain\Preference\PreferenceRepositoryInterface;
@@ -18,6 +17,7 @@ use PackageHealth\PHP\Infrastructure\Persistence\Stats\CachedStatsRepository;
 use PackageHealth\PHP\Infrastructure\Persistence\Stats\PdoStatsRepository;
 use PackageHealth\PHP\Infrastructure\Persistence\Version\CachedVersionRepository;
 use PackageHealth\PHP\Infrastructure\Persistence\Version\PdoVersionRepository;
+use League\Config\ConfigurationInterface;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Container\ContainerInterface;
 use function DI\autowire;
@@ -28,9 +28,10 @@ return static function (ContainerBuilder $containerBuilder): void {
       // Dependency
       PdoDependencyRepository::class => autowire(PdoDependencyRepository::class),
       DependencyRepositoryInterface::class => static function (ContainerInterface $container): DependencyRepositoryInterface {
-        $settings = $container->get(SettingsInterface::class);
+        /** @var \League\Config\ConfigurationInterface */
+        $config = $container->get(ConfigurationInterface::class);
 
-        if ($settings->has('cache') === false || $settings->getBool('cache.enabled', false) === false) {
+        if ((bool)$config->get('cache.enabled') === false) {
           return $container->get(PdoDependencyRepository::class);
         }
 
@@ -42,9 +43,10 @@ return static function (ContainerBuilder $containerBuilder): void {
       // Package
       PdoPackageRepository::class => autowire(PdoPackageRepository::class),
       PackageRepositoryInterface::class => static function (ContainerInterface $container): PackageRepositoryInterface {
-        $settings = $container->get(SettingsInterface::class);
+        /** @var \League\Config\ConfigurationInterface */
+        $config = $container->get(ConfigurationInterface::class);
 
-        if ($settings->has('cache') === false || $settings->getBool('cache.enabled', false) === false) {
+        if ((bool)$config->get('cache.enabled') === false) {
           return $container->get(PdoPackageRepository::class);
         }
 
@@ -56,9 +58,10 @@ return static function (ContainerBuilder $containerBuilder): void {
       // Preference
       PdoPreferenceRepository::class => autowire(PdoPreferenceRepository::class),
       PreferenceRepositoryInterface::class => static function (ContainerInterface $container): PreferenceRepositoryInterface {
-        $settings = $container->get(SettingsInterface::class);
+        /** @var \League\Config\ConfigurationInterface */
+        $config = $container->get(ConfigurationInterface::class);
 
-        if ($settings->has('cache') === false || $settings->getBool('cache.enabled', false) === false) {
+        if ((bool)$config->get('cache.enabled') === false) {
           return $container->get(PdoPreferenceRepository::class);
         }
 
@@ -70,9 +73,10 @@ return static function (ContainerBuilder $containerBuilder): void {
       // Stats
       PdoStatsRepository::class => autowire(PdoStatsRepository::class),
       StatsRepositoryInterface::class => static function (ContainerInterface $container): StatsRepositoryInterface {
-        $settings = $container->get(SettingsInterface::class);
+        /** @var \League\Config\ConfigurationInterface */
+        $config = $container->get(ConfigurationInterface::class);
 
-        if ($settings->has('cache') === false || $settings->getBool('cache.enabled', false) === false) {
+        if ((bool)$config->get('cache.enabled') === false) {
           return $container->get(PdoStatsRepository::class);
         }
 
@@ -84,9 +88,10 @@ return static function (ContainerBuilder $containerBuilder): void {
       // Version
       PdoVersionRepository::class => autowire(PdoVersionRepository::class),
       VersionRepositoryInterface::class => static function (ContainerInterface $container): VersionRepositoryInterface {
-        $settings = $container->get(SettingsInterface::class);
+        /** @var \League\Config\ConfigurationInterface */
+        $config = $container->get(ConfigurationInterface::class);
 
-        if ($settings->has('cache') === false || $settings->getBool('cache.enabled', false) === false) {
+        if ((bool)$config->get('cache.enabled') === false) {
           return $container->get(PdoVersionRepository::class);
         }
 

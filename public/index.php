@@ -6,7 +6,7 @@ use DI\ContainerBuilder;
 use PackageHealth\PHP\Application\Handler\HttpErrorHandler;
 use PackageHealth\PHP\Application\Handler\ShutdownHandler;
 use PackageHealth\PHP\Application\ResponseEmitter\ResponseEmitter;
-use PackageHealth\PHP\Application\Settings\SettingsInterface;
+use League\Config\ConfigurationInterface;
 use Slim\Factory\AppFactory;
 use Slim\Factory\ServerRequestCreatorFactory;
 
@@ -82,10 +82,10 @@ if (isset($_ENV['PHP_ENV']) && $_ENV['PHP_ENV'] === 'prod') {
   $routeCollector->setCacheFile(__DIR__ . '/../var/cache/routes.cache');
 }
 
-/** @var SettingsInterface $settings */
-$settings = $container->get(SettingsInterface::class);
+/** @var \League\Config\ConfigurationInterface $settings */
+$config = $container->get(ConfigurationInterface::class);
 
-$displayErrorDetails = $settings->getBool('displayErrorDetails');
+$displayErrorDetails = (bool)$config->get('slim.displayErrorDetails');
 
 // Create Request object from globals
 $serverRequestCreator = ServerRequestCreatorFactory::create();
@@ -107,8 +107,8 @@ $app->addBodyParsingMiddleware();
 // Add Error Middleware
 $errorMiddleware = $app->addErrorMiddleware(
   $displayErrorDetails,
-  $settings->getBool('logError'),
-  $settings->getBool('logErrorDetails')
+  (bool)$config->get('slim.logErrors'),
+  (bool)$config->get('slim.logErrorDetails')
 );
 $errorMiddleware->setDefaultErrorHandler($errorHandler);
 

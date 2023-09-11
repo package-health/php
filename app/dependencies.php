@@ -16,12 +16,12 @@ use Courier\Router\SimpleRouter;
 use Courier\Serializer\IgBinarySerializer;
 use Courier\Transport\AmqpTransport;
 use DI\ContainerBuilder;
+use League\Config\ConfigurationInterface;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Monolog\Processor\UidProcessor;
 use Nyholm\Dsn\DsnParser;
 use Nyholm\Psr7\Factory\Psr17Factory;
-use PackageHealth\PHP\Application\Settings\SettingsInterface;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
@@ -34,6 +34,7 @@ use Slim\Views\Twig;
 use Symfony\Component\Cache\Adapter\ApcuAdapter;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 use Symfony\Component\Cache\Adapter\ChainAdapter;
+use Symfony\Component\Cache\Adapter\NullAdapter;
 use Symfony\Component\Cache\Adapter\RedisAdapter;
 
 use function DI\autowire;
@@ -48,10 +49,11 @@ return static function (ContainerBuilder $containerBuilder): void {
         );
       },
       Bus::class => function (ContainerInterface $container): Bus {
-        $settings = $container->get(SettingsInterface::class);
+        /** @var \League\Config\ConfigurationInterface */
+        $config = $container->get(ConfigurationInterface::class);
 
-        $amqp = AmqpTransport::fromDsn($settings->getString('queue.dsn'));
-        $amqp->setPrefetchCount($settings->getInt('queue.prefetch', 25));
+        $amqp = AmqpTransport::fromDsn($config->get('queue.dsn'));
+        $amqp->setPrefetchCount((int)$config->get('queue.prefetch'));
 
         return new Bus(
           new SimpleRouter(),
@@ -59,11 +61,16 @@ return static function (ContainerBuilder $containerBuilder): void {
         );
       },
       CacheItemPoolInterface::class => function (ContainerInterface $container): CacheItemPoolInterface {
-        $settings = $container->get(SettingsInterface::class);
+        /** @var \League\Config\ConfigurationInterface */
+        $config = $container->get(ConfigurationInterface::class);
 
-        // disables cache by using a black hole driver
-        if ($settings->has('cache') === false || $settings->getBool('cache.enabled', false) === false) {
-          return new ArrayAdapter(
+        // disables cache by using a null adapter
+        if ((bool)$config->get('cache.enabled') === false) {
+          return new NullAdapter();
+        }
+
+        $adapters = [
+          new ArrayAdapter(
             // the default lifetime (in seconds) for cache items that do not define their
             // own lifetime, with a value 0 causing items to be stored indefinitely (i.e.
             // until the current PHP process finishes)
@@ -79,20 +86,16 @@ return static function (ContainerBuilder $containerBuilder): void {
             // the maximum number of items that can be stored in the cache. When the limit
             // is reached, cache follows the LRU model (least recently used items are deleted)
             maxItems: 0
-          );
-        }
-
-        $adapters = [
-          new ArrayAdapter()
+          )
         ];
 
-        if ($settings->has('cache.apcu') && $settings->getBool('cache.apcu.enabled', false)) {
+        if ((bool)$config->get('cache.apcu.enabled') === true) {
           $adapters[] = new ApcuAdapter();
         }
 
-        if ($settings->has('cache.redis') && $settings->getBool('cache.redis.enabled', false)) {
+        if ((bool)$config->get('cache.redis.enabled') === true) {
           $adapters[] = new RedisAdapter(
-            RedisAdapter::createConnection($settings->getString('cache.redis.dsn'))
+            RedisAdapter::createConnection($config->get('cache.redis.dsn'))
           );
         }
 
@@ -112,24 +115,26 @@ return static function (ContainerBuilder $containerBuilder): void {
         return $consumer;
       },
       LoggerInterface::class => function (ContainerInterface $container): LoggerInterface {
-        $settings = $container->get(SettingsInterface::class);
+        /** @var \League\Config\ConfigurationInterface */
+        $config = $container->get(ConfigurationInterface::class);
 
-        $logger = new Logger($settings->getString('logger.name'));
+        $logger = new Logger('app');
 
         $processor = new UidProcessor();
         $logger->pushProcessor($processor);
 
         $handler = new StreamHandler(
-          $settings->getString('logger.path'),
-          $settings->getString('logger.level')
+          $config->get('logging.path'),
+          $config->get('logging.level')
         );
         $logger->pushHandler($handler);
 
         return $logger;
       },
       PDO::class => function (ContainerInterface $container): PDO {
-        $settings = $container->get(SettingsInterface::class);
-        $dsn = DsnParser::parse($settings->getString('db.dsn'));
+        /** @var \League\Config\ConfigurationInterface */
+        $config = $container->get(ConfigurationInterface::class);
+        $dsn = DsnParser::parse($config->get('db.dsn'));
 
         return new PDO(
           sprintf(
