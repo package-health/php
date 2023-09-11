@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5863fd26f1dfe15306a41eb3229fc508",
+    "content-hash": "c3ac197729adbcdcff0adf99b63f5f13",
     "packages": [
         {
             "name": "badges/poser",
@@ -3098,21 +3098,21 @@
         },
         {
             "name": "robmorgan/phinx",
-            "version": "0.13.4",
+            "version": "0.14.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cakephp/phinx.git",
-                "reference": "18e06e4a2b18947663438afd2f467e17c62e867d"
+                "reference": "7bc24bae664b2124f3d5b8d1e98fdb8abaf70e87"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cakephp/phinx/zipball/18e06e4a2b18947663438afd2f467e17c62e867d",
-                "reference": "18e06e4a2b18947663438afd2f467e17c62e867d",
+                "url": "https://api.github.com/repos/cakephp/phinx/zipball/7bc24bae664b2124f3d5b8d1e98fdb8abaf70e87",
+                "reference": "7bc24bae664b2124f3d5b8d1e98fdb8abaf70e87",
                 "shasum": ""
             },
             "require": {
                 "cakephp/database": "^4.0",
-                "php": ">=7.2",
+                "php-64bit": ">=7.3",
                 "psr/container": "^1.0 || ^2.0",
                 "symfony/config": "^3.4|^4.0|^5.0|^6.0",
                 "symfony/console": "^3.4|^4.0|^5.0|^6.0"
@@ -3121,7 +3121,7 @@
                 "cakephp/cakephp-codesniffer": "^4.0",
                 "ext-json": "*",
                 "ext-pdo": "*",
-                "phpunit/phpunit": "^8.5|^9.3",
+                "phpunit/phpunit": "^9.5",
                 "sebastian/comparator": ">=1.2.3",
                 "symfony/yaml": "^3.4|^4.0|^5.0"
             },
@@ -3178,9 +3178,9 @@
             ],
             "support": {
                 "issues": "https://github.com/cakephp/phinx/issues",
-                "source": "https://github.com/cakephp/phinx/tree/0.13.4"
+                "source": "https://github.com/cakephp/phinx/tree/0.14.0"
             },
-            "time": "2023-01-07T00:42:55+00:00"
+            "time": "2023-09-07T14:26:14+00:00"
         },
         {
             "name": "slim/http-cache",
@@ -10145,5 +10145,5 @@
         "composer-runtime-api": "^2"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.6.0"
+    "plugin-api-version": "2.3.0"
 }
