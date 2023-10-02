@@ -64,7 +64,7 @@
     "psr/container": "^2.0",
     "psr/http-message": "^1.0",
     "psr/log": "^3.0",
-    "robmorgan/phinx": "^2.0",
+    "robmorgan/phinx": "^0.15",
     "slim/http-cache": "^1.1",
     "slim/slim": "^4.11",
     "slim/twig-view": "^3.3",
