@@ -12,8 +12,8 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 use Composer\InstalledVersions;
 use DI\ContainerBuilder;
-use PackageHealth\PHP\Application\Console\Packagist\GetDataCommand;
 use PackageHealth\PHP\Application\Console\Packagist\GetListCommand;
+use PackageHealth\PHP\Application\Console\Packagist\GetPackageCommand;
 use PackageHealth\PHP\Application\Console\Packagist\GetUpdatesCommand;
 use PackageHealth\PHP\Application\Console\Packagist\MassImportCommand;
 use PackageHealth\PHP\Application\Console\Queue\ConsumeCommand;
@@ -84,11 +84,11 @@ $app = new Application('php.package.health console', __VERSION__);
 $app->setCommandLoader(
   new FactoryCommandLoader(
     [
-      GetDataCommand::getDefaultName() => static function () use ($container): GetDataCommand {
-        return $container->get(GetDataCommand::class);
-      },
       GetListCommand::getDefaultName() => static function () use ($container): GetListCommand {
         return $container->get(GetListCommand::class);
+      },
+      GetPackageCommand::getDefaultName() => static function () use ($container): GetPackageCommand {
+        return $container->get(GetPackageCommand::class);
       },
       GetUpdatesCommand::getDefaultName() => static function () use ($container): GetUpdatesCommand {
         return $container->get(GetUpdatesCommand::class);

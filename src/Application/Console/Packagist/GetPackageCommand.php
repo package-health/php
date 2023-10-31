@@ -3,21 +3,26 @@ declare(strict_types = 1);
 
 namespace PackageHealth\PHP\Application\Console\Packagist;
 
+use Courier\Client\Producer;
 use Exception;
 use InvalidArgumentException;
-use PackageHealth\PHP\Domain\Package\PackageRepositoryInterface;
+use PackageHealth\PHP\Application\Message\Command\PackageDiscoveryCommand;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-#[AsCommand('packagist:mass-import', 'Get the metadata of a list of packages from a Packagist mirror')]
-final class MassImportCommand extends Command {
-  private PackageRepositoryInterface $packageRepository;
+#[AsCommand('packagist:get-package', 'Get the metadata of a package from a Packagist mirror')]
+final class GetPackageCommand extends Command {
+  /**
+   * File cache lifetime (12 hour TTL)
+   */
+  private const FILE_TIMEOUT = 43200;
+
+  private Producer $producer;
 
   /**
    * Command configuration.
@@ -31,12 +36,18 @@ final class MassImportCommand extends Command {
         'm',
         InputOption::VALUE_REQUIRED,
         'Packagist mirror url',
-        'https://repo.packagist.org'
+        'https://packagist.org'
+      )
+      ->addOption(
+        'offline',
+        null,
+        InputOption::VALUE_NONE,
+        'Work in offline mode'
       )
       ->addArgument(
-        'pattern',
+        'package',
         InputArgument::REQUIRED,
-        'The package name pattern (e.g. symfony/*)'
+        'The package name (e.g. symfony/console)'
       );
   }
 
@@ -65,59 +76,12 @@ final class MassImportCommand extends Command {
         throw new InvalidArgumentException('Invalid mirror option');
       }
 
-      $pattern = $input->getArgument('pattern');
+      $workOffline = (bool)$input->getOption('offline');
+      $packageName = $input->getArgument('package');
 
-      $command = $this->getApplication()->find('packagist:get-package');
-
-      $packageCol = $this->packageRepository->findMatching(
-        [
-          'name' => $pattern
-        ]
+      $this->producer->sendCommand(
+        new PackageDiscoveryCommand($packageName, workOffline: $workOffline)
       );
-
-      if ($packageCol->isEmpty()) {
-        $io->text(
-          sprintf(
-            '[%s] Could not find any packages that matches the pattern "%s"',
-            date('H:i:s'),
-            $pattern
-          )
-        );
-
-        return Command::SUCCESS;
-      }
-
-      if ($output->isVerbose()) {
-        $io->text(
-          sprintf(
-            '[%s] Found <options=bold;fg=cyan>%d</> packages',
-            date('H:i:s'),
-            count($packageCol)
-          )
-        );
-      }
-
-      foreach ($packageCol as $package) {
-        if ($output->isVerbose()) {
-          $io->text(
-            sprintf(
-              '[%s] Processing package <options=bold;fg=cyan>%s</>',
-              date('H:i:s'),
-              $package->getName()
-            )
-          );
-        }
-
-        $returnCode = $command->run(
-          new ArrayInput(
-            [
-              '--mirror' => $mirror,
-              'package'  => $package->getName()
-            ]
-          ),
-          $output
-        );
-      }
 
       $io->text(
         sprintf(
@@ -143,8 +107,8 @@ final class MassImportCommand extends Command {
     return Command::SUCCESS;
   }
 
-  public function __construct(PackageRepositoryInterface $packageRepository) {
-    $this->packageRepository = $packageRepository;
+  public function __construct(Producer $producer) {
+    $this->producer = $producer;
 
     parent::__construct();
   }
