@@ -75,8 +75,7 @@ final class GetUpdatesCommand extends Command {
         1
       );
 
-      $preference = $preferenceCol->first();
-      if ($preference === null) {
+      if ($preferenceCol->isEmpty()) {
         $io->text(
           sprintf(
             '[%s] Last update not set',
@@ -92,6 +91,8 @@ final class GetUpdatesCommand extends Command {
           (string)$updates['timestamp'],
           PreferenceTypeEnum::isInteger
         );
+      } else {
+        $preference = $preferenceCol->first();
       }
 
       $io->text(
