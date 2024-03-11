@@ -53,7 +53,7 @@ RUN docker-php-source extract && \
     tar --extract --file redis.tar.gz --directory /usr/src/php/ext/redis --strip 1 && \
     docker-php-ext-install -j$(nproc) redis && \
     # igbinary
-    wget -O igbinary.tar.gz https://github.com/igbinary/igbinary/archive/refs/tags/3.2.14.tar.gz && \
+    wget -O igbinary.tar.gz https://github.com/igbinary/igbinary/archive/refs/tags/3.2.15.tar.gz && \
     mkdir /usr/src/php/ext/igbinary && \
     tar --extract --file igbinary.tar.gz --directory /usr/src/php/ext/igbinary --strip 1 && \
     docker-php-ext-install -j$(nproc) igbinary && \
