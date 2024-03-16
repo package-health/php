@@ -17,14 +17,21 @@ use Courier\Serializer\IgBinarySerializer;
 use Courier\Transport\AmqpTransport;
 use DI\ContainerBuilder;
 use League\Config\ConfigurationInterface;
+use Monolog\Handler\ErrorLogHandler;
 use Monolog\Handler\StreamHandler;
+use Monolog\Level;
 use Monolog\Logger;
+use Monolog\Processor\MemoryPeakUsageProcessor;
+use Monolog\Processor\MemoryUsageProcessor;
+use Monolog\Processor\PsrLogMessageProcessor;
 use Monolog\Processor\UidProcessor;
+use Monolog\Processor\WebProcessor;
 use Nyholm\Dsn\DsnParser;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use PUGX\Poser\Poser;
 use PUGX\Poser\Render\SvgFlatRender;
 use PUGX\Poser\Render\SvgFlatSquareRender;
@@ -117,16 +124,42 @@ return static function (ContainerBuilder $containerBuilder): void {
       LoggerInterface::class => function (ContainerInterface $container): LoggerInterface {
         /** @var \League\Config\ConfigurationInterface */
         $config = $container->get(ConfigurationInterface::class);
+        if ((bool)$config->get('logging.enabled') === false) {
+          return new NullLogger();
+        }
 
         $logger = new Logger('app');
 
-        $processor = new UidProcessor();
-        $logger->pushProcessor($processor);
+        if (PHP_SAPI !== 'cli') {
+          $logger->pushProcessor(new WebProcessor());
+        }
 
-        $handler = new StreamHandler(
-          $config->get('logging.path'),
-          $config->get('logging.level')
+        $logger
+          ->pushProcessor(new MemoryPeakUsageProcessor())
+          ->pushProcessor(new MemoryUsageProcessor())
+          ->pushProcessor(new PsrLogMessageProcessor())
+          ->pushProcessor(new UidProcessor());
+
+        // running from cli-server (dev mode), logs go to error_log()
+        if ($_ENV['PHP_ENV'] === 'dev' && PHP_SAPI === 'cli-server') {
+          $logger->pushHandler(
+            new ErrorLogHandler(
+              ErrorLogHandler::SAPI,
+              Level::Debug
+            )
+          );
+
+          return $logger;
+        }
+
+        // fallback, logs go to /path/to/logs/access.log
+        $logger->pushHandler(
+          new StreamHandler(
+            $config->get('logging.path'),
+            Level::fromName($config->get('logging.level'))
+          )
         );
+
         $logger->pushHandler($handler);
 
         return $logger;
