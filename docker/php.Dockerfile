@@ -1,7 +1,7 @@
 #============================================
 # BUILD
 #============================================
-FROM php:8.2.16-cli-alpine3.19 AS builder
+FROM php:8.3.4-cli-alpine3.19 AS builder
 
 # https://blog.packagecloud.io/eng/2017/02/21/set-environment-variable-save-thousands-of-system-calls/
 ENV TZ=:UTC
@@ -42,17 +42,17 @@ RUN docker-php-ext-install -j$(nproc) dom && \
 # Third party Extensions
 #============================================
 RUN docker-php-source extract && \
-    # amqp
+    # amqp v1.11.0
     wget -O amqp.tar.gz https://github.com/php-amqp/php-amqp/archive/refs/tags/v1.11.0.tar.gz && \
     mkdir /usr/src/php/ext/amqp && \
     tar --extract --file amqp.tar.gz --directory /usr/src/php/ext/amqp --strip 1 && \
     docker-php-ext-install -j$(nproc) amqp && \
-    # redis
+    # redis v5.3.7
     wget -O redis.tar.gz https://github.com/phpredis/phpredis/archive/refs/tags/5.3.7.tar.gz && \
     mkdir /usr/src/php/ext/redis && \
     tar --extract --file redis.tar.gz --directory /usr/src/php/ext/redis --strip 1 && \
     docker-php-ext-install -j$(nproc) redis && \
-    # igbinary
+    # igbinary v3.2.15
     wget -O igbinary.tar.gz https://github.com/igbinary/igbinary/archive/refs/tags/3.2.15.tar.gz && \
     mkdir /usr/src/php/ext/igbinary && \
     tar --extract --file igbinary.tar.gz --directory /usr/src/php/ext/igbinary --strip 1 && \
@@ -88,7 +88,7 @@ RUN composer install --no-progress --ignore-platform-reqs --no-dev --prefer-dist
 #============================================
 # COMMAND LINE INTERFACE
 #============================================
-FROM php:8.2.16-cli-alpine3.19 as cli
+FROM php:8.3.4-cli-alpine3.19 as cli
 
 # https://blog.packagecloud.io/eng/2017/02/21/set-environment-variable-save-thousands-of-system-calls/
 ENV TZ=:UTC
@@ -123,7 +123,7 @@ RUN apk add --no-cache dumb-init
 #============================================
 # CLI Extensions
 #============================================
-COPY --from=builder /usr/local/lib/php/extensions/no-debug-non-zts-20220829 /usr/local/lib/php/extensions/no-debug-non-zts-20220829
+COPY --from=builder /usr/local/lib/php/extensions/no-debug-non-zts-20230831 /usr/local/lib/php/extensions/no-debug-non-zts-20230831
 COPY --from=builder /usr/local/etc/php/conf.d/*.ini /usr/local/etc/php/conf.d/
 RUN docker-php-ext-enable amqp && \
     docker-php-ext-enable igbinary && \
@@ -175,7 +175,7 @@ CMD ["php"]
 #============================================
 # FPM SAPI
 #============================================
-FROM php:8.2.16-fpm-alpine3.19 as fpm
+FROM php:8.3.4-fpm-alpine3.19 as fpm
 
 # https://blog.packagecloud.io/eng/2017/02/21/set-environment-variable-save-thousands-of-system-calls/
 ENV TZ=:UTC
@@ -227,7 +227,7 @@ RUN wget -O /usr/local/bin/php-fpm-healthcheck https://raw.githubusercontent.com
 #============================================
 # FPM Extensions
 #============================================
-COPY --from=builder /usr/local/lib/php/extensions/no-debug-non-zts-20220829 /usr/local/lib/php/extensions/no-debug-non-zts-20220829
+COPY --from=builder /usr/local/lib/php/extensions/no-debug-non-zts-20230831 /usr/local/lib/php/extensions/no-debug-non-zts-20230831
 COPY --from=builder /usr/local/etc/php/conf.d/*.ini /usr/local/etc/php/conf.d/
 RUN docker-php-ext-enable gd && \
     docker-php-ext-enable opcache && \
