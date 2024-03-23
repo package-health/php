@@ -92,5 +92,5 @@ jobs:
         # personal access token with "repo" scope
         token: ${{ secrets.INFRA_REPO_ACCESS_TOKEN }}
         repository: ${{ secrets.INFRA_REPO }}
-        event-type: deploy-new-version
+        event-type: deploy-php-package-health
         client-payload: '{"sha": "${{ github.sha }}", "environment": "${{ needs.docker.outputs.environment }}"}'
