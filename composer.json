@@ -68,7 +68,7 @@
     "slim/http-cache": "^1.1",
     "slim/slim": "^4.13",
     "slim/twig-view": "^3.3",
-    "symfony/cache": "^6.4",
+    "symfony/cache": "^7.0",
     "symfony/console": "^6.4",
     "vlucas/phpdotenv": "^5.6"
   },
