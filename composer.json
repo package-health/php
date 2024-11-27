@@ -41,7 +41,7 @@
     "ext-redis": "*",
     "ext-zlib": "*",
     "composer-runtime-api": "^2",
-    "badges/poser": "^2.3",
+    "badges/poser": "^3.1",
     "composer/metadata-minifier": "^1.0",
     "composer/semver": "^3.4",
     "courier/courier": "dev-legacy",

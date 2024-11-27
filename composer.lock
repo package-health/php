@@ -4,36 +4,37 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "575f8ec15d27c22fe185d45182b59908",
+    "content-hash": "34c27fd8572628e161693de913b30cb0",
     "packages": [
         {
             "name": "badges/poser",
-            "version": "v2.3.1",
+            "version": "v3.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/badges/poser.git",
-                "reference": "13f4ae7998700568fe1d07c8964492ea845e675c"
+                "reference": "6bc1998ad98e10ad7d16f2b0784a286c105d7991"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/badges/poser/zipball/13f4ae7998700568fe1d07c8964492ea845e675c",
-                "reference": "13f4ae7998700568fe1d07c8964492ea845e675c",
+                "url": "https://api.github.com/repos/badges/poser/zipball/6bc1998ad98e10ad7d16f2b0784a286c105d7991",
+                "reference": "6bc1998ad98e10ad7d16f2b0784a286c105d7991",
                 "shasum": ""
             },
             "require": {
+                "cybercog/php-svg-font": "^1.0",
                 "ext-gd": "*",
                 "ext-simplexml": "*",
-                "kartsims/easysvg": "^2.4",
-                "php": ">=7.4",
-                "symfony/console": "^4.0|^5.0|^6.0"
+                "kartsims/easysvg": "^2.5",
+                "php": "^8.1",
+                "symfony/console": "^5.0 || ^6.0 || ^7.0"
             },
             "require-dev": {
-                "behat/behat": "^3.8",
-                "friends-of-phpspec/phpspec-code-coverage": "^6.0",
-                "friendsofphp/php-cs-fixer": "^3.5",
+                "behat/behat": "^3.13",
+                "friends-of-phpspec/phpspec-code-coverage": "^6.3",
+                "friendsofphp/php-cs-fixer": "^3.41",
                 "moave/phpspec-data-provider-extension": "dev-feat/add-compatibility-to-php80",
-                "phpspec/phpspec": "^7.0",
-                "vimeo/psalm": "^4.3"
+                "phpspec/phpspec": "^7.4",
+                "vimeo/psalm": "^4.30"
             },
             "bin": [
                 "bin/poser"
@@ -77,7 +78,7 @@
             ],
             "support": {
                 "issues": "https://github.com/badges/poser/issues",
-                "source": "https://github.com/badges/poser/tree/v2.3.1"
+                "source": "https://github.com/badges/poser/tree/v3.1.0"
             },
             "funding": [
                 {
@@ -93,7 +94,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2022-02-21T09:52:41+00:00"
+            "time": "2024-01-06T18:14:09+00:00"
         },
         {
             "name": "cakephp/chronos",
@@ -877,6 +878,131 @@
                 "source": "https://github.com/courier-php/transport-amqp/tree/legacy"
             },
             "time": "2023-05-08T13:17:05+00:00"
+        },
+        {
+            "name": "cybercog/php-svg-font",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/cybercog/php-svg-font.git",
+                "reference": "f453a62f22d82c90bb547679bd6b60edded7a8d6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/cybercog/php-svg-font/zipball/f453a62f22d82c90bb547679bd6b60edded7a8d6",
+                "reference": "f453a62f22d82c90bb547679bd6b60edded7a8d6",
+                "shasum": ""
+            },
+            "require": {
+                "cybercog/php-unicode": "^1.0",
+                "php": "^8.1"
+            },
+            "require-dev": {
+                "ext-simplexml": "*",
+                "phpunit/phpunit": "^10.5"
+            },
+            "suggest": {
+                "ext-simplexml": "*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Cog\\SvgFont\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Anton Komarev",
+                    "email": "anton@komarev.com",
+                    "homepage": "https://komarev.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "PHP SVG font parser",
+            "keywords": [
+                "font",
+                "glyph",
+                "svg",
+                "typography"
+            ],
+            "support": {
+                "issues": "https://github.com/cybercog/php-svg-font/issues",
+                "source": "https://github.com/cybercog/php-svg-font/tree/1.0.0"
+            },
+            "funding": [
+                {
+                    "url": "https://paypal.me/antonkomarev",
+                    "type": "custom"
+                }
+            ],
+            "time": "2024-01-04T13:05:54+00:00"
+        },
+        {
+            "name": "cybercog/php-unicode",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/cybercog/php-unicode.git",
+                "reference": "553aeaa8175236cdbf2ca8419e517b249635ad3a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/cybercog/php-unicode/zipball/553aeaa8175236cdbf2ca8419e517b249635ad3a",
+                "reference": "553aeaa8175236cdbf2ca8419e517b249635ad3a",
+                "shasum": ""
+            },
+            "require": {
+                "ext-mbstring": "*",
+                "php": "^8.1"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^10.5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Cog\\Unicode\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Anton Komarev",
+                    "email": "anton@komarev.com",
+                    "homepage": "https://komarev.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "PHP Unicode library",
+            "keywords": [
+                "character",
+                "code-point",
+                "cog",
+                "composite-character",
+                "emoji",
+                "html-entity",
+                "symbol",
+                "unicode",
+                "xml-entity"
+            ],
+            "support": {
+                "issues": "https://github.com/cybercog/php-unicode/issues",
+                "source": "https://github.com/cybercog/php-unicode/tree/1.0.0"
+            },
+            "funding": [
+                {
+                    "url": "https://paypal.me/antonkomarev",
+                    "type": "custom"
+                }
+            ],
+            "time": "2024-01-04T12:58:15+00:00"
         },
         {
             "name": "dflydev/dot-access-data",
